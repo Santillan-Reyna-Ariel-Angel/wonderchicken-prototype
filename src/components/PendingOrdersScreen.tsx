@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { PendingOrder } from '../types';
+import { PendingOrder, Customer } from '../types';
+import { INITIAL_CUSTOMERS } from '../data/mockData';
 
 interface PendingOrdersScreenProps {
   onBackToPOS: () => void;
-  onOrderSettled?: (ticketId: string, amount: number) => void;
+  onOrderSettled?: (ticketId: string, amount: number, customer?: Customer, paymentMethod?: 'EFECTIVO' | 'QR') => void;
+  customers?: Customer[];
+  onNavigateToClients?: () => void;
 }
 
 const INITIAL_PENDING_ORDERS: PendingOrder[] = [
   {
     id: '103',
     ticketNumber: '#103',
-    orderType: 'DELIVERY',
+    orderType: 'LLEVAR',
     customerName: 'Marco Ortega',
-    deliveryDetails: 'Delivery Ya • Repartidor #14',
+    deliveryDetails: '',
     total: 90.00,
     elapsedTime: 'Hace 6 min',
     itemsSummary: '3x Porción Media Broaster',
@@ -26,9 +29,9 @@ const INITIAL_PENDING_ORDERS: PendingOrder[] = [
   {
     id: '106',
     ticketNumber: '#106',
-    orderType: 'DELIVERY',
-    customerName: 'PedidosYa - Moto 4',
-    deliveryDetails: 'Repartidor esperando en barra',
+    orderType: 'LLEVAR',
+    customerName: 's/n',
+    deliveryDetails: '',
     total: 58.00,
     elapsedTime: 'Hace 2 min',
     itemsSummary: '1x Combo Familiar 8 Presas',
@@ -43,7 +46,7 @@ const INITIAL_PENDING_ORDERS: PendingOrder[] = [
     ticketNumber: '#108',
     orderType: 'LLEVAR',
     customerName: 'Sra. Carmen Salazar',
-    deliveryDetails: 'Retira en ventanilla 2',
+    deliveryDetails: '',
     total: 32.50,
     elapsedTime: 'Hace 1 min',
     itemsSummary: '1x Cuarto Pecho Broaster + Tártara',
@@ -57,9 +60,10 @@ const INITIAL_PENDING_ORDERS: PendingOrder[] = [
 export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
   onBackToPOS,
   onOrderSettled,
+  customers = INITIAL_CUSTOMERS,
+  onNavigateToClients,
 }) => {
   const [orders, setOrders] = useState<PendingOrder[]>(INITIAL_PENDING_ORDERS);
-  const [filter, setFilter] = useState<'all' | 'delivery' | 'takeout'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modals state
@@ -67,6 +71,13 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
   const [settleOrder, setSettleOrder] = useState<PendingOrder | null>(null);
   const [payMethod, setPayMethod] = useState<'EFECTIVO' | 'QR'>('EFECTIVO');
   const [cashReceived, setCashReceived] = useState(100.00);
+  const [withInvoice, setWithInvoice] = useState(false);
+  
+  // Customer selector state (matching POS)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer>(INITIAL_CUSTOMERS[0]);
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState('');
+
   const [toast, setToast] = useState<{ title: string; message: string; icon: string } | null>(null);
 
   const showToastNotification = (title: string, message: string, icon = 'check_circle') => {
@@ -79,10 +90,37 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
     const defaultCash = order.total <= 90 ? 100 : Math.ceil(order.total / 10) * 10;
     setCashReceived(defaultCash);
     setPayMethod('EFECTIVO');
+    setWithInvoice(false);
+    setShowCustomerDropdown(false);
+    setCustomerSearch('');
+
+    // Find customer in list or create matching customer representation
+    const orderName = (order.customerName || '').trim();
+    const found = customers.find(
+      (c) => c.fullName.trim().toLowerCase() === orderName.toLowerCase()
+    );
+    if (found) {
+      setSelectedCustomer(found);
+    } else if (orderName && orderName.toLowerCase() !== 's/n') {
+      setSelectedCustomer({
+        id: `c-${Date.now()}`,
+        ci: '0',
+        fullName: orderName,
+        phone: '-',
+      });
+    } else {
+      setSelectedCustomer({
+        id: 'c-sn',
+        ci: '0',
+        fullName: 'Cliente S/N',
+        phone: '-',
+      });
+    }
   };
 
   const handleCloseSettleModal = () => {
     setSettleOrder(null);
+    setShowCustomerDropdown(false);
   };
 
   const handleExecutePayment = () => {
@@ -92,15 +130,25 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
 
     setOrders((prev) => prev.filter((o) => o.id !== orderId));
     if (onOrderSettled) {
-      onOrderSettled(orderId, total);
+      onOrderSettled(orderId, total, selectedCustomer, payMethod);
     }
+    const idDisplay = selectedCustomer.nit ? `NIT: ${selectedCustomer.nit}` : selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI: ${selectedCustomer.ci}` : 'S/N';
     showToastNotification(
-      `Comanda #${orderId} Cobrada Exitosamente`,
-      'Inventario descontado atómicamente y arqueo registrado en caja.',
+      withInvoice ? `Comanda #${orderId} Facturada y Cobrada` : `Comanda #${orderId} Cobrada Exitosamente`,
+      withInvoice
+        ? `Factura emitida a ${selectedCustomer.fullName} (${idDisplay}). Inventario descontado.`
+        : 'Inventario descontado atómicamente y arqueo registrado en caja.',
       'receipt'
     );
     handleCloseSettleModal();
   };
+
+  const filteredCustomers = customers.filter(
+    (c) =>
+      c.fullName.toLowerCase().includes(customerSearch.toLowerCase()) ||
+      c.ci.includes(customerSearch) ||
+      (c.nit && c.nit.includes(customerSearch))
+  );
 
   const handleCancelOrder = (orderId: string) => {
     if (confirm(`¿Desea cancelar el pedido #${orderId}? Al no haber sido cobrado, no afectará el arqueo de caja.`)) {
@@ -114,17 +162,12 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
   };
 
   const filteredOrders = orders.filter((ord) => {
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'delivery' && ord.orderType === 'DELIVERY') ||
-      (filter === 'takeout' && ord.orderType === 'LLEVAR');
-
+    const cust = ord.customerName?.trim() ? ord.customerName : 's/n';
     const matchesSearch =
       ord.ticketNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ord.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ord.deliveryDetails.toLowerCase().includes(searchQuery.toLowerCase());
+      cust.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesFilter && matchesSearch;
+    return matchesSearch;
   });
 
   const totalPendingAmount = orders.reduce((sum, o) => sum + o.total, 0);
@@ -161,14 +204,6 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
         <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
-            onClick={() => setShowConfirmModal(true)}
-            className="px-3.5 py-2 bg-[#fec330] hover:bg-[#f8bd2a] text-[#6f5100] font-mono text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[16px]">add_alert</span>
-            Despachar Anticipado (F2)
-          </button>
-          <button
-            type="button"
             onClick={onBackToPOS}
             className="px-3.5 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] transition-colors flex items-center gap-1.5 cursor-pointer"
           >
@@ -180,34 +215,10 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
 
       {/* Filter and stats row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-xl border border-[#e1e8fd] shadow-xs">
-        <div className="flex items-center gap-1 bg-[#f1f3ff] p-1 rounded-lg border border-[#e1e8fd]">
-          <button
-            type="button"
-            onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-colors cursor-pointer ${
-              filter === 'all' ? 'bg-white text-[#af101a] shadow-xs' : 'text-[#5b403d]'
-            }`}
-          >
-            Todos ({orders.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter('delivery')}
-            className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-colors cursor-pointer ${
-              filter === 'delivery' ? 'bg-white text-[#af101a] shadow-xs' : 'text-[#5b403d]'
-            }`}
-          >
-            Delivery App ({orders.filter((o) => o.orderType === 'DELIVERY').length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter('takeout')}
-            className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-colors cursor-pointer ${
-              filter === 'takeout' ? 'bg-white text-[#af101a] shadow-xs' : 'text-[#5b403d]'
-            }`}
-          >
-            Mostrador Llevar ({orders.filter((o) => o.orderType === 'LLEVAR').length})
-          </button>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs font-bold px-3 py-1.5 bg-[#f1f3ff] text-[#af101a] rounded-lg border border-[#e1e8fd]">
+            Pedidos para Llevar ({orders.length})
+          </span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -243,7 +254,7 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
             ¡Sin pedidos pendientes de liquidación!
           </h3>
           <p className="text-xs text-[#5b403d] mt-1 max-w-md">
-            Todas las comandas de mostrador y delivery han sido cobradas o procesadas debidamente en caja.
+            Todas las comandas para llevar han sido cobradas o procesadas debidamente en caja.
           </p>
         </div>
       ) : (
@@ -263,16 +274,9 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
                       <span className="font-mono text-xl font-bold text-[#af101a]">
                         {ord.ticketNumber}
                       </span>
-                      <span className="bg-amber-100 text-amber-900 font-mono text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                        {ord.orderType}
-                      </span>
                     </div>
                     <div className="font-bold text-sm text-[#141b2b] mt-1">
-                      {ord.customerName}
-                    </div>
-                    <div className="text-xs text-[#5b403d] flex items-center gap-1 mt-0.5">
-                      <span className="material-symbols-outlined text-[14px]">moped</span>
-                      <span>{ord.deliveryDetails}</span>
+                      {ord.customerName?.trim() ? ord.customerName : 's/n'}
                     </div>
                   </div>
 
@@ -307,7 +311,6 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
                   <span className="bg-[#ffdad6] text-[#ba1a1a] font-mono text-[10px] font-bold px-2 py-0.5 rounded">
                     ESTADO: PAGO PENDIENTE
                   </span>
-                  <span className="text-[11px] text-[#5b403d]">FR-011 Despacho Anticipado</span>
                 </div>
               </div>
 
@@ -375,10 +378,10 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
               </div>
 
               <div className="bg-[#f1f3ff] p-3 rounded-lg flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#af101a] text-[26px]">two_wheeler</span>
+                <span className="material-symbols-outlined text-[#af101a] text-[26px]">shopping_bag</span>
                 <div className="flex flex-col">
-                  <span className="font-bold text-xs text-[#141b2b]">Repartidor Delivery Ya #22</span>
-                  <span className="text-[11px] text-[#5b403d]">Móvil asignado • Retiro en mostrador express</span>
+                  <span className="font-bold text-xs text-[#141b2b]">Pedido para Llevar</span>
+                  <span className="text-[11px] text-[#5b403d]">Cliente: s/n • Retiro en mostrador</span>
                 </div>
               </div>
 
@@ -422,7 +425,7 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
       {/* MODAL 2: Liquidación de Cobro (POST /orders/{id}/pay) */}
       {settleOrder && (
         <div className="fixed inset-0 z-50 bg-[#293040]/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-[#e1e8fd]">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-[#e1e8fd]">
             <div className="bg-[#f1f3ff] px-6 py-4 flex items-center justify-between border-b border-[#e1e8fd]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#af101a] flex items-center justify-center text-white">
@@ -433,7 +436,7 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
                     Liquidación de Cobro: Comanda {settleOrder.ticketNumber}
                   </div>
                   <div className="font-mono text-xs text-[#5b403d]">
-                    {settleOrder.customerName} • {settleOrder.deliveryDetails}
+                    Comanda Pendiente • {settleOrder.elapsedTime}
                   </div>
                 </div>
               </div>
@@ -446,152 +449,270 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
               </button>
             </div>
 
-            <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-5">
-              {/* Left col */}
-              <div className="md:col-span-7 flex flex-col gap-4">
-                <div>
-                  <label className="font-mono text-[11px] text-[#5b403d] uppercase font-bold block mb-1">
-                    Método de Pago
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
+            <div className="p-6 flex flex-col gap-4">
+              {/* Total Banner (Monto a cobrar & ítems registrados) */}
+              <div className="flex items-center justify-between bg-[#f1f3ff] p-4 rounded-xl border border-[#e1e8fd]">
+                <div className="flex flex-col">
+                  <span className="font-mono text-[11px] text-[#5b403d] uppercase font-semibold">
+                    Monto Total a Cobrar:
+                  </span>
+                  <span className="font-mono text-2xl sm:text-3xl text-[#af101a] font-bold leading-tight">
+                    Bs. {settleOrder.total.toFixed(2)}
+                  </span>
+                </div>
+                <div className="text-right flex flex-col items-end">
+                  <span className="font-mono text-xs bg-[#fec330] text-[#6f5100] px-2.5 py-0.5 rounded-full font-bold uppercase">
+                    {settleOrder.orderType === 'MESA' ? 'EN MESA' : settleOrder.orderType === 'DELIVERY' ? 'DELIVERY' : 'PARA LLEVAR'}
+                  </span>
+                  <span className="text-xs text-[#5b403d] mt-1 font-medium">
+                    {(() => {
+                      const match = settleOrder.itemsSummary?.match(/^(\d+)x/);
+                      const count = match ? match[1] : '1';
+                      return `${count} ${count === '1' ? 'ítem registrado' : 'ítems registrados'}`;
+                    })()}
+                  </span>
+                </div>
+              </div>
+              {/* Customer Selector Bar (Matching POS Sales) */}
+              <div className="py-2.5 border-b border-[#e1e8fd] relative">
+                <label className="font-mono text-[10px] text-[#5b403d] uppercase font-bold block mb-1">
+                  Cliente Asignado:
+                </label>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="material-symbols-outlined text-[#af101a] text-[18px]">person</span>
                     <button
                       type="button"
-                      onClick={() => setPayMethod('EFECTIVO')}
-                      className={`py-2 px-3 rounded-lg font-mono text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                        payMethod === 'EFECTIVO'
-                          ? 'bg-[#d32f2f] text-white shadow-xs'
-                          : 'bg-[#f1f3ff] text-[#141b2b] hover:bg-[#e9edff]'
-                      }`}
+                      onClick={() => setShowCustomerDropdown(!showCustomerDropdown)}
+                      className="text-left truncate text-xs font-bold text-[#141b2b] hover:text-[#af101a] cursor-pointer flex items-center gap-1"
                     >
-                      <span className="material-symbols-outlined text-[18px]">attach_money</span>
-                      EFECTIVO
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod('QR')}
-                      className={`py-2 px-3 rounded-lg font-mono text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                        payMethod === 'QR'
-                          ? 'bg-[#d32f2f] text-white shadow-xs'
-                          : 'bg-[#f1f3ff] text-[#141b2b] hover:bg-[#e9edff]'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-[18px]">qr_code_scanner</span>
-                      PAGO SIMPLE QR
+                      <span className="truncate">{selectedCustomer.fullName}</span>
+                      <span className="font-mono text-[10px] text-[#5b403d]">
+                        ({selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI: ${selectedCustomer.ci}` : selectedCustomer.nit ? `NIT: ${selectedCustomer.nit}` : 'S/N'})
+                      </span>
+                      <span className="material-symbols-outlined text-[16px]">arrow_drop_down</span>
                     </button>
                   </div>
+
+                  {onNavigateToClients && (
+                    <button
+                      type="button"
+                      onClick={onNavigateToClients}
+                      className="px-2 py-1 bg-[#f1f3ff] hover:bg-[#e9edff] rounded text-[10px] font-mono font-bold text-[#af101a] flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                      title="Registrar nuevo cliente en módulo SIN"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">person_add</span>
+                      + Nuevo
+                    </button>
+                  )}
                 </div>
 
-                {payMethod === 'EFECTIVO' ? (
-                  <div className="flex flex-col gap-2 bg-[#f9f9ff] p-3 rounded-lg border border-[#e1e8fd]">
-                    <label className="font-mono text-xs text-[#5b403d] font-bold">
-                      Monto Recibido en Gaveta:
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-2.5 font-mono text-xs font-bold text-[#5b403d]">
-                        Bs.
-                      </span>
-                      <input
-                        type="number"
-                        step="0.5"
-                        value={cashReceived}
-                        onChange={(e) => setCashReceived(parseFloat(e.target.value) || 0)}
-                        className="w-full pl-10 pr-3 py-2 bg-white text-base font-mono font-bold text-[#141b2b] rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
-                      />
-                    </div>
+                {/* Autocomplete Dropdown */}
+                {showCustomerDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-xl shadow-xl border border-[#e1e8fd] p-2 flex flex-col gap-1.5 animate-fade-in">
+                    <input
+                      type="text"
+                      value={customerSearch}
+                      onChange={(e) => setCustomerSearch(e.target.value)}
+                      placeholder="Buscar por Nombre, CI o NIT..."
+                      className="p-2 bg-[#f1f3ff] text-xs font-medium rounded-lg border border-[#e1e8fd] outline-none"
+                      autoFocus
+                    />
 
-                    {/* Quick chips */}
-                    <div className="grid grid-cols-4 gap-1.5 mt-1">
+                    <div className="max-h-48 overflow-y-auto flex flex-col gap-1">
+                      {/* Anonymous S/N Option */}
                       <button
                         type="button"
-                        onClick={() => setCashReceived(settleOrder.total)}
-                        className="py-1 bg-white hover:bg-[#f1f3ff] text-[11px] font-mono font-bold rounded border border-[#e1e8fd] cursor-pointer"
+                        onClick={() => {
+                          setSelectedCustomer({
+                            id: 'c-sn',
+                            ci: '0',
+                            fullName: 'Cliente S/N',
+                            phone: '-',
+                          });
+                          setShowCustomerDropdown(false);
+                        }}
+                        className="flex items-center justify-between p-2 rounded-lg hover:bg-[#f1f3ff] text-left cursor-pointer"
                       >
-                        Exacto
+                        <div className="flex flex-col">
+                          <span className="font-bold text-xs text-[#141b2b]">Cliente S/N</span>
+                          <span className="text-[10px] text-[#5b403d]">Consumidor Final (Sin Factura Nominada)</span>
+                        </div>
+                        <span className="font-mono text-xs text-[#5b403d]">0</span>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setCashReceived(50)}
-                        className="py-1 bg-white hover:bg-[#f1f3ff] text-[11px] font-mono font-bold rounded border border-[#e1e8fd] cursor-pointer"
-                      >
-                        Bs. 50
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCashReceived(100)}
-                        className="py-1 bg-white hover:bg-[#f1f3ff] text-[11px] font-mono font-bold rounded border border-[#e1e8fd] cursor-pointer"
-                      >
-                        Bs. 100
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCashReceived(200)}
-                        className="py-1 bg-white hover:bg-[#f1f3ff] text-[11px] font-mono font-bold rounded border border-[#e1e8fd] cursor-pointer"
-                      >
-                        Bs. 200
-                      </button>
+
+                      {filteredCustomers.map((cust) => (
+                        <button
+                          key={cust.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCustomer(cust);
+                            setShowCustomerDropdown(false);
+                          }}
+                          className={`flex items-center justify-between p-2 rounded-lg text-left cursor-pointer ${
+                            cust.id === selectedCustomer.id ? 'bg-[#ffdad6]/40' : 'hover:bg-[#f1f3ff]'
+                          }`}
+                        >
+                          <div className="flex flex-col min-w-0 pr-2">
+                            <span className="font-bold text-xs text-[#141b2b] truncate">{cust.fullName}</span>
+                            <span className="text-[10px] text-[#5b403d]">{cust.phone}</span>
+                          </div>
+                          <span className="font-mono text-xs font-bold text-[#af101a] shrink-0">
+                            {cust.nit ? `NIT ${cust.nit}` : `CI ${cust.ci}`}
+                          </span>
+                        </button>
+                      ))}
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center p-4 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] text-center gap-2">
-                    <div className="w-28 h-28 bg-white p-2 rounded-lg border border-[#e1e8fd] flex items-center justify-center shadow-xs">
-                      <span className="material-symbols-outlined text-[80px] text-[#141b2b]">qr_code_2</span>
-                    </div>
-                    <span className="font-bold text-xs text-[#141b2b]">Escanee con Simple Móvil o Banco</span>
-                    <span className="font-mono text-[11px] text-[#5b403d]">Acreditación inmediata garantizada</span>
                   </div>
                 )}
               </div>
 
-              {/* Right col: ledger */}
-              <div className="md:col-span-5 flex flex-col justify-between bg-[#f1f3ff] p-4 rounded-xl border border-[#e1e8fd]">
-                <div className="flex flex-col gap-3">
-                  <span className="font-mono text-[11px] text-[#5b403d] uppercase font-bold tracking-wider">
-                    Resumen de Liquidación
-                  </span>
-                  <div className="flex flex-col gap-2 text-xs">
-                    <div className="flex justify-between text-[#5b403d]">
-                      <span>Total a Cobrar:</span>
-                      <span className="font-mono font-bold text-[#141b2b]">
-                        Bs. {settleOrder.total.toFixed(2)}
+              {/* Invoicing info check */}
+              <label className="flex items-center gap-2.5 cursor-pointer text-xs text-[#141b2b] select-none font-bold">
+                <input
+                  type="checkbox"
+                  checked={withInvoice}
+                  onChange={(e) => setWithInvoice(e.target.checked)}
+                  className="accent-[#af101a] rounded w-4 h-4 cursor-pointer"
+                />
+                <span>
+                  Facturar con datos del cliente:{' '}
+                  <strong className="text-[#af101a]">
+                    {selectedCustomer.fullName} ({selectedCustomer.nit ? `NIT ${selectedCustomer.nit}` : selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI ${selectedCustomer.ci}` : 'S/N'})
+                  </strong>
+                </span>
+              </label>
+
+              {/* Payment Method Tabs */}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-xs text-[#5b403d] uppercase font-bold">
+                  Método de Pago:
+                </label>
+                <div className="grid grid-cols-2 gap-1.5 p-1 bg-[#e9edff] rounded-lg">
+                  <button
+                    type="button"
+                    onClick={() => setPayMethod('EFECTIVO')}
+                    className={`py-2 rounded-md font-mono text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      payMethod === 'EFECTIVO'
+                        ? 'bg-white text-[#af101a] shadow-xs'
+                        : 'text-[#5b403d] hover:text-[#141b2b]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">attach_money</span>
+                    Efectivo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayMethod('QR')}
+                    className={`py-2 rounded-md font-mono text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      payMethod === 'QR'
+                        ? 'bg-white text-[#af101a] shadow-xs'
+                        : 'text-[#5b403d] hover:text-[#141b2b]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">qr_code_2</span>
+                    QR / Tarjeta Simple
+                  </button>
+                </div>
+              </div>
+
+              {payMethod === 'EFECTIVO' ? (
+                <div className="flex flex-col gap-3 bg-[#f1f3ff] p-3.5 rounded-xl border border-[#e1e8fd]">
+                  <div className="flex items-center justify-between gap-4">
+                    <label className="text-xs font-bold text-[#141b2b]">
+                      Efectivo Recibido:
+                    </label>
+                    <div className="relative w-40">
+                      <span className="absolute left-3 top-2 font-mono text-xs font-bold text-[#5b403d]">
+                        Bs.
                       </span>
+                      <input
+                        type="number"
+                        step="1.00"
+                        value={cashReceived}
+                        onChange={(e) => setCashReceived(parseFloat(e.target.value) || 0)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-white text-[#141b2b] font-mono text-base font-bold rounded-lg text-right border border-[#e1e8fd] focus:outline-none focus:border-[#af101a] focus:ring-2 focus:ring-[#af101a]/10"
+                      />
                     </div>
-                    {payMethod === 'EFECTIVO' && (
-                      <>
-                        <div className="flex justify-between text-[#5b403d]">
-                          <span>Efectivo Recibido:</span>
-                          <span className="font-mono font-bold text-[#141b2b]">
-                            Bs. {cashReceived.toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between font-bold text-sm text-[#15803d] pt-2 border-t border-[#e1e8fd]">
-                          <span>Cambio a Entregar:</span>
-                          <span className="font-mono">
-                            Bs. {Math.max(0, cashReceived - settleOrder.total).toFixed(2)}
-                          </span>
-                        </div>
-                      </>
+                  </div>
+
+                  {/* Quick chips */}
+                  <div className="flex items-center gap-1.5 justify-end flex-wrap">
+                    <span className="font-mono text-xs text-[#5b403d] mr-1">Rápido:</span>
+                    <button
+                      type="button"
+                      onClick={() => setCashReceived(settleOrder.total)}
+                      className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
+                    >
+                      Exacto
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCashReceived(50)}
+                      className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
+                    >
+                      50 Bs
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCashReceived(100)}
+                      className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
+                    >
+                      100 Bs
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCashReceived(200)}
+                      className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
+                    >
+                      200 Bs
+                    </button>
+                  </div>
+
+                  {/* Change Output */}
+                  <div className="flex items-center justify-between pt-2 border-t border-[#e1e8fd]">
+                    <span className="text-xs font-bold text-[#141b2b]">
+                      Cambio / Vuelto a entregar:
+                    </span>
+                    {cashReceived < settleOrder.total ? (
+                      <span className="font-mono text-sm font-bold text-[#ba1a1a]">
+                        Faltante: Bs. {(settleOrder.total - cashReceived).toFixed(2)}
+                      </span>
+                    ) : (
+                      <span className="font-mono text-base font-bold text-[#15803d]">
+                        Bs. {(cashReceived - settleOrder.total).toFixed(2)}
+                      </span>
                     )}
                   </div>
-
-                  <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg flex items-start gap-1.5 mt-2">
-                    <span className="material-symbols-outlined text-emerald-700 text-[16px] mt-0.5">
-                      check_circle
-                    </span>
-                    <p className="text-[11px] text-emerald-900 leading-tight">
-                      Al confirmar el pago: Se descontará el inventario en tiempo real y se emitirá el comprobante fiscal.
-                    </p>
-                  </div>
                 </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center p-4 bg-[#f1f3ff] rounded-xl border border-[#e1e8fd] gap-2">
+                  <div className="w-28 h-28 bg-white p-2 rounded-xl flex items-center justify-center shadow-xs border border-[#e1e8fd]">
+                    <span className="material-symbols-outlined text-[#141b2b] text-[80px]">
+                      qr_code_2
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs text-[#5b403d] font-semibold">
+                    Escanee con Simple Móvil / BCP / BNB
+                  </span>
+                  <span className="font-mono text-sm font-bold text-[#af101a]">
+                    Total: Bs. {settleOrder.total.toFixed(2)}
+                  </span>
+                </div>
+              )}
+            </div>
 
-                <button
-                  type="button"
-                  onClick={handleExecutePayment}
-                  className="w-full mt-4 py-2.5 bg-[#15803d] hover:bg-[#166534] text-white font-mono text-xs font-bold rounded-lg shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[18px]">task_alt</span>
-                  Registrar Cobro (F4)
-                </button>
-              </div>
+            {/* Modal Footer: Solo el botón de Confirmar Cobro y Liquidar */}
+            <div className="p-4 sm:p-5 bg-[#f1f3ff] border-t border-[#e1e8fd]">
+              <button
+                type="button"
+                disabled={payMethod === 'EFECTIVO' && cashReceived < settleOrder.total}
+                onClick={handleExecutePayment}
+                className="w-full py-3 bg-[#d32f2f] hover:bg-[#af101a] disabled:opacity-50 disabled:cursor-not-allowed text-white font-mono text-sm font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <span className="material-symbols-outlined text-[20px]">receipt</span>
+                Confirmar Cobro y Liquidar
+              </button>
             </div>
           </div>
         </div>

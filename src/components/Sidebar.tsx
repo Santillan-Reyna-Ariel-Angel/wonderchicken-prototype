@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScreenType, UserRole } from '../types';
-import { useTheme } from '../context/ThemeContext';
+import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 
 interface SidebarProps {
   currentScreen: ScreenType;
@@ -19,7 +19,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeKitchenCount = 4,
   pendingOrdersCount = 3,
 }) => {
-  const { theme, toggleTheme } = useTheme();
+  const { shift } = useShiftsStore();
+
   // Navigation definitions according to role
   const getNavSections = () => {
     if (currentRole === 'SUPER_ADMIN') {
@@ -88,7 +89,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         title: 'Operaciones de Caja & POS',
         items: [
           { id: 'pos-ventas' as ScreenType, label: 'POS Ventas', icon: 'point_of_sale' },
-          { id: 'apertura-turno' as ScreenType, label: 'Apertura Turno', icon: 'lock_open' },
+          {
+            id: 'apertura-turno' as ScreenType,
+            label: shift.isOpen ? 'Resumen de Apertura' : 'Apertura Turno',
+            icon: shift.isOpen ? 'assignment' : 'lock_open',
+          },
           { 
             id: 'pedidos-pendientes' as ScreenType, 
             label: 'Pago Pendiente [FR-011]', 
@@ -157,23 +162,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <div className="pt-3 flex flex-col gap-1.5 border-t border-[#f1f3ff]">
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#5b403d] hover:bg-[#f1f3ff] hover:text-[#141b2b] transition-colors font-medium cursor-pointer"
-          title="Alternar Modo Claro / Oscuro"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-[19px] text-amber-500">
-              {theme === 'dark' ? 'dark_mode' : 'light_mode'}
-            </span>
-            <span>Tema: {theme === 'dark' ? 'Oscuro' : 'Claro'}</span>
-          </div>
-          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#e1e8fd] text-[#141b2b] font-bold uppercase">
-            {theme === 'dark' ? 'DARK' : 'LIGHT'}
-          </span>
-        </button>
-
         <button
           onClick={onLogout}
           className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#5b403d] hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors font-medium cursor-pointer"

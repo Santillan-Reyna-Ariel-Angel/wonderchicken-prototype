@@ -26,7 +26,10 @@ import { useAuthStore } from './features/auth/stores/auth.store';
 import { useShiftsStore } from './features/shifts/stores/shifts.store';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<ScreenType>('pos-ventas');
+  const { shift, setCashierName: updateStoreCashier } = useShiftsStore();
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>(() => {
+    return !shift.isOpen ? 'apertura-turno' : 'pos-ventas';
+  });
   const [products] = useState<Product[]>(INITIAL_PRODUCTS);
   const [customers, setCustomers] = useState<Customer[]>(INITIAL_CUSTOMERS);
   const [orders, setOrders] = useState<CompletedOrder[]>(INITIAL_ORDERS);
@@ -36,7 +39,6 @@ export default function App() {
   const [userRole, setUserRole] = useState<UserRole>('CAJERA');
 
   const { login, switchRole } = useAuthStore();
-  const { setCashierName: updateStoreCashier } = useShiftsStore();
 
   // Active kitchen orders count (En preparación or Listo)
   const activeKitchenCount = orders.filter((o) => o.status !== 'ENTREGADO').length;
@@ -58,7 +60,12 @@ export default function App() {
     } else if (role === 'DESPACHADORA') {
       setCurrentScreen('despacho-cocina');
     } else {
-      setCurrentScreen('pos-ventas');
+      // Para cajera, si el turno no está abierto, va directamente a apertura-turno
+      if (!shift.isOpen) {
+        setCurrentScreen('apertura-turno');
+      } else {
+        setCurrentScreen('pos-ventas');
+      }
     }
   };
 
@@ -170,13 +177,28 @@ export default function App() {
     );
   }
 
+  // If opening shift before starting work, render standalone screen like login (without extra menus)
+  if (currentScreen === 'apertura-turno' && !shift.isOpen) {
+    return (
+      <ShiftScreen
+        shiftName={shiftName}
+        cashierName={cashierName}
+        onUpdateShift={setShiftName}
+        onBackToPOS={() => setCurrentScreen('pos-ventas')}
+        ordersCount={orders.length}
+        totalSales={totalSales}
+        standalone={true}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f9f9ff] text-[#141b2b] app-main-bg transition-colors duration-200">
       {/* POS Top Header */}
       <Header
         currentScreen={currentScreen}
         onNavigate={setCurrentScreen}
-        shiftName={shiftName}
+        shiftName={shift.shiftPeriod || shiftName}
         cashierName={cashierName}
         userRole={userRole}
         activeOrdersCount={activeKitchenCount}
@@ -219,13 +241,15 @@ export default function App() {
         {currentScreen === 'pedidos-pendientes' && (
           <PendingOrdersScreen
             onBackToPOS={() => setCurrentScreen('pos-ventas')}
-            onOrderSettled={(ticketId, amount) => {
+            customers={customers}
+            onNavigateToClients={() => setCurrentScreen('clientes')}
+            onOrderSettled={(ticketId, amount, customer, paymentMethod) => {
               // Add to completed orders
               const settledOrder: CompletedOrder = {
                 ticketNumber: `#${ticketId}`,
                 timestamp: `Hoy ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
                 orderType: 'LLEVAR',
-                customer: activeCustomer,
+                customer: customer || activeCustomer,
                 items: [
                   {
                     id: `settled-${ticketId}`,
@@ -238,7 +262,7 @@ export default function App() {
                 subtotal: amount,
                 discount: 0,
                 total: amount,
-                paymentMethod: 'EFECTIVO',
+                paymentMethod: paymentMethod || 'EFECTIVO',
                 status: 'LISTO',
                 cashier: `${cashierName} (Caja 01)`,
               };

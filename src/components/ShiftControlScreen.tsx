@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 
 interface ShiftControlScreenProps {
   onBackToPOS: () => void;
 }
 
 export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackToPOS }) => {
+  const { shift, closeShift } = useShiftsStore();
   const [selectedCaja, setSelectedCaja] = useState<'01' | '02'>('01');
   const [denominations, setDenominations] = useState<{ [key: string]: number }>({
     '200': 7,
@@ -519,7 +521,8 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
                 <button
                   type="button"
                   onClick={() => {
-                    showToast('Imprimiendo Acta Z en impresora fiscal...');
+                    closeShift();
+                    showToast('Imprimiendo Acta Z en impresora fiscal. Turno cerrado.');
                     setShowZReportModal(false);
                   }}
                   className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] text-white rounded-lg font-bold flex items-center gap-1.5"

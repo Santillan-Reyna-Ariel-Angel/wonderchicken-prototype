@@ -16,14 +16,14 @@ interface ShiftsStoreState {
 
 export const useShiftsStore = create<ShiftsStoreState>((set, get) => ({
   shift: {
-    isOpen: true,
+    isOpen: false,
     shiftPeriod: 'MAÑANA',
     cashRegisterId: '01',
     initialAmount: 150.0,
-    openedAt: 'Hoy 08:30',
+    openedAt: undefined,
     cashierName: 'Roxana Rodríguez',
-    token: 'SHF-2026-0814-M01',
-    lastOrderNumber: 105,
+    token: undefined,
+    lastOrderNumber: 100,
   },
 
   openShift: ({ shiftPeriod, cashRegisterId, initialAmount, cashierName }) => {

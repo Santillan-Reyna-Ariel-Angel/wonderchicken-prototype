@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useShiftsStore } from '../features/shifts/stores/shifts.store';
+import { useTheme } from '../context/ThemeContext';
 
 interface ShiftScreenProps {
   shiftName: string;
@@ -7,6 +9,7 @@ interface ShiftScreenProps {
   onBackToPOS: () => void;
   ordersCount: number;
   totalSales: number;
+  standalone?: boolean;
 }
 
 export const ShiftScreen: React.FC<ShiftScreenProps> = ({
@@ -14,10 +17,15 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
   cashierName,
   onUpdateShift,
   onBackToPOS,
+  ordersCount,
+  totalSales,
+  standalone = false,
 }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<'MAÑANA' | 'NOCHE'>('MAÑANA');
-  const [selectedCaja, setSelectedCaja] = useState<'01' | '02'>('01');
-  const [initialFund, setInitialFund] = useState(150.00);
+  const { shift, openShift } = useShiftsStore();
+  const { theme, toggleTheme } = useTheme();
+  const [selectedPeriod, setSelectedPeriod] = useState<'MAÑANA' | 'NOCHE'>((shift.shiftPeriod as 'MAÑANA' | 'NOCHE') || 'MAÑANA');
+  const [selectedCaja, setSelectedCaja] = useState<'01' | '02'>((shift.cashRegisterId as '01' | '02') || '01');
+  const [initialFund, setInitialFund] = useState(shift.initialAmount || 150.00);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -28,11 +36,162 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
 
   const handleOpenShiftSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    openShift({
+      shiftPeriod: selectedPeriod,
+      cashRegisterId: selectedCaja,
+      initialAmount: initialFund,
+      cashierName: cashierName || 'Roxana Rodríguez',
+    });
     onUpdateShift(selectedPeriod);
     setShowSuccessModal(true);
   };
 
-  return (
+  // If shift is already open, show only the official Resumen de Apertura view
+  if (shift.isOpen && !standalone) {
+    return (
+      <div className="flex flex-col gap-5 max-w-4xl mx-auto animate-fade-in">
+        {/* Toast */}
+        {toast && (
+          <div className="fixed bottom-4 right-4 z-50 bg-[#141b2b] text-white px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2 text-xs font-mono border border-white/10 animate-fade-in">
+            <span className="material-symbols-outlined text-[#fec330] text-[18px]">check_circle</span>
+            <span>{toast}</span>
+          </div>
+        )}
+
+        {/* Top Banner Status */}
+        <div className="bg-[#141b2b] text-white p-4 sm:p-5 rounded-xl border border-white/10 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center shrink-0 border border-white/20">
+              <span className="material-symbols-outlined text-[20px]">lock_open</span>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-sm sm:text-base text-white">
+                  Turno Activo en Operación
+                </span>
+                <span className="bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase border border-emerald-500/30">
+                  ABIERTO
+                </span>
+              </div>
+              <span className="font-mono text-xs text-[#e1e8fd] opacity-80">
+                Operador: {shift.cashierName} • Caja {shift.cashRegisterId} • {shift.openedAt || 'Hoy'}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onBackToPOS}
+            className="px-4 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <span className="material-symbols-outlined text-[16px]">point_of_sale</span>
+            Ir a Terminal POS
+          </button>
+        </div>
+
+        {/* Resumen de Apertura Card */}
+        <div className="bg-white rounded-2xl border border-[#e1e8fd] shadow-sm p-6 sm:p-8 flex flex-col gap-6">
+          <div className="flex items-center justify-between border-b border-[#e1e8fd] pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-[#af101a]/10 flex items-center justify-center text-[#af101a]">
+                <span className="material-symbols-outlined text-[22px]">assignment</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-base text-[#141b2b]">Resumen de Apertura de Turno</h3>
+                <p className="text-xs text-[#5b403d]">Registro fiscal oficial emitido al inicio de la jornada operativa</p>
+              </div>
+            </div>
+            <span className="font-mono text-xs bg-[#f1f3ff] text-[#141b2b] px-3 py-1 rounded-lg border border-[#e1e8fd]">
+              {shift.token || 'SHF-ACTIVO'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#f9f9ff] p-4 rounded-xl border border-[#e1e8fd] flex flex-col gap-3 text-xs">
+              <div className="font-bold text-[#141b2b] flex items-center gap-1.5 text-xs pb-1 border-b border-[#e1e8fd]">
+                <span className="material-symbols-outlined text-[16px] text-[#af101a]">person</span>
+                Datos del Operador
+              </div>
+              <div className="flex justify-between py-1 border-b border-[#f1f3ff]">
+                <span className="text-[#5b403d]">Operador Responsable:</span>
+                <span className="font-bold text-[#141b2b]">{shift.cashierName || cashierName}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-[#f1f3ff]">
+                <span className="text-[#5b403d]">Cédula Identidad:</span>
+                <span className="font-mono font-bold text-[#141b2b]">2222222</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-[#5b403d]">Rol de Acceso:</span>
+                <span className="font-bold text-[#141b2b]">CAJERA</span>
+              </div>
+            </div>
+
+            <div className="bg-[#f9f9ff] p-4 rounded-xl border border-[#e1e8fd] flex flex-col gap-3 text-xs">
+              <div className="font-bold text-[#141b2b] flex items-center gap-1.5 text-xs pb-1 border-b border-[#e1e8fd]">
+                <span className="material-symbols-outlined text-[16px] text-[#af101a]">storefront</span>
+                Terminal y Horario
+              </div>
+              <div className="flex justify-between py-1 border-b border-[#f1f3ff]">
+                <span className="text-[#5b403d]">Sucursal:</span>
+                <span className="font-bold text-[#141b2b]">Sucursal Central (SCZ-001)</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-[#f1f3ff]">
+                <span className="text-[#5b403d]">Turno Asignado:</span>
+                <span className="font-mono font-bold text-[#af101a]">{shift.shiftPeriod}</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-[#5b403d]">Caja Asignada:</span>
+                <span className="font-mono font-bold text-[#141b2b]">Caja {shift.cashRegisterId}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#fff8f7] p-4 rounded-xl border border-[#af101a]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-xs text-[#5b403d]">Fondo Inicial Declarado en Gaveta</span>
+              <div className="text-2xl font-mono font-bold text-[#15803d]">
+                Bs. {Number(shift.initialAmount || 0).toFixed(2)}
+              </div>
+            </div>
+            <div className="text-right sm:text-right text-xs text-[#5b403d]">
+              <div>Apertura registrada:</div>
+              <div className="font-mono font-bold text-[#141b2b]">{shift.openedAt || 'Hoy'}</div>
+            </div>
+          </div>
+
+          <div className="p-3.5 bg-[#f1f3ff] rounded-xl border border-[#e1e8fd] flex items-start gap-2.5 text-xs text-[#5b403d]">
+            <span className="material-symbols-outlined text-[#15803d] text-[20px] shrink-0 mt-0.5">
+              verified
+            </span>
+            <p>
+              El turno se encuentra actualmente activo. Para realizar el arqueo final, arqueo ciego o cierre fiscal Z al terminar su jornada, diríjase al módulo de <strong>Control Turnos y Cajas</strong>.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2 border-t border-[#e1e8fd]">
+            <button
+              type="button"
+              onClick={() => showToast('Copia de acta de apertura enviada a la impresora térmica.')}
+              className="px-4 py-2.5 bg-white border border-[#e1e8fd] hover:bg-[#f1f3ff] text-[#141b2b] font-mono text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <span className="material-symbols-outlined text-[16px]">print</span>
+              Reimprimir Comprobante
+            </button>
+            <button
+              type="button"
+              onClick={onBackToPOS}
+              className="px-5 py-2.5 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <span className="material-symbols-outlined text-[16px]">point_of_sale</span>
+              Ir a Terminal POS
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const content = (
     <div className="flex flex-col gap-5">
       {/* Toast */}
       {toast && (
@@ -51,14 +210,14 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm sm:text-base text-white">
-                Bienvenida, {cashierName || 'Carla Cajera'}
+                Bienvenida, {cashierName || 'Roxana Rodríguez'}
               </span>
               <span className="bg-[#ffdad6] text-[#af101a] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
                 Rol: CAJERA
               </span>
             </div>
             <span className="font-mono text-xs text-[#e1e8fd] opacity-80">
-              CI: 2222222 • Sucursal Central (Caja 01)
+              CI: 8492019 • Sucursal Central (Caja 01)
             </span>
           </div>
         </div>
@@ -67,13 +226,6 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
           <span className="text-xs font-mono bg-white/10 text-white px-3 py-1.5 rounded-lg border border-white/10">
             FR-004 / PDR §2.6
           </span>
-          <button
-            type="button"
-            onClick={onBackToPOS}
-            className="px-3.5 py-1.5 bg-white text-[#141b2b] font-mono text-xs font-bold rounded-lg hover:bg-[#e1e8fd] transition-colors cursor-pointer"
-          >
-            Terminal POS
-          </button>
         </div>
       </div>
 
@@ -395,4 +547,57 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
       )}
     </div>
   );
+
+  if (standalone) {
+    return (
+      <div className="bg-[#f9f9ff] text-[#141b2b] min-h-screen flex flex-col justify-between relative overflow-x-hidden app-main-bg">
+        {/* Top subtle background gradient */}
+        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[#af101a]/10 via-[#f1f3ff] to-transparent pointer-events-none -z-10" />
+
+        {/* Top Header Bar for standalone mode */}
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-8 pt-4 pb-2 flex justify-between items-center z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-36 sm:w-44 h-auto py-1">
+              <img
+                alt="Wonder Chicken Logo Oficial"
+                className="w-full h-auto object-contain drop-shadow-xs"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhh0pXr4EBA8TvPmBg94EssTE6eADYtpDKx9IwH7RFx6_goeQFLJFHEQoSu8u6HBAmjoUwTE2tEfreFWdF6hgtcKFykKjrrK_KAknnqmyJQa3Ky72tyQL7ZKNfBjQZ1aMvw742hiz7FbwlaciN0-4jBh0nGI6Eg-qVqFWWR9nZpZ14vFillF5M0mtTfL6yJ49nqbW4HtB_XVBRtdeOq-kSThf6WUOzwJVmgWT55lBN8HfP-ktQdZJU27tPuuDipBN5TA"
+              />
+            </div>
+            <span className="hidden sm:inline font-mono text-xs text-[#5b403d] border-l border-[#e1e8fd] pl-3 py-1">
+              Apertura Inicial de Caja & Turno Fiscal
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e1e8fd] bg-white hover:bg-[#f1f3ff] text-[#141b2b] transition-all cursor-pointer shadow-xs"
+              title={theme === 'dark' ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+            >
+              <span className="material-symbols-outlined text-[18px] text-amber-500">
+                {theme === 'dark' ? 'dark_mode' : 'light_mode'}
+              </span>
+              <span className="font-mono text-xs font-bold capitalize">
+                {theme === 'dark' ? 'Modo Oscuro' : 'Modo Claro'}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content Form */}
+        <main className="w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 flex flex-col justify-center">
+          {content}
+        </main>
+
+        {/* Footer info */}
+        <footer className="w-full border-t border-[#e1e8fd] bg-white/50 backdrop-blur-xs py-3 text-center text-xs text-[#5b403d] font-mono">
+          Wonder Chicken POS & Cajas v2.4 • Sistema Conforme Normativa SIN Bolivia
+        </footer>
+      </div>
+    );
+  }
+
+  return content;
 };
