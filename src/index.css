@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Dark theme global overrides and high contrast palette */
+.dark, [data-theme="dark"], body.dark-theme {
+  color-scheme: dark;
+}
+
+/* Backgrounds in dark mode */
+.dark body,
+.dark .app-main-bg,
+[data-theme="dark"] body,
+[data-theme="dark"] .app-main-bg {
+  background-color: #0b0f19 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Card and surface elevation in dark mode */
+.dark .bg-white,
+[data-theme="dark"] .bg-white {
+  background-color: #131b2e !important;
+  color: #f1f5f9 !important;
+}
+
+/* Subtle inner background like f9f9ff, f8f9ff, f1f3ff */
+.dark .bg-\[\#f9f9ff\],
+.dark .bg-\[\#f8f9ff\],
+.dark .bg-\[\#f1f3ff\],
+[data-theme="dark"] .bg-\[\#f9f9ff\],
+[data-theme="dark"] .bg-\[\#f8f9ff\],
+[data-theme="dark"] .bg-\[\#f1f3ff\] {
+  background-color: #1a233b !important;
+}
+
+/* Hover surfaces */
+.dark .hover\:bg-\[\#f1f3ff\]:hover,
+.dark .hover\:bg-\[\#e9edff\]:hover,
+[data-theme="dark"] .hover\:bg-\[\#f1f3ff\]:hover,
+[data-theme="dark"] .hover\:bg-\[\#e9edff\]:hover {
+  background-color: #243050 !important;
+}
+
+/* Borders in dark mode */
+.dark .border-\[\#e1e8fd\],
+.dark .border-\[\#f1f3ff\],
+[data-theme="dark"] .border-\[\#e1e8fd\],
+[data-theme="dark"] .border-\[\#f1f3ff\] {
+  border-color: #263554 !important;
+}
+
+/* Primary text headers in dark mode */
+.dark .text-\[\#141b2b\],
+[data-theme="dark"] .text-\[\#141b2b\] {
+  color: #f8fafc !important;
+}
+
+/* Secondary muted text in dark mode - high readability contrast */
+.dark .text-\[\#5b403d\],
+[data-theme="dark"] .text-\[\#5b403d\] {
+  color: #94a3b8 !important;
+}
+
+/* Inputs in dark mode */
+.dark input,
+.dark select,
+.dark textarea,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: #162036 !important;
+  color: #f8fafc !important;
+  border-color: #2a3a5c !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Header and navigation surface in dark mode */
+.dark header,
+[data-theme="dark"] header {
+  background-color: rgba(19, 27, 46, 0.95) !important;
+  border-bottom-color: #263554 !important;
+}
+
+.dark aside,
+[data-theme="dark"] aside {
+  background-color: #111827 !important;
+  border-right-color: #263554 !important;
+}
+
+/* Modal overlays and dialog containers in dark mode */
+.dark .bg-white.rounded-2xl,
+.dark .bg-white.rounded-xl,
+[data-theme="dark"] .bg-white.rounded-2xl,
+[data-theme="dark"] .bg-white.rounded-xl {
+  background-color: #131b2e !important;
+  border-color: #263554 !important;
+}
+
+/* Pill tags in dark mode */
+.dark .bg-amber-50,
+[data-theme="dark"] .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.dark .bg-blue-50,
+[data-theme="dark"] .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .bg-red-50,
+[data-theme="dark"] .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark .bg-emerald-50,
+[data-theme="dark"] .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #6ee7b7 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Hide native scrollbars where appropriate */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+

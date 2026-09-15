@@ -1,0 +1,6 @@
+{
+  "name": "Wonder Chicken - POS & Operations Core",
+  "description": "Sistema POS integral de ventas, configuración de variantes de pollo a la brasa, KDS de cocina y registro de clientes para Wonder Chicken.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,362 @@
+import { Product, Customer, CompletedOrder } from '../types';
+
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'p-001',
+    code: 'P-001',
+    name: 'Cuarto de Pollo',
+    description: '2 presas clásicas doradas a la brasa con papas fritas rústicas.',
+    price: 23.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAd3wj3qsyLM33fMvkgn_CQIrC2lJzTOWhQvJb6H869bZQhGOQw99P5UYu10xgut5sBEFyN4ieP6CQ24BpgVaoZ1h7NRsEdtzdNp2F-bl0tCLBkZFS-3VfVrcZ-_vt07_HEwAMY16fsjswcAqecYa_8nQAsP-wAScGOY3SknQB9IUnwD-X-njx9w8Aw4BPt9abjQA4uNNNVg3dPAOysXI513kiQqB7NFUakUmRle44_1WsASfpLp4LM',
+    piecesBadge: '2 presas',
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: '2 presas fijas'
+  },
+  {
+    id: 'p-002',
+    code: 'P-002',
+    name: 'Porción Media',
+    description: '2 presas con guarnición mixta completa (papas crocantes y arroz).',
+    price: 30.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD_oyJzXB4lc01BcNz9a6DKr19cpv-tXDvvWR9C45sRm2a7I8rf_nwC4O-dmNQG37J92_f9fahbo6SEBs6d6JK-VmE11hcoB83V8Bg1Qoj1SvOlsRew8VqY6MC0QYBH9bytGjKtz0KpRDBW2tCUC323DWbNN1tLCLAq6auvdpFAWj7rTXxhJEjG8GnPtUjH_OG6k7T_1LDNpTHvSLB37fly1k8_Nkz3dq89k7mvQGtCs4AWoa2IDAri',
+    piecesBadge: '2 presas + Mixto',
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: 'Papas o Arroz'
+  },
+  {
+    id: 'p-003',
+    code: 'P-003',
+    name: 'Combo Wonder',
+    description: '2 presas seleccionadas + guarnición mixta + Bebida 500ml fría/natural.',
+    price: 36.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7f_6IIJZsGPcIe6aS5aqu6JtETzHrxZLvQDn1OLflcOMulWDGKMXYTNDi7ZFynoW0DCyoJN6CAQzS9sqiMvcYA8c8aPZEuEHQr4hmkxR1KO2AokZaTsF6-mtQAxd9PG2dt-G87KgeirdVkaN_pcuobH0zQdcngqhmorAs4Lv6FHVCXw73naWfwi31gnt1Ul_SfJFzzDk_h2Z8WVlYfE0fFh7i20lyVzbNC6v0aYw7p1Wyp56dHv-L',
+    badge: 'COMBO',
+    piecesBadge: '2 Presas + Bebida',
+    isCombo: true,
+    isPopular: true,
+    configurable: true,
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: 'Bebida / Papas / Ensalada'
+  },
+  {
+    id: 'p-004',
+    code: 'P-004',
+    name: 'Medio Pollo',
+    description: '4 presas recién horneadas al punto exacto con salsas artesanales.',
+    price: 46.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDnyN0InD9C0S4OR6mEc0FGkDYXfL5BQkQMl68lHxSeJ342eAw3nkjtkXXHhZJHii5PgGK5TIh6vB-faQ7Cji_7f9rISzI3U3zBWi7Af99GbT0DTGiyNEcLG4jEMZDCB9yW0r2qicLiyhIX1oD1vnvwQr9gUeIxr2-RriaIsmIcYMQuselrHIFcK6dYnsicPUlDSuj0PseELrryTDpnti0JyYm7qsDUahZKOqGU4yt7cmgh345fwOuy',
+    piecesBadge: '4 presas',
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: '4 presas fijas'
+  },
+  {
+    id: 'p-005',
+    code: 'P-005',
+    name: 'Porción Completa',
+    description: '4 presas jugosas con doble porción de papa frita y arroz.',
+    price: 54.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD7AgovDeoLdLEfa1kT7b76063Q_R04-c3aVM0lastAu1GdoebTR4ywLonKFkGSykrNJRlZh2MiLO81fesBCK2EiO6xZ2XupPwj6EOE9I3h8W_EaiUgvSR09O6G4NO_0KZh3KcNzNUy0OwRWwDkDyVqw7JIqOvzjXxzCuogqikHOwfS4MhivkhD7n_3pqgL4K1bq0Wv6-5Y8NNWXXbDSjq2Jbi-WWaIyJ21mG7XqhNnE4_MYGLIYky7',
+    piecesBadge: '4 presas + Mixto',
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: 'Mixto estándar o Doble papa'
+  },
+  {
+    id: 'p-006',
+    code: 'P-006',
+    name: 'Super Wonder',
+    description: '4 presas de pollo, mixto papa/arroz y gaseosa 500ml a elección.',
+    price: 58.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiF35A9NlblnNgiJvFGP5fMV4gW_iw11VqbE2Qgg_3lngShEoEJSg3QJm9f23nFVociXrUydc9vhrSnyWp9fLlCbvOq345baVNirgEshmIVq8F_-O5MCM8bcVxdhxyEjIXbSpFH4_0rnE06HDhys4GEDi6XCkcxiQ0xTnGcqy4sJ91axygw50qoQB7uEDSHw8bSlC1dlFGHgHc-55cI8dzVPN8gA6WHZB3zuiPwSfApsNGARmeFzQi',
+    badge: 'SUPER',
+    piecesBadge: '4P + Mix + Bebida',
+    active: true,
+    inventariable: 'Sí (Presas)',
+    variantNotes: 'Sabor gaseosa / Guarnición'
+  },
+  {
+    id: 'p-007',
+    code: 'P-007',
+    name: 'Wonder Pop',
+    description: '300g filete pechuga crispy trozado con guarnición a elección.',
+    price: 33.00,
+    category: 'principales',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgYCrgU1y2u-EZhVTzonLnY7c-34HcGDpeTRQ_PAj7l61ccahcCERBmgzO1P50ZQBbO49OGaezZHYea4ROpMq7B1uFWGdmyd9yTG3ByuLf_4ZuaUuyjkKs_JdhaX-LxX6OERa6DAA_xroN6d0RpSme5wvwYcfexA4BL3UOIsHii8SNKrIE_v5Y229ZSzy5xuAjPA20EBXsMR6i6wqEEzCGG4H8J30SXtJ8KJbwEVISxxNXgh-WP_nh',
+    piecesBadge: '300g Pechuga',
+    active: true,
+    inventariable: 'No (Gramaje)',
+    variantNotes: '300g crispy pechuga'
+  },
+  {
+    id: 'b-001',
+    code: 'B-001',
+    name: 'Coca Cola 500ml',
+    description: 'Fría o Natural según preferencia de caja.',
+    price: 8.00,
+    category: 'bebidas',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBNqx0woxo4PpHHFvxQZLt6A2MNuVB53KAGEkpaDTXjX2bCqDa7kD4VsQBQwKeKyNse_AZku_2x0UoPkcNQiQaG7Wa4SeGfs3B7_VSQJ-yQUAn_G8EPCJF3FPoW64sGR8fxR8s6uX67A6rX4AV8jjhNhN_QT26zeXaGkHfCfFXSuwVoEDnataYwk0wBRBhs3WUu5HSya1SbF1_3N37IQZducgmfE5q2EelG6V6N_udGq5fDh5FX0JqG',
+    piecesBadge: '500 ml',
+    active: true,
+    inventariable: 'Sí (Botellas)',
+    variantNotes: 'Fría / Natural'
+  },
+  {
+    id: 'e-001',
+    code: 'E-001',
+    name: 'Smiles McCain',
+    description: 'Porción de caritas de papa horneadas/crocantes.',
+    price: 12.00,
+    category: 'extras',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDGf1Vnnma6FrsgEeEH1VQkKMrPnQ07tot4N4UWkC2GDTGg8tZWX97pOaPh0qmt2LCFG_xZ2Xt2Eu2NKrfSjEpQUoMe3Zys4gwzY84qHs7hICkgqIqaTxQuXfr5X0ILBbjujK9korNBEHmYgOgHFlJUhmcLt8J4vejYFwMnlhRpwToSGq6JpXtY7DSh6L4ewaXhhE0zHXnrZid_yTLxsohTg73llwvFvk_CrZmwPNInp_bs5YS1GHCl',
+    badge: 'Favorito',
+    active: true,
+    inventariable: 'No (Bolsa)',
+    variantNotes: 'Porción 150g'
+  },
+  {
+    id: 'b-002',
+    code: 'B-002',
+    name: 'Mocochinchi 500ml',
+    description: 'Artesanal hervido con canela y clavo de olor.',
+    price: 6.00,
+    category: 'bebidas',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAx3OU68ZFIoTRrPm7rxxG7X-F3WIg-U94h7IVLh-S1dcgWAVSbcZnZvcHxvK3qGnFxldjXKkLYKvWRNgWm6rFiBeOjKj8j22LLhHr97BEmsa3MhqnxLzw500gTIYFbHyBCNUXII8L-DKXGdJ4QHJimK7Ac29sztCWn1DezO0F7soOyRpF1YUNAWEIQiSFxFUBG37K_0bxIhvm81wCD0w06TRG0WvHP80jF3ycebl32kTEpq53P5eil',
+    piecesBadge: '500 ml',
+    active: true,
+    inventariable: 'Sí (Vasos)',
+    variantNotes: 'Artesanal'
+  },
+  {
+    id: 'e-002',
+    code: 'E-002',
+    name: 'Porción Papas',
+    description: 'Papas fritas clásicas corte rústico sazonadas.',
+    price: 12.00,
+    category: 'extras',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDoLcBdSCpYBlWCuVN6NwTxAwN4FBm1_JtHnVyMf5MEc9RPAni5_oyF_yPSJpxBJ9m_ehuYIXdgp6rMnvKAVaf2yZMy51WYwVEbNKNna3TNFiC3QEYLAp2WmvHApPTtMvIcvhycDHW0BJYilPQUbpbMBrAb6dMYe3ZU_5tv6ttg9BiAIuzYCTCKhiGnbWKBOy5r5fD_fA7Jafl0KI3x-hj6dmcvWJXKxuBnJrNQWSegAO1ipy4Y6N24',
+    piecesBadge: 'Porción',
+    active: true,
+    inventariable: 'No (Kg)',
+    variantNotes: 'Rústicas'
+  },
+  {
+    id: 'e-003',
+    code: 'E-003',
+    name: 'Porción Arroz',
+    description: 'Arroz especiado Wonder receta de la casa.',
+    price: 8.00,
+    category: 'extras',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBEkrSMXer8qtgnZzQW1auuhH_d9f6eX2g4dIX1icxWoCw0Ns-rcuiblH1J8crUAovZRFN4fApi575fDgbHp6YX9QxuqbSaOEEw4fFC1NTU1699spgnR6Rcg3TTvtvwGTT_3YQhQuabXGMkulXqkKpOjPnE9qhCq-eQfUlbtzVfrgEmtE2ss-W-6vJgVqW1wtNFlbwWyi0iPkYPvZNsrUVknci0GuX2ud864uOCPre5oRvkyill33q',
+    piecesBadge: 'Porción',
+    active: true,
+    inventariable: 'No (Kg)',
+    variantNotes: 'Especiado'
+  }
+];
+
+export const INITIAL_CUSTOMERS: Customer[] = [
+  {
+    id: 'c-sn',
+    ci: '0',
+    fullName: 'Cliente S/N (Sin Nombre)',
+    phone: '-',
+  },
+  {
+    id: 'c-001',
+    ci: '1234567',
+    ciExt: 'LP',
+    nit: '1234567',
+    fullName: 'Luis Iglesias',
+    firstName: 'Luis',
+    lastName: 'Iglesias',
+    gender: 'Hombre',
+    phone: '+591 71234567',
+    email: 'luis.iglesias@gmail.com',
+    birthdate: '1988-04-12',
+    isFrequent: true,
+    lastOrderTime: 'Hoy 15:42 (Mesa 04)',
+    lastOrderAmount: 84.00
+  },
+  {
+    id: 'c-002',
+    ci: '8493021',
+    ciExt: 'LP',
+    fullName: 'Mauricio Esteban Villarroel Ramos',
+    firstName: 'Mauricio Esteban',
+    lastName: 'Villarroel Ramos',
+    gender: 'Hombre',
+    phone: '+591 71234567',
+    email: 'mvillarroel@gmail.com',
+    birthdate: '1992-06-15',
+    lastOrderTime: 'Hace 8 min',
+    lastOrderAmount: 145.00
+  },
+  {
+    id: 'c-003',
+    ci: '4938210',
+    ciExt: 'SC',
+    fullName: 'Roxana Mendez Gutierrez',
+    firstName: 'Roxana',
+    lastName: 'Mendez Gutierrez',
+    gender: 'Mujer',
+    phone: '+591 77890123',
+    email: 'roxana.m@empresa.bo',
+    lastOrderTime: 'Hace 22 min',
+    lastOrderAmount: 89.50
+  },
+  {
+    id: 'c-004',
+    ci: '1029384019',
+    nit: '1029384019',
+    businessName: 'Quiroga Catering SRL',
+    fullName: 'Valeria Quiroga Teran',
+    firstName: 'Valeria',
+    lastName: 'Quiroga Teran',
+    gender: 'Mujer',
+    phone: '+591 69123490',
+    isCorporate: true,
+    lastOrderTime: 'Hace 45 min',
+    lastOrderAmount: 380.00
+  },
+  {
+    id: 'c-005',
+    ci: '6712903',
+    ciExt: 'LP',
+    fullName: 'Marco Ortega Fernandez',
+    firstName: 'Marco',
+    lastName: 'Ortega Fernandez',
+    gender: 'Hombre',
+    phone: '+591 70654321',
+    email: 'marco.ortega@live.com',
+    lastOrderTime: 'Hace 1 h',
+    lastOrderAmount: 64.00
+  },
+  {
+    id: 'c-006',
+    ci: '554321',
+    nit: '554321',
+    fullName: 'Carlos Mendoza',
+    phone: '+591 72001122',
+    isCorporate: true
+  },
+  {
+    id: 'c-007',
+    ci: '765432',
+    nit: '765432',
+    fullName: 'Fredy Arévalo',
+    phone: '+591 76543210'
+  }
+];
+
+export const INITIAL_ORDERS: CompletedOrder[] = [
+  {
+    ticketNumber: '#00142',
+    timestamp: 'Hoy 15:42',
+    orderType: 'MESA',
+    tableNumber: 'Mesa 04',
+    customer: INITIAL_CUSTOMERS[0],
+    items: [
+      {
+        id: 'ord-1',
+        name: 'Combo Wonder',
+        unitPrice: 36.00,
+        quantity: 2,
+        isCombo: true,
+        config: {
+          presas: { ala: 1, pecho: 1, pierna: 0, entrepierna: 0 },
+          side: 'mixto',
+          drink: 'Coca Cola 500ml',
+          temperature: 'FRÍA',
+          notes: '• 2x Pecho-Ala\n• 1x Coca Cola 500ml Fría, 1x Mocochinchi Frío\n• Acompañamiento: Mixto (Papa y Arroz)'
+        }
+      },
+      {
+        id: 'ord-2',
+        name: 'Porción Smiles McCain',
+        unitPrice: 12.00,
+        quantity: 1,
+        customDetails: 'Extra crocante'
+      }
+    ],
+    subtotal: 84.00,
+    discount: 0.00,
+    total: 84.00,
+    paymentMethod: 'EFECTIVO',
+    cashReceived: 100.00,
+    cashChange: 16.00,
+    status: 'EN_PREPARACION',
+    cashier: 'Roxana (Caja 01)'
+  },
+  {
+    ticketNumber: '#00141',
+    timestamp: 'Hoy 15:35',
+    orderType: 'LLEVAR',
+    customer: INITIAL_CUSTOMERS[2],
+    items: [
+      {
+        id: 'ord-3',
+        name: 'Porción Completa',
+        unitPrice: 54.00,
+        quantity: 1,
+        customDetails: 'Doble porción papas'
+      },
+      {
+        id: 'ord-4',
+        name: 'Wonder Pop',
+        unitPrice: 33.00,
+        quantity: 1
+      }
+    ],
+    subtotal: 87.00,
+    discount: 0.00,
+    total: 87.00,
+    paymentMethod: 'QR',
+    status: 'LISTO',
+    cashier: 'Roxana (Caja 01)'
+  },
+  {
+    ticketNumber: '#00140',
+    timestamp: 'Hoy 15:10',
+    orderType: 'MESA',
+    tableNumber: 'Mesa 02',
+    customer: INITIAL_CUSTOMERS[4],
+    items: [
+      {
+        id: 'ord-5',
+        name: 'Medio Pollo',
+        unitPrice: 46.00,
+        quantity: 1
+      },
+      {
+        id: 'ord-6',
+        name: 'Porción Arroz',
+        unitPrice: 8.00,
+        quantity: 1
+      },
+      {
+        id: 'ord-7',
+        name: 'Mocochinchi 500ml',
+        unitPrice: 6.00,
+        quantity: 1
+      }
+    ],
+    subtotal: 60.00,
+    discount: 0.00,
+    total: 60.00,
+    paymentMethod: 'EFECTIVO',
+    cashReceived: 60.00,
+    cashChange: 0.00,
+    status: 'ENTREGADO',
+    cashier: 'Roxana (Caja 01)'
+  }
+];
