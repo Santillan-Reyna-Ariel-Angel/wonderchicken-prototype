@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface ShiftControlScreenProps {
   onBackToPOS: () => void;
@@ -124,7 +125,8 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
                 <th className="py-3 px-4 text-right">Fondo Base</th>
                 <th className="py-3 px-4 text-right">Venta Efectivo</th>
                 <th className="py-3 px-4 text-right">QR / Delivery</th>
-                <th className="py-3 px-4 text-right">Vales / Gastos</th>
+                <th className="py-3 px-4 text-right">Vales Personal</th>
+                <th className="py-3 px-4 text-right">Gastos Menores</th>
                 <th className="py-3 px-4 text-right">Total Esperado</th>
                 <th className="py-3 px-4 text-center">Estado</th>
                 <th className="py-3 px-4 text-right">Acción</th>
@@ -145,9 +147,15 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
                 <td className="py-3 px-4 text-right font-mono">Bs. 150.00</td>
                 <td className="py-3 px-4 text-right font-mono font-bold text-[#15803d]">Bs. 1,980.00</td>
                 <td className="py-3 px-4 text-right font-mono text-[#005c8d]">Bs. 1,440.00</td>
+                <td className="py-3 px-4 text-right font-mono text-[#b45309]">
+                  <span className="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200 font-bold text-[11px]">
+                    -Bs. 23.00
+                  </span>
+                </td>
                 <td className="py-3 px-4 text-right font-mono text-[#ba1a1a]">
-                  <div>-Bs. 23.00 <span className="text-[10px] text-[#5b403d]">(Vale)</span></div>
-                  <div>-Bs. 35.00 <span className="text-[10px] text-[#5b403d]">(Gasto)</span></div>
+                  <span className="inline-block px-2 py-0.5 rounded bg-rose-50 border border-rose-200 font-bold text-[11px]">
+                    -Bs. 35.00
+                  </span>
                 </td>
                 <td className="py-3 px-4 text-right font-mono font-bold text-base text-[#141b2b]">
                   Bs. 2,095.00
@@ -185,9 +193,15 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
                 <td className="py-3 px-4 text-right font-mono">Bs. 150.00</td>
                 <td className="py-3 px-4 text-right font-mono font-bold text-[#15803d]">Bs. 0.00</td>
                 <td className="py-3 px-4 text-right font-mono text-[#005c8d]">Bs. 850.00</td>
+                <td className="py-3 px-4 text-right font-mono text-[#b45309]">
+                  <span className="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200 font-bold text-[11px]">
+                    -Bs. 23.00
+                  </span>
+                </td>
                 <td className="py-3 px-4 text-right font-mono text-[#ba1a1a]">
-                  <div>-Bs. 23.00 <span className="text-[10px] text-[#5b403d]">(Vale)</span></div>
-                  <div>-Bs. 50.00 <span className="text-[10px] text-[#5b403d]">(Gasto)</span></div>
+                  <span className="inline-block px-2 py-0.5 rounded bg-rose-50 border border-rose-200 font-bold text-[11px]">
+                    -Bs. 50.00
+                  </span>
                 </td>
                 <td className="py-3 px-4 text-right font-mono font-bold text-base text-[#141b2b]">
                   Bs. 100.00
@@ -426,115 +440,88 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
       </div>
 
       {/* Modal Acta Z */}
-      {showZReportModal && (
-        <div className="fixed inset-0 z-50 bg-[#293040]/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full flex flex-col overflow-hidden border border-[#e1e8fd]">
-            <div className="bg-[#141b2b] text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#fec330] text-[22px]">print</span>
-                <div>
-                  <h3 className="font-bold text-sm">ACTA FISCAL Z — CIERRE DE CAJA</h3>
-                  <span className="font-mono text-[10px] text-[#e1e8fd]">SIN Bolivia • RND 102100000011</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowZReportModal(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">close</span>
-              </button>
+      <AppModal
+        isOpen={showZReportModal}
+        onClose={() => setShowZReportModal(false)}
+        icon="print"
+        title="ACTA FISCAL Z — CIERRE DE CAJA"
+        description="SIN Bolivia • RND 102100000011"
+        maxWidth="lg"
+        onConfirm={() => {
+          closeShift();
+          showToast('Imprimiendo Acta Z en impresora fiscal. Turno cerrado.');
+          setShowZReportModal(false);
+        }}
+        confirmLabel="Imprimir Acta Z"
+        confirmIcon="print"
+        showCancel={true}
+        cancelLabel="Cerrar"
+      >
+        <div className="font-mono text-xs text-[#141b2b] flex flex-col gap-3 bg-white p-3 rounded-xl border border-[#e1e8fd]">
+          <div className="text-center pb-2 border-b border-dashed border-gray-400">
+            <div className="font-bold text-sm text-[#af101a]">WONDER CHICKEN BOLIVIA</div>
+            <div className="text-[11px] text-[#5b403d]">SUCURSAL CENTRAL — NIT: 1020304050</div>
+            <div className="text-[10px] text-[#5b403d]">ACTA DE CIERRE FISCAL Z Nº 000421</div>
+            <div className="text-[10px] text-[#5b403d]">Fecha: {new Date().toLocaleDateString('es-BO')} • Hora: {new Date().toLocaleTimeString('es-BO')}</div>
+          </div>
+
+          <div className="flex flex-col gap-1 py-1 text-[11px]">
+            <div className="flex justify-between">
+              <span>CAJERO:</span>
+              <span className="font-bold">Carla Cajera (CI: 2222222)</span>
             </div>
-
-            <div className="p-6 font-mono text-xs text-[#141b2b] flex flex-col gap-3 bg-[#fdfdfd]">
-              <div className="text-center pb-2 border-b border-dashed border-gray-400">
-                <div className="font-bold text-sm text-[#af101a]">WONDER CHICKEN BOLIVIA</div>
-                <div className="text-[11px] text-[#5b403d]">SUCURSAL CENTRAL — NIT: 1020304050</div>
-                <div className="text-[10px] text-[#5b403d]">ACTA DE CIERRE FISCAL Z Nº 000421</div>
-                <div className="text-[10px] text-[#5b403d]">Fecha: {new Date().toLocaleDateString('es-BO')} • Hora: {new Date().toLocaleTimeString('es-BO')}</div>
-              </div>
-
-              <div className="flex flex-col gap-1 py-1 text-[11px]">
-                <div className="flex justify-between">
-                  <span>CAJERO:</span>
-                  <span className="font-bold">Carla Cajera (CI: 2222222)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>TURNO:</span>
-                  <span className="font-bold">MAÑANA (08:30 - 16:00)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>CAJA:</span>
-                  <span className="font-bold">CAJA 01 - MESÓN PRINCIPAL</span>
-                </div>
-              </div>
-
-              <div className="border-t border-b border-dashed border-gray-400 py-2 flex flex-col gap-1">
-                <div className="flex justify-between">
-                  <span>FONDO INICIAL:</span>
-                  <span>Bs. {initialFund.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-bold">
-                  <span>VENTAS EN EFECTIVO:</span>
-                  <span>Bs. {cashSales.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>VENTAS QR SIMPLE:</span>
-                  <span>Bs. 1,440.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>GASTOS OPERATIVOS:</span>
-                  <span>-Bs. {expenses.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>VALES PERSONAL:</span>
-                  <span>Bs. 23.00</span>
-                </div>
-                <div className="flex justify-between font-bold text-sm text-[#af101a] pt-1 border-t border-gray-300">
-                  <span>TOTAL ESPERADO EN EFECTIVO:</span>
-                  <span>Bs. {expectedCash.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-bold text-sm text-[#15803d]">
-                  <span>TOTAL DECLARADO EN GAVETA:</span>
-                  <span>Bs. {cashCounted.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-bold text-xs pt-1 border-t border-gray-300">
-                  <span>DIFERENCIA / DISCREPANCIA:</span>
-                  <span>Bs. {difference.toFixed(2)} (OK)</span>
-                </div>
-              </div>
-
-              <div className="text-center text-[10px] text-[#5b403d] pt-2">
-                Documento de control interno y auditoría fiscal tributaria.
-                <br />
-                Hash de Cierre: 8A4F-E021-99B2-C110
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#e1e8fd]">
-                <button
-                  type="button"
-                  onClick={() => setShowZReportModal(false)}
-                  className="px-4 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] rounded-lg font-bold"
-                >
-                  Cerrar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    closeShift();
-                    showToast('Imprimiendo Acta Z en impresora fiscal. Turno cerrado.');
-                    setShowZReportModal(false);
-                  }}
-                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] text-white rounded-lg font-bold flex items-center gap-1.5"
-                >
-                  <span className="material-symbols-outlined text-[16px]">print</span>
-                  Imprimir Acta Z
-                </button>
-              </div>
+            <div className="flex justify-between">
+              <span>TURNO:</span>
+              <span className="font-bold">MAÑANA (08:30 - 16:00)</span>
+            </div>
+            <div className="flex justify-between">
+              <span>CAJA:</span>
+              <span className="font-bold">CAJA 01 - MESÓN PRINCIPAL</span>
             </div>
           </div>
+
+          <div className="border-t border-b border-dashed border-gray-400 py-2 flex flex-col gap-1">
+            <div className="flex justify-between">
+              <span>FONDO INICIAL:</span>
+              <span>Bs. {initialFund.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>VENTAS EN EFECTIVO:</span>
+              <span>Bs. {cashSales.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>VENTAS QR SIMPLE:</span>
+              <span>Bs. 1,440.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>GASTOS OPERATIVOS:</span>
+              <span>-Bs. {expenses.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>VALES PERSONAL:</span>
+              <span>Bs. 23.00</span>
+            </div>
+            <div className="flex justify-between font-bold text-sm text-[#af101a] pt-1 border-t border-gray-300">
+              <span>TOTAL ESPERADO EN EFECTIVO:</span>
+              <span>Bs. {expectedCash.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-bold text-sm text-[#15803d]">
+              <span>TOTAL DECLARADO EN GAVETA:</span>
+              <span>Bs. {cashCounted.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-bold text-xs pt-1 border-t border-gray-300">
+              <span>DIFERENCIA / DISCREPANCIA:</span>
+              <span>Bs. {difference.toFixed(2)} (OK)</span>
+            </div>
+          </div>
+
+          <div className="text-center text-[10px] text-[#5b403d] pt-1">
+            Documento de control interno y auditoría fiscal tributaria.
+            <br />
+            Hash de Cierre: 8A4F-E021-99B2-C110
+          </div>
         </div>
-      )}
+      </AppModal>
     </div>
   );
 };

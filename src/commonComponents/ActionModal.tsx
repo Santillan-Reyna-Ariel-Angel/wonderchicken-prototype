@@ -1,31 +1,40 @@
 import React, { useState } from 'react';
+import { AppModal } from './AppModal';
 
 export interface ActionModalProps {
   triggerLabel?: string;
   triggerIcon?: string;
   dialogTitle: string;
+  dialogDescription?: string;
+  dialogIcon?: string;
   children: React.ReactNode;
   onConfirm?: () => void;
   onCancel?: () => void;
   confirmLabel?: string;
+  confirmIcon?: string;
   cancelLabel?: string;
   triggerColor?: 'primary' | 'secondary' | 'outline' | 'ghost';
   disabled?: boolean;
   isLoading?: boolean;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 export const ActionModal: React.FC<ActionModalProps> = ({
   triggerLabel = 'Abrir',
   triggerIcon,
   dialogTitle,
+  dialogDescription,
+  dialogIcon = 'tune',
   children,
   onConfirm,
   onCancel,
   confirmLabel = 'Aceptar',
+  confirmIcon = 'check',
   cancelLabel = 'Cancelar',
   triggerColor = 'primary',
   disabled = false,
   isLoading = false,
+  maxWidth = 'lg',
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -61,48 +70,24 @@ export const ActionModal: React.FC<ActionModalProps> = ({
         <span>{triggerLabel}</span>
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 bg-[#141b2b]/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-[#e1e8fd] flex flex-col max-h-[90vh]">
-            <div className="bg-[#f1f3ff] px-5 py-3.5 border-b border-[#e1e8fd] flex items-center justify-between">
-              <h3 className="font-bold text-sm text-[#141b2b]">{dialogTitle}</h3>
-              <button
-                type="button"
-                onClick={handleClose}
-                className="w-7 h-7 rounded-full hover:bg-white text-[#5b403d] flex items-center justify-center cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">close</span>
-              </button>
-            </div>
-
-            <div className="p-5 overflow-y-auto flex-1">{children}</div>
-
-            <div className="p-4 bg-[#f9f9ff] border-t border-[#e1e8fd] flex items-center justify-end gap-2">
-              <button
-                type="button"
-                disabled={isLoading}
-                onClick={handleClose}
-                className="px-4 py-2 bg-white border border-[#e1e8fd] text-[#5b403d] hover:text-[#141b2b] font-mono text-xs font-bold rounded-lg cursor-pointer disabled:opacity-60"
-              >
-                {cancelLabel}
-              </button>
-              <button
-                type="button"
-                disabled={isLoading}
-                onClick={handleConfirm}
-                className="px-4 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
-              >
-                {isLoading && (
-                  <span className="material-symbols-outlined text-[16px] animate-spin">
-                    progress_activity
-                  </span>
-                )}
-                <span>{isLoading ? 'Guardando...' : confirmLabel}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AppModal
+        isOpen={open}
+        onClose={handleClose}
+        icon={dialogIcon}
+        title={dialogTitle}
+        description={dialogDescription}
+        maxWidth={maxWidth}
+        onConfirm={handleConfirm}
+        confirmLabel={confirmLabel}
+        confirmIcon={confirmIcon}
+        confirmLoading={isLoading}
+        confirmDisabled={isLoading}
+        showCancel={true}
+        cancelLabel={cancelLabel}
+      >
+        {children}
+      </AppModal>
     </>
   );
 };
+

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { CommonTable, ColumnDef } from '../commonComponents/CommonTable';
-import { ActionModal } from '../commonComponents/ActionModal';
 import { Branch } from '../types';
 import { BRAND_COLORS } from '../config/colors';
 
@@ -52,31 +51,6 @@ const INITIAL_BRANCHES: Branch[] = [
 
 export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavigate }) => {
   const [branches, setBranches] = useState<Branch[]>(INITIAL_BRANCHES);
-  const [newBranchName, setNewBranchName] = useState('');
-  const [newBranchCode, setNewBranchCode] = useState('');
-  const [newBranchCity, setNewBranchCity] = useState('Santa Cruz');
-  const [newBranchAdmin, setNewBranchAdmin] = useState('');
-
-  const handleAddBranch = () => {
-    if (!newBranchName || !newBranchCode) return;
-    const newBranch: Branch = {
-      id: `b-${Date.now()}`,
-      code: newBranchCode.toUpperCase(),
-      name: newBranchName,
-      subtitle: 'Sede en etapa de configuración',
-      address: 'Dirección por confirmar',
-      city: newBranchCity,
-      adminName: newBranchAdmin || 'Administrador Designado',
-      adminEmail: `${newBranchCode.toLowerCase()}@wonderchicken.com`,
-      terminalsCount: 2,
-      active: true,
-      syncDb: true,
-    };
-    setBranches((prev) => [newBranch, ...prev]);
-    setNewBranchName('');
-    setNewBranchCode('');
-    setNewBranchAdmin('');
-  };
 
   const columns: ColumnDef<Branch>[] = [
     {
@@ -175,67 +149,19 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
         </div>
 
         <div className="flex items-center gap-2.5">
-          <ActionModal
-            dialogTitle="Registrar Nueva Sucursal Wonder Chicken"
-            triggerLabel="Nueva Sucursal"
-            triggerIcon="add_business"
-            triggerColor="primary"
-            confirmLabel="Crear Sucursal"
-            onConfirm={handleAddBranch}
+          <button
+            type="button"
+            onClick={() => onNavigate('sucursales')}
+            className="px-3.5 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 cursor-pointer transition-colors"
           >
-            <div className="flex flex-col gap-3 text-xs">
-              <div>
-                <label className="font-bold text-[#141b2b] block mb-1">Nombre de la Sucursal</label>
-                <input
-                  type="text"
-                  value={newBranchName}
-                  onChange={(e) => setNewBranchName(e.target.value)}
-                  placeholder="ej. Sucursal Villa Fátima"
-                  className="w-full p-2 rounded-lg border border-[#e1e8fd] outline-none text-xs focus:border-[#af101a]"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-bold text-[#141b2b] block mb-1">Código de Sede</label>
-                  <input
-                    type="text"
-                    value={newBranchCode}
-                    onChange={(e) => setNewBranchCode(e.target.value)}
-                    placeholder="ej. LPZ-002"
-                    className="w-full p-2 rounded-lg border border-[#e1e8fd] outline-none text-xs uppercase font-mono focus:border-[#af101a]"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-[#141b2b] block mb-1">Ciudad</label>
-                  <select
-                    value={newBranchCity}
-                    onChange={(e) => setNewBranchCity(e.target.value)}
-                    className="w-full p-2 rounded-lg border border-[#e1e8fd] outline-none text-xs bg-white focus:border-[#af101a]"
-                  >
-                    <option value="Santa Cruz">Santa Cruz</option>
-                    <option value="La Paz">La Paz</option>
-                    <option value="Cochabamba">Cochabamba</option>
-                    <option value="El Alto">El Alto</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="font-bold text-[#141b2b] block mb-1">Administrador Asignado</label>
-                <input
-                  type="text"
-                  value={newBranchAdmin}
-                  onChange={(e) => setNewBranchAdmin(e.target.value)}
-                  placeholder="ej. Lic. Roberto Flores"
-                  className="w-full p-2 rounded-lg border border-[#e1e8fd] outline-none text-xs focus:border-[#af101a]"
-                />
-              </div>
-            </div>
-          </ActionModal>
+            <span className="material-symbols-outlined text-[16px]">storefront</span>
+            Gestión de Sucursales
+          </button>
 
           <button
             type="button"
             onClick={() => onNavigate('catalogo-y-variantes')}
-            className="px-3.5 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 cursor-pointer transition-colors"
           >
             <span className="material-symbols-outlined text-[16px]">menu_book</span>
             Catálogo Global
@@ -244,7 +170,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
       </div>
 
       {/* Global KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded-xl border border-[#e1e8fd] shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#5b403d]">
             <span className="font-mono text-xs uppercase font-bold">Ventas Globales Hoy</span>
@@ -267,32 +193,6 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
             <div className="font-mono text-2xl font-bold text-[#141b2b]">{branches.length} / {branches.length}</div>
             <div className="text-[11px] text-[#5b403d] font-medium mt-0.5">
               100% de terminales en sincronía atómica
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border border-[#e1e8fd] shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#5b403d]">
-            <span className="font-mono text-xs uppercase font-bold">Transacciones Totales</span>
-            <span className="material-symbols-outlined text-[#b45309]">receipt_long</span>
-          </div>
-          <div className="mt-2">
-            <div className="font-mono text-2xl font-bold text-[#141b2b]">1,284</div>
-            <div className="text-[11px] text-[#5b403d] font-medium mt-0.5">
-              Ticket promedio: Bs. 38.10
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border border-[#e1e8fd] shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#5b403d]">
-            <span className="font-mono text-xs uppercase font-bold">Turnos de Caja Abiertos</span>
-            <span className="material-symbols-outlined text-[#af101a]">lock_open</span>
-          </div>
-          <div className="mt-2">
-            <div className="font-mono text-2xl font-bold text-[#141b2b]">8 Cajas</div>
-            <div className="text-[11px] text-[#5b403d] font-medium mt-0.5">
-              Período Activo: MAÑANA &amp; NOCHE
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Branch } from '../types';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface BranchesScreenProps {
   onBackToPOS: () => void;
@@ -324,162 +325,133 @@ export const BranchesScreen: React.FC<BranchesScreenProps> = ({ onBackToPOS }) =
       </div>
 
       {/* Modal: Registrar Nueva Sucursal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#293040]/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full flex flex-col overflow-hidden border border-[#e1e8fd]">
-            <div className="p-4 sm:p-5 bg-[#f1f3ff] flex items-center justify-between border-b border-[#e1e8fd]">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#d32f2f] text-white flex items-center justify-center font-bold">
-                  <span className="material-symbols-outlined text-[20px]">add_business</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-base text-[#141b2b] leading-tight">
-                    Registrar Nueva Sucursal
-                  </h3>
-                  <span className="font-mono text-[11px] text-[#5b403d] uppercase tracking-wider">
-                    Phase 2 — Expansion Cluster
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="w-8 h-8 rounded-full hover:bg-white text-[#5b403d] flex items-center justify-center cursor-pointer"
+      <AppModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        icon="add_business"
+        title="Registrar Nueva Sucursal"
+        description="Phase 2 — Expansion Cluster"
+        maxWidth="2xl"
+        onConfirm={() => {
+          const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+          handleCreateBranch(fakeEvent);
+        }}
+        confirmLabel="Crear y Habilitar Sucursal (POST /branches)"
+        confirmIcon="check"
+        showCancel={true}
+        cancelLabel="Cancelar"
+      >
+        <div className="flex flex-col gap-4 text-xs">
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-[#141b2b] flex items-center justify-between">
+              <span>Nombre de la Sucursal *</span>
+              <span className="text-[11px] text-[#5b403d] font-normal">Identificador público</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={newBranchName}
+              onChange={(e) => setNewBranchName(e.target.value)}
+              placeholder="Ej. Sucursal Miraflores"
+              className="w-full px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-medium"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-[#141b2b] flex items-center justify-between">
+              <span>Dirección Física Completa *</span>
+              <span className="text-[11px] text-[#5b403d] font-normal">Ubicación fiscal e impresión</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={newBranchAddress}
+              onChange={(e) => setNewBranchAddress(e.target.value)}
+              placeholder="Ej. Av. Busch #450, Miraflores, La Paz"
+              className="w-full px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-medium"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Ciudad / Departamento *</label>
+              <select
+                value={newBranchCity}
+                onChange={(e) => setNewBranchCity(e.target.value)}
+                className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
-              </button>
+                <option value="La Paz">La Paz</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Cochabamba">Cochabamba</option>
+                <option value="Sucre">Sucre</option>
+              </select>
             </div>
 
-            <form onSubmit={handleCreateBranch} className="p-5 sm:p-6 flex flex-col gap-4 text-xs">
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-[#141b2b] flex items-center justify-between">
-                  <span>Nombre de la Sucursal *</span>
-                  <span className="text-[11px] text-[#5b403d] font-normal">Identificador público</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newBranchName}
-                  onChange={(e) => setNewBranchName(e.target.value)}
-                  placeholder="Ej. Sucursal Miraflores"
-                  className="w-full px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-medium"
-                />
-              </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Teléfono de Contacto</label>
+              <input
+                type="tel"
+                value={newBranchPhone}
+                onChange={(e) => setNewBranchPhone(e.target.value)}
+                placeholder="Ej. +591 2 2223344"
+                className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
+              />
+            </div>
+          </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-[#141b2b] flex items-center justify-between">
-                  <span>Dirección Física Completa *</span>
-                  <span className="text-[11px] text-[#5b403d] font-normal">Ubicación fiscal e impresión</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newBranchAddress}
-                  onChange={(e) => setNewBranchAddress(e.target.value)}
-                  placeholder="Ej. Av. Busch #450, Miraflores, La Paz"
-                  className="w-full px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-medium"
-                />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Cantidad de Cajas Autorizadas</label>
+              <select
+                value={newBranchCajas}
+                onChange={(e) => setNewBranchCajas(e.target.value)}
+                className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
+              >
+                <option value="1">1 Terminal POS</option>
+                <option value="2">2 Terminales POS</option>
+                <option value="3">3 Terminales POS</option>
+                <option value="4">4 Terminales POS (Capacidad Máx.)</option>
+              </select>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Ciudad / Departamento *</label>
-                  <select
-                    value={newBranchCity}
-                    onChange={(e) => setNewBranchCity(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
-                  >
-                    <option value="La Paz">La Paz</option>
-                    <option value="Santa Cruz">Santa Cruz</option>
-                    <option value="Cochabamba">Cochabamba</option>
-                    <option value="Sucre">Sucre</option>
-                  </select>
-                </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Asignar Administrador de Sucursal *</label>
+              <select
+                value={newBranchAdmin}
+                onChange={(e) => setNewBranchAdmin(e.target.value)}
+                className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
+              >
+                <option value="Carlos Mendoza (carlos.m@wonderchicken.bo)">
+                  Carlos Mendoza (carlos.m@wonderchicken.bo)
+                </option>
+                <option value="Mariana Quispe (mariana.q@wonderchicken.bo)">
+                  Mariana Quispe (mariana.q@wonderchicken.bo)
+                </option>
+                <option value="Rodrigo Claure (rodrigo.c@wonderchicken.bo)">
+                  Rodrigo Claure (rodrigo.c@wonderchicken.bo)
+                </option>
+              </select>
+            </div>
+          </div>
 
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Teléfono de Contacto</label>
-                  <input
-                    type="tel"
-                    value={newBranchPhone}
-                    onChange={(e) => setNewBranchPhone(e.target.value)}
-                    placeholder="Ej. +591 2 2223344"
-                    className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Cantidad de Cajas Autorizadas</label>
-                  <select
-                    value={newBranchCajas}
-                    onChange={(e) => setNewBranchCajas(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
-                  >
-                    <option value="1">1 Terminal POS</option>
-                    <option value="2">2 Terminales POS</option>
-                    <option value="3">3 Terminales POS</option>
-                    <option value="4">4 Terminales POS (Capacidad Máx.)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Asignar Administrador de Sucursal *</label>
-                  <select
-                    value={newBranchAdmin}
-                    onChange={(e) => setNewBranchAdmin(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
-                  >
-                    <option value="Carlos Mendoza (carlos.m@wonderchicken.bo)">
-                      Carlos Mendoza (carlos.m@wonderchicken.bo)
-                    </option>
-                    <option value="Mariana Quispe (mariana.q@wonderchicken.bo)">
-                      Mariana Quispe (mariana.q@wonderchicken.bo)
-                    </option>
-                    <option value="Rodrigo Claure (rodrigo.c@wonderchicken.bo)">
-                      Rodrigo Claure (rodrigo.c@wonderchicken.bo)
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Sync check */}
-              <div className="p-3 rounded-lg bg-[#f1f3ff] border border-[#e1e8fd] flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="sync-rules-check"
-                  checked={syncRules}
-                  onChange={(e) => setSyncRules(e.target.checked)}
-                  className="accent-[#af101a] rounded mt-0.5 w-4 h-4 cursor-pointer"
-                />
-                <label htmlFor="sync-rules-check" className="text-[11px] text-[#141b2b] cursor-pointer">
-                  <strong>Activar sincronización de catálogo de productos base y reglas de sustitución automáticamente.</strong>
-                  <span className="block text-[#5b403d] mt-0.5">
-                    La nueva sucursal clonará precios vigentes, menús de pollo broaster, piezas y salsas maestras desde Sede Central.
-                  </span>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#e1e8fd]">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[16px]">check</span>
-                  Crear y Habilitar Sucursal (POST /branches)
-                </button>
-              </div>
-            </form>
+          {/* Sync check */}
+          <div className="p-3 rounded-lg bg-[#f1f3ff] border border-[#e1e8fd] flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="sync-rules-check"
+              checked={syncRules}
+              onChange={(e) => setSyncRules(e.target.checked)}
+              className="accent-[#af101a] rounded mt-0.5 w-4 h-4 cursor-pointer"
+            />
+            <label htmlFor="sync-rules-check" className="text-[11px] text-[#141b2b] cursor-pointer">
+              <strong>Activar sincronización de catálogo de productos base y reglas de sustitución automáticamente.</strong>
+              <span className="block text-[#5b403d] mt-0.5">
+                La nueva sucursal clonará precios vigentes, menús de pollo broaster, piezas y salsas maestras desde Sede Central.
+              </span>
+            </label>
           </div>
         </div>
-      )}
+      </AppModal>
     </div>
   );
 };

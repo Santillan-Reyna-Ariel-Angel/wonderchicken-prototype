@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Operator } from '../types';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface PersonnelScreenProps {
   onBackToPOS: () => void;
@@ -333,156 +334,127 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
       </div>
 
       {/* Modal: Registrar Nuevo Operador (FR-018) */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#293040]/60 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col border border-[#e1e8fd]">
-            <div className="px-6 py-4 bg-[#f1f3ff] flex items-center justify-between border-b border-[#e1e8fd]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#d32f2f] text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[18px]">person_add</span>
-                </div>
-                <div>
-                  <h2 className="font-bold text-base text-[#141b2b] leading-tight">
-                    Registrar Nuevo Operador
-                  </h2>
-                  <span className="font-mono text-[11px] text-[#af101a] font-bold">
-                    FR-018 / Phase 3 • Credenciales POS
-                  </span>
-                </div>
+      <AppModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        icon="person_add"
+        title="Registrar Nuevo Operador"
+        description="FR-018 / Phase 3 • Credenciales POS"
+        maxWidth="xl"
+        onConfirm={() => {
+          const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+          handleCreateOperator(fakeEvent);
+        }}
+        confirmLabel="Guardar Operador (POST /users)"
+        confirmIcon="save"
+        showCancel={true}
+        cancelLabel="Cancelar"
+      >
+        <div className="flex flex-col gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Nombres *</label>
+              <input
+                type="text"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Ej. Roberto"
+                className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Apellidos *</label>
+              <input
+                type="text"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Ej. Gómez"
+                className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <label className="font-bold text-[#141b2b]">Cédula Identidad (CI) *</label>
+                <span className="text-[#795900] font-mono text-[10px] font-bold">Clave inicial</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="w-8 h-8 rounded-full hover:bg-white text-[#5b403d] flex items-center justify-center cursor-pointer"
+              <input
+                type="text"
+                required
+                value={ci}
+                onChange={(e) => setCi(e.target.value)}
+                placeholder="Ej. 8492011"
+                className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-mono"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Celular (+591) *</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="71234567"
+                className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-[#141b2b]">
+              Correo Corporativo (@wonderchicken.com) *
+            </label>
+            <div className="flex rounded-lg bg-[#f1f3ff] border border-[#e1e8fd] overflow-hidden">
+              <input
+                type="text"
+                value={emailUser}
+                onChange={(e) => setEmailUser(e.target.value)}
+                placeholder="robertog"
+                className="flex-1 px-3 py-2 bg-transparent outline-none font-medium"
+              />
+              <span className="px-3 py-2 bg-[#e1e8fd] text-[#5b403d] font-mono text-[11px] select-none">
+                @wonderchicken.com
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Rol Funcional *</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as any)}
+                className="px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
-              </button>
+                <option value="CASHIER">Cajera / Punto de Venta</option>
+                <option value="DISPATCHER">Despachadora / KDS Expeditor</option>
+                <option value="COOK">Cocinero / KDS Línea</option>
+              </select>
             </div>
 
-            <form onSubmit={handleCreateOperator} className="p-6 flex flex-col gap-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Nombres *</label>
-                  <input
-                    type="text"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Ej. Roberto"
-                    className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Apellidos *</label>
-                  <input
-                    type="text"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Ej. Gómez"
-                    className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
-                  />
-                </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-[#141b2b]">Sucursal Asignada</label>
+              <div className="bg-[#f1f3ff] px-3 py-2 rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 text-[#141b2b] font-medium">
+                <span className="material-symbols-outlined text-[16px] text-[#af101a]">storefront</span>
+                <span>Sucursal Central (Fija)</span>
               </div>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <label className="font-bold text-[#141b2b]">Cédula Identidad (CI) *</label>
-                    <span className="text-[#795900] font-mono text-[10px] font-bold">Clave inicial</span>
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={ci}
-                    onChange={(e) => setCi(e.target.value)}
-                    placeholder="Ej. 8492011"
-                    className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-mono"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Celular (+591) *</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="71234567"
-                    className="px-3 py-2 bg-[#f1f3ff] focus:bg-white rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a] font-mono"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-[#141b2b]">
-                  Correo Corporativo (@wonderchicken.com) *
-                </label>
-                <div className="flex rounded-lg bg-[#f1f3ff] border border-[#e1e8fd] overflow-hidden">
-                  <input
-                    type="text"
-                    value={emailUser}
-                    onChange={(e) => setEmailUser(e.target.value)}
-                    placeholder="robertog"
-                    className="flex-1 px-3 py-2 bg-transparent outline-none font-medium"
-                  />
-                  <span className="px-3 py-2 bg-[#e1e8fd] text-[#5b403d] font-mono text-[11px] select-none">
-                    @wonderchicken.com
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Rol Funcional *</label>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as any)}
-                    className="px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
-                  >
-                    <option value="CASHIER">Cajera / Punto de Venta</option>
-                    <option value="DISPATCHER">Despachadora / KDS Expeditor</option>
-                    <option value="COOK">Cocinero / KDS Línea</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-[#141b2b]">Sucursal Asignada</label>
-                  <div className="bg-[#f1f3ff] px-3 py-2 rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 text-[#141b2b] font-medium">
-                    <span className="material-symbols-outlined text-[16px] text-[#af101a]">storefront</span>
-                    <span>Sucursal Central (Fija)</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Security note */}
-              <div className="p-3 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] flex items-start gap-2 text-[11px] text-[#5b403d]">
-                <span className="material-symbols-outlined text-[#af101a] text-[18px] shrink-0 mt-0.5">
-                  lock_reset
-                </span>
-                <p>
-                  El operador iniciará sesión con su correo corporativo y su CI como clave inicial hasheada con <strong>bcryptjs</strong> (PDR §2.7). Se le solicitará cambio en su primer inicio de sesión.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#e1e8fd]">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[16px]">save</span>
-                  Guardar Operador (POST /users)
-                </button>
-              </div>
-            </form>
+          {/* Security note */}
+          <div className="p-3 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] flex items-start gap-2 text-[11px] text-[#5b403d]">
+            <span className="material-symbols-outlined text-[#af101a] text-[18px] shrink-0 mt-0.5">
+              lock_reset
+            </span>
+            <p>
+              El operador iniciará sesión con su correo corporativo y su CI como clave inicial hasheada con <strong>bcryptjs</strong> (PDR §2.7). Se le solicitará cambio en su primer inicio de sesión.
+            </p>
           </div>
         </div>
-      )}
+      </AppModal>
     </div>
   );
 };

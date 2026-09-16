@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { useTheme } from '../context/ThemeContext';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface ShiftScreenProps {
   shiftName: string;
@@ -504,47 +505,41 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
       </div>
 
       {/* Modal Confirmación de Apertura */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 bg-[#293040]/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl p-6 flex flex-col items-center text-center gap-4 border border-[#e1e8fd]">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#15803d] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[36px]">verified</span>
-            </div>
+      <AppModal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          onBackToPOS();
+        }}
+        icon="verified"
+        title="¡Turno Abierto Exitosamente!"
+        description="Apertura Fiscal Registrada"
+        maxWidth="md"
+        onConfirm={() => {
+          setShowSuccessModal(false);
+          onBackToPOS();
+        }}
+        confirmLabel="Ir a Terminal de Venta POS"
+        confirmIcon="point_of_sale"
+        showCancel={false}
+      >
+        <div className="flex flex-col gap-4 text-center">
+          <p className="text-xs text-[#5b403d]">
+            La gaveta de <strong>Caja {selectedCaja}</strong> ha sido inicializada con <strong>Bs. {initialFund.toFixed(2)}</strong>.
+          </p>
 
-            <div className="flex flex-col gap-1">
-              <h3 className="font-bold text-lg text-[#141b2b]">
-                ¡Turno Abierto Exitosamente!
-              </h3>
-              <p className="text-xs text-[#5b403d]">
-                La gaveta de <strong>Caja {selectedCaja}</strong> ha sido inicializada con <strong>Bs. {initialFund.toFixed(2)}</strong>.
-              </p>
+          <div className="bg-[#f1f3ff] p-3 rounded-lg w-full text-left font-mono text-xs flex flex-col gap-1 border border-[#e1e8fd]">
+            <div className="flex justify-between text-[#5b403d]">
+              <span>Token de Turno:</span>
+              <span className="font-bold text-[#141b2b]">SHF-2024-1024-M01</span>
             </div>
-
-            <div className="bg-[#f1f3ff] p-3 rounded-lg w-full text-left font-mono text-xs flex flex-col gap-1 border border-[#e1e8fd]">
-              <div className="flex justify-between text-[#5b403d]">
-                <span>Token de Turno:</span>
-                <span className="font-bold text-[#141b2b]">SHF-2024-1024-M01</span>
-              </div>
-              <div className="flex justify-between text-[#5b403d]">
-                <span>Apertura:</span>
-                <span className="text-[#141b2b]">{new Date().toLocaleTimeString('es-BO')}</span>
-              </div>
+            <div className="flex justify-between text-[#5b403d]">
+              <span>Apertura:</span>
+              <span className="text-[#141b2b]">{new Date().toLocaleTimeString('es-BO')}</span>
             </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                setShowSuccessModal(false);
-                onBackToPOS();
-              }}
-              className="w-full py-3 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[18px]">point_of_sale</span>
-              Ir a Terminal de Venta POS
-            </button>
           </div>
         </div>
-      )}
+      </AppModal>
     </div>
   );
 

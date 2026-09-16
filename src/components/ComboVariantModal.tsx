@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ComboConfiguration, PresasCount } from '../types';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface ComboVariantModalProps {
   isOpen: boolean;
@@ -88,33 +89,28 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#293040]/50 backdrop-blur-xs p-4 animate-fade-in">
-      <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[92vh] border border-[#e1e8fd]">
-        {/* Modal Header */}
-        <div className="bg-[#d32f2f] text-white px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[24px]">tune</span>
-            <div>
-              <h2 className="text-base sm:text-lg font-bold leading-tight">
-                Configurar Variante: Combo Wonder
-              </h2>
-              <span className="font-mono text-xs text-white/85">
-                Selección de 2 presas + Acompañamiento con sustitución + Bebida 500ml
-              </span>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
-            aria-label="Cerrar modal"
-          >
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
+    <AppModal
+      isOpen={isOpen}
+      onClose={onClose}
+      icon="tune"
+      title="Configurar Variante: Combo Wonder"
+      description="Selección de 2 presas + Acompañamiento con sustitución + Bebida 500ml"
+      maxWidth="xl"
+      footerExtra={
+        <div className="flex flex-col">
+          <span className="font-mono text-xs text-[#5b403d]">Precio Final Combo:</span>
+          <span className="font-mono text-lg font-bold text-[#af101a]">Bs. 36.00</span>
         </div>
-
-        {/* Modal Body (Scrollable) */}
-        <div className="p-5 sm:p-6 flex flex-col gap-4 overflow-y-auto">
-          {/* Rule 1: Presas Requeridas */}
+      }
+      onConfirm={handleAdd}
+      confirmLabel="Agregar a la Orden (Bs. 36.00)"
+      confirmIcon="add_shopping_cart"
+      confirmDisabled={!isValid}
+      showCancel={true}
+      cancelLabel="Cancelar"
+    >
+      <div className="flex flex-col gap-4">
+        {/* Rule 1: Presas Requeridas */}
           <div className="bg-[#f1f3ff] p-4 rounded-xl border border-[#e1e8fd] flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm font-bold text-[#141b2b] flex items-center gap-1.5">
@@ -497,34 +493,6 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Modal Footer */}
-        <div className="bg-[#e9edff] px-6 py-4 flex items-center justify-between border-t border-[#e1e8fd]">
-          <div className="flex flex-col">
-            <span className="font-mono text-xs text-[#5b403d]">Precio Final Combo:</span>
-            <span className="font-mono text-lg font-bold text-[#af101a]">Bs. 36.00</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-white text-[#141b2b] font-medium text-xs hover:bg-[#f1f3ff] border border-[#e1e8fd] transition-colors cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              disabled={!isValid}
-              onClick={handleAdd}
-              className="px-5 py-2.5 rounded-lg bg-[#d32f2f] text-white font-bold text-xs shadow-md hover:bg-[#af101a] transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-              Agregar a la Orden (Bs. 36.00)
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </AppModal>
   );
 };

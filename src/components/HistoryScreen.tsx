@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CompletedOrder } from '../types';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface HistoryScreenProps {
   orders: CompletedOrder[];
@@ -175,87 +176,79 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
 
       {/* Ticket Details / Receipt Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#293040]/50 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 flex flex-col gap-4 border border-[#e1e8fd] max-h-[90vh] overflow-y-auto">
-            {/* Thermal Ticket Simulation */}
-            <div className="flex flex-col items-center text-center border-b border-dashed border-[#e1e8fd] pb-4">
-              <span className="font-bold text-base text-[#141b2b]">WONDER CHICKEN</span>
-              <span className="font-mono text-[11px] text-[#5b403d]">Sucursal Central • Caja 01</span>
-              <span className="font-mono text-xs font-bold text-[#af101a] mt-1">
-                TICKET COMANDA {selectedOrder.ticketNumber}
-              </span>
-              <span className="font-mono text-[11px] text-[#5b403d]">
-                {selectedOrder.timestamp} • {selectedOrder.orderType === 'MESA' ? selectedOrder.tableNumber : 'LLEVAR'}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-1 text-xs font-mono border-b border-dashed border-[#e1e8fd] pb-3">
-              <div><strong>Cliente:</strong> {selectedOrder.customer.fullName}</div>
-              <div><strong>NIT/CI:</strong> {selectedOrder.customer.ci || selectedOrder.customer.nit || 'S/N'}</div>
-              <div><strong>Cajera:</strong> {selectedOrder.cashier}</div>
-            </div>
-
-            <div className="flex flex-col gap-2 text-xs font-mono border-b border-dashed border-[#e1e8fd] pb-3">
-              {selectedOrder.items.map((it, i) => (
-                <div key={i} className="flex flex-col">
-                  <div className="flex justify-between">
-                    <span>{it.quantity}x {it.name}</span>
-                    <span className="font-bold">Bs. {(it.unitPrice * it.quantity).toFixed(2)}</span>
-                  </div>
-                  {it.config?.notes && (
-                    <span className="text-[10px] text-[#5b403d] pl-2 whitespace-pre-line">
-                      {it.config.notes}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-1 text-xs font-mono">
-              <div className="flex justify-between font-bold text-sm text-[#af101a]">
-                <span>TOTAL:</span>
-                <span>Bs. {selectedOrder.total.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-[#5b403d]">
-                <span>Método de Pago:</span>
-                <span>{selectedOrder.paymentMethod}</span>
-              </div>
-              {selectedOrder.cashReceived ? (
-                <>
-                  <div className="flex justify-between text-[#5b403d]">
-                    <span>Efectivo Recibido:</span>
-                    <span>Bs. {selectedOrder.cashReceived.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-[#15803d]">
-                    <span>Cambio / Vuelto:</span>
-                    <span>Bs. {(selectedOrder.cashChange || 0).toFixed(2)}</span>
-                  </div>
-                </>
-              ) : null}
-            </div>
-
-            <div className="flex items-center gap-2 pt-2 border-t border-[#e1e8fd]">
-              <button
-                type="button"
-                onClick={() => setSelectedOrder(null)}
-                className="flex-1 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-xs font-mono font-bold rounded-lg cursor-pointer"
-              >
-                Cerrar
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  showToast(`Imprimiendo copia del ticket ${selectedOrder.ticketNumber}`);
-                  setSelectedOrder(null);
-                }}
-                className="flex-1 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white text-xs font-mono font-bold rounded-lg shadow-xs flex items-center justify-center gap-1 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[16px]">print</span>
-                Imprimir
-              </button>
-            </div>
+        <AppModal
+          isOpen={Boolean(selectedOrder)}
+          onClose={() => setSelectedOrder(null)}
+          icon="receipt_long"
+          title={`Ticket Comanda ${selectedOrder.ticketNumber}`}
+          description={`Sucursal Central • Caja 01 • ${selectedOrder.timestamp}`}
+          maxWidth="sm"
+          onConfirm={() => {
+            showToast(`Imprimiendo copia del ticket ${selectedOrder.ticketNumber}`);
+            setSelectedOrder(null);
+          }}
+          confirmLabel="Imprimir Ticket"
+          confirmIcon="print"
+          showCancel={true}
+          cancelLabel="Cerrar"
+        >
+          {/* Thermal Ticket Simulation */}
+          <div className="flex flex-col items-center text-center border-b border-dashed border-[#e2e8f0] pb-4">
+            <span className="font-bold text-base text-[#141b2b]">WONDER CHICKEN</span>
+            <span className="font-mono text-[11px] text-[#5b403d]">Sucursal Central • Caja 01</span>
+            <span className="font-mono text-xs font-bold text-[#af101a] mt-1">
+              TICKET COMANDA {selectedOrder.ticketNumber}
+            </span>
+            <span className="font-mono text-[11px] text-[#5b403d]">
+              {selectedOrder.timestamp} • {selectedOrder.orderType === 'MESA' ? selectedOrder.tableNumber : 'LLEVAR'}
+            </span>
           </div>
-        </div>
+
+          <div className="flex flex-col gap-1 text-xs font-mono border-b border-dashed border-[#e2e8f0] pb-3">
+            <div><strong>Cliente:</strong> {selectedOrder.customer.fullName}</div>
+            <div><strong>NIT/CI:</strong> {selectedOrder.customer.ci || selectedOrder.customer.nit || 'S/N'}</div>
+            <div><strong>Cajera:</strong> {selectedOrder.cashier}</div>
+          </div>
+
+          <div className="flex flex-col gap-2 text-xs font-mono border-b border-dashed border-[#e2e8f0] pb-3">
+            {selectedOrder.items.map((it, i) => (
+              <div key={i} className="flex flex-col">
+                <div className="flex justify-between">
+                  <span>{it.quantity}x {it.name}</span>
+                  <span className="font-bold">Bs. {(it.unitPrice * it.quantity).toFixed(2)}</span>
+                </div>
+                {it.config?.notes && (
+                  <span className="text-[10px] text-[#5b403d] pl-2 whitespace-pre-line">
+                    {it.config.notes}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-1 text-xs font-mono bg-[#f8f9fc] p-3 rounded-xl border border-[#e2e8f0]">
+            <div className="flex justify-between font-bold text-sm text-[#af101a]">
+              <span>TOTAL:</span>
+              <span>Bs. {selectedOrder.total.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-[#5b403d]">
+              <span>Método de Pago:</span>
+              <span>{selectedOrder.paymentMethod}</span>
+            </div>
+            {selectedOrder.cashReceived ? (
+              <>
+                <div className="flex justify-between text-[#5b403d]">
+                  <span>Efectivo Recibido:</span>
+                  <span>Bs. {selectedOrder.cashReceived.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[#15803d] font-semibold">
+                  <span>Cambio / Vuelto:</span>
+                  <span>Bs. {(selectedOrder.cashChange || 0).toFixed(2)}</span>
+                </div>
+              </>
+            ) : null}
+          </div>
+        </AppModal>
       )}
     </div>
   );

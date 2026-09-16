@@ -153,6 +153,15 @@ export default function App() {
     setCustomers((prev) => [newCustomer, ...prev]);
   };
 
+  const handleUpdateCustomer = (updatedCustomer: Customer) => {
+    setCustomers((prev) =>
+      prev.map((c) => (c.id === updatedCustomer.id ? updatedCustomer : c))
+    );
+    if (activeCustomer.id === updatedCustomer.id) {
+      setActiveCustomer(updatedCustomer);
+    }
+  };
+
   // If on login screen, render standalone full-bleed login experience
   if (currentScreen === 'login') {
     return (
@@ -287,8 +296,10 @@ export default function App() {
           <ClientsScreen
             customers={customers}
             onAddCustomer={handleAddCustomer}
+            onUpdateCustomer={handleUpdateCustomer}
             onSelectCustomerForPOS={setActiveCustomer}
             onBackToPOS={() => setCurrentScreen('pos-ventas')}
+            userRole={userRole}
           />
         )}
 

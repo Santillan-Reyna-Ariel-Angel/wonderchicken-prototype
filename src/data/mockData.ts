@@ -170,6 +170,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     ci: '0',
     fullName: 'Cliente S/N (Sin Nombre)',
     phone: '-',
+    branch: 'Sucursal Central (La Paz)',
   },
   {
     id: 'c-001',
@@ -183,6 +184,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     phone: '+591 71234567',
     email: 'luis.iglesias@gmail.com',
     birthdate: '1988-04-12',
+    branch: 'Sucursal Central (La Paz)',
     isFrequent: true,
     lastOrderTime: 'Hoy 15:42 (Mesa 04)',
     lastOrderAmount: 84.00
@@ -198,6 +200,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     phone: '+591 71234567',
     email: 'mvillarroel@gmail.com',
     birthdate: '1992-06-15',
+    branch: 'Sucursal Calacoto (Zona Sur)',
     lastOrderTime: 'Hace 8 min',
     lastOrderAmount: 145.00
   },
@@ -211,12 +214,15 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     gender: 'Mujer',
     phone: '+591 77890123',
     email: 'roxana.m@empresa.bo',
+    birthdate: '1995-11-20',
+    branch: 'Sucursal Equipetrol (Santa Cruz)',
     lastOrderTime: 'Hace 22 min',
     lastOrderAmount: 89.50
   },
   {
     id: 'c-004',
     ci: '1029384019',
+    ciExt: 'LP',
     nit: '1029384019',
     businessName: 'Quiroga Catering SRL',
     fullName: 'Valeria Quiroga Teran',
@@ -224,6 +230,9 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     lastName: 'Quiroga Teran',
     gender: 'Mujer',
     phone: '+591 69123490',
+    email: 'contacto@quirogacatering.bo',
+    birthdate: '1985-08-30',
+    branch: 'Sucursal Central (La Paz)',
     isCorporate: true,
     lastOrderTime: 'Hace 45 min',
     lastOrderAmount: 380.00
@@ -238,23 +247,53 @@ export const INITIAL_CUSTOMERS: Customer[] = [
     gender: 'Hombre',
     phone: '+591 70654321',
     email: 'marco.ortega@live.com',
+    birthdate: '1990-01-25',
+    branch: 'Sucursal Miraflores',
     lastOrderTime: 'Hace 1 h',
     lastOrderAmount: 64.00
   },
   {
     id: 'c-006',
     ci: '554321',
-    nit: '554321',
+    ciExt: 'CB',
+    nit: '554321018',
+    businessName: 'Inversiones Los Valles SA',
     fullName: 'Carlos Mendoza',
+    firstName: 'Carlos',
+    lastName: 'Mendoza',
+    gender: 'Hombre',
     phone: '+591 72001122',
+    email: 'carlos.mendoza@valles.com',
+    birthdate: '1979-05-18',
+    branch: 'Sucursal Cochabamba Norte',
     isCorporate: true
   },
   {
     id: 'c-007',
     ci: '765432',
+    ciExt: 'SC',
     nit: '765432',
     fullName: 'Fredy Arévalo',
-    phone: '+591 76543210'
+    firstName: 'Fredy',
+    lastName: 'Arévalo',
+    gender: 'Hombre',
+    phone: '+591 76543210',
+    email: 'fredy.arevalo@hotmail.com',
+    birthdate: '1994-09-04',
+    branch: 'Sucursal Equipetrol (Santa Cruz)'
+  },
+  {
+    id: 'c-008',
+    ci: '9120485',
+    ciExt: 'EA',
+    fullName: 'Silvia Choque Huanca',
+    firstName: 'Silvia',
+    lastName: 'Choque Huanca',
+    gender: 'Mujer',
+    phone: '+591 78912345',
+    email: 'silvia.choque@gmail.com',
+    birthdate: '1998-03-14',
+    branch: 'Sucursal El Alto Ceja'
   }
 ];
 

@@ -21,18 +21,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { shift } = useShiftsStore();
 
-  // Navigation definitions according to role
+  // Navigation definitions according to role and Navigation Map Nodes
   const getNavSections = () => {
     if (currentRole === 'SUPER_ADMIN') {
       return [
         {
           title: 'Superadministración',
           items: [
-            { id: 'super-admin' as ScreenType, label: 'Dashboard Global', icon: 'admin_panel_settings' },
-            { id: 'sucursales' as ScreenType, label: 'Red de Sucursales', icon: 'storefront', badge: '3 Sedes' },
-            { id: 'catalogo-y-variantes' as ScreenType, label: 'Catálogo Global', icon: 'inventory_2' },
-            { id: 'control-de-turnos-y-cajas' as ScreenType, label: 'Auditoría de Turnos', icon: 'tune' },
-            { id: 'usuarios-y-personal' as ScreenType, label: 'Personal & Roles', icon: 'badge' },
+            { id: 'super-admin' as ScreenType, label: 'Dashboard Global', icon: 'admin_panel_settings', nodeBadge: 'C', path: '/super-admin' },
+            { id: 'sucursales' as ScreenType, label: 'Gestión Sucursales', icon: 'storefront', nodeBadge: 'M', path: '/super-admin/branches', badge: '3 Sedes' },
+            { id: 'clientes' as ScreenType, label: 'Clientes Cross-Sucursal', icon: 'group', nodeBadge: 'Q', path: '/branch-admin/customers' },
+            { id: 'catalogo-y-variantes' as ScreenType, label: 'Catálogo Global', icon: 'inventory_2', nodeBadge: 'N1', path: '/branch-admin/products' },
+            { id: 'control-de-turnos-y-cajas' as ScreenType, label: 'Reportes & Auditoría', icon: 'tune', nodeBadge: 'O', path: '/branch-admin/reports' },
+            { id: 'usuarios-y-personal' as ScreenType, label: 'Usuarios y Roles', icon: 'badge', nodeBadge: 'N2', path: '/branch-admin/users' },
           ],
         },
       ];
@@ -43,24 +44,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           title: 'Administración de Sede',
           items: [
-            { id: 'branch-admin' as ScreenType, label: 'Dashboard Sucursal', icon: 'dashboard' },
-            { id: 'catalogo-y-variantes' as ScreenType, label: 'Catálogo y Variantes', icon: 'inventory_2' },
-            { id: 'control-de-turnos-y-cajas' as ScreenType, label: 'Control Turnos y Cajas', icon: 'tune' },
-            { id: 'usuarios-y-personal' as ScreenType, label: 'Personal y Roles', icon: 'badge' },
+            { id: 'branch-admin' as ScreenType, label: 'Dashboard Sucursal', icon: 'dashboard', nodeBadge: 'D', path: '/branch-admin' },
+            { id: 'catalogo-y-variantes' as ScreenType, label: 'Catálogo y Variantes', icon: 'inventory_2', nodeBadge: 'N1', path: '/branch-admin/products' },
+            { id: 'usuarios-y-personal' as ScreenType, label: 'Personal de Sucursal', icon: 'badge', nodeBadge: 'N2', path: '/branch-admin/users' },
+            { id: 'control-de-turnos-y-cajas' as ScreenType, label: 'Reportes Operativos', icon: 'tune', nodeBadge: 'O', path: '/branch-admin/reports' },
+            { id: 'clientes' as ScreenType, label: 'Clientes (Admin FR-019)', icon: 'group', nodeBadge: 'Q', path: '/branch-admin/customers' },
           ],
         },
         {
-          title: 'Supervisión de Ventas',
+          title: 'Supervisión Operativa',
           items: [
-            { id: 'pos-ventas' as ScreenType, label: 'Terminal POS', icon: 'point_of_sale' },
+            { id: 'pos-ventas' as ScreenType, label: 'Terminal POS', icon: 'point_of_sale', nodeBadge: 'F', path: '/cashier/pos' },
+            { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long', nodeBadge: 'J', path: '/cashier/orders' },
             { 
               id: 'pedidos-pendientes' as ScreenType, 
               label: 'Pago Pendiente [FR-011]', 
               icon: 'pending_actions',
               badge: pendingOrdersCount > 0 ? `${pendingOrdersCount}` : undefined 
             },
-            { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long' },
-            { id: 'clientes' as ScreenType, label: 'Clientes', icon: 'group' },
           ],
         },
       ];
@@ -73,11 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           items: [
             { 
               id: 'despacho-cocina' as ScreenType, 
-              label: 'Comandas Digitales KDS', 
+              label: 'Comandas KDS', 
               icon: 'outdoor_grill', 
+              nodeBadge: 'K',
+              path: '/dispatcher',
               badge: activeKitchenCount > 0 ? `${activeKitchenCount}` : undefined 
             },
-            { id: 'comanda-publica' as ScreenType, label: 'Monitor Turnos PDR', icon: 'tv' },
+            { id: 'comanda-publica' as ScreenType, label: 'Monitor Turnos PDR', icon: 'tv', path: '/order/[token]' },
           ],
         },
       ];
@@ -88,26 +91,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {
         title: 'Operaciones de Caja & POS',
         items: [
-          { id: 'pos-ventas' as ScreenType, label: 'POS Ventas', icon: 'point_of_sale' },
           {
             id: 'apertura-turno' as ScreenType,
-            label: shift.isOpen ? 'Resumen de Apertura' : 'Apertura Turno',
-            icon: shift.isOpen ? 'assignment' : 'lock_open',
+            label: shift.isOpen ? 'Turno Abierto' : 'Apertura de Turno',
+            icon: shift.isOpen ? 'lock_open' : 'lock_clock',
+            nodeBadge: 'E',
+            path: '/cashier/shift/open',
+            badge: shift.isOpen ? 'Activo' : 'Requerido',
           },
+          { id: 'pos-ventas' as ScreenType, label: 'POS Ventas', icon: 'point_of_sale', nodeBadge: 'F', path: '/cashier/pos' },
+          { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long', nodeBadge: 'J', path: '/cashier/orders' },
+          { id: 'clientes' as ScreenType, label: 'Clientes (FR-019)', icon: 'group', nodeBadge: 'P', path: '/cashier/customers' },
           { 
             id: 'pedidos-pendientes' as ScreenType, 
             label: 'Pago Pendiente [FR-011]', 
             icon: 'pending_actions', 
             badge: pendingOrdersCount > 0 ? `${pendingOrdersCount}` : undefined 
           },
-          { 
-            id: 'despacho-cocina' as ScreenType, 
-            label: 'Despacho Cocina (KDS)', 
-            icon: 'outdoor_grill', 
-            badge: activeKitchenCount > 0 ? `${activeKitchenCount}` : undefined 
-          },
-          { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long' },
-          { id: 'clientes' as ScreenType, label: 'Clientes', icon: 'group' },
         ],
       },
     ];
@@ -132,19 +132,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     key={item.id}
                     onClick={() => onNavigate(item.id)}
-                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all text-left cursor-pointer ${
+                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all text-left cursor-pointer group ${
                       isActive
                         ? 'bg-[#d32f2f] text-white font-bold shadow-xs'
                         : 'text-[#5b403d] hover:bg-[#f1f3ff] hover:text-[#141b2b] font-medium'
                     }`}
+                    title={item.path ? `Ruta: ${item.path}` : undefined}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="material-symbols-outlined text-[19px]">{item.icon}</span>
-                      <span>{item.label}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="material-symbols-outlined text-[19px] shrink-0">{item.icon}</span>
+                      <div className="flex flex-col min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          {item.nodeBadge && (
+                            <span
+                              className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold shrink-0 ${
+                                isActive
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-[#e1e8fd] text-[#141b2b]'
+                              }`}
+                            >
+                              {item.nodeBadge}
+                            </span>
+                          )}
+                          <span className="truncate">{item.label}</span>
+                        </div>
+                        {item.path && (
+                          <span
+                            className={`font-mono text-[9px] tracking-tight truncate ${
+                              isActive ? 'text-white/75' : 'text-[#5b403d]/70 group-hover:text-[#af101a]'
+                            }`}
+                          >
+                            {item.path}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     {item.badge && (
                       <span
-                        className={`font-mono text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                        className={`font-mono text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ml-1 ${
                           isActive
                             ? 'bg-white text-[#d32f2f]'
                             : 'bg-[#fec330] text-[#6f5100]'

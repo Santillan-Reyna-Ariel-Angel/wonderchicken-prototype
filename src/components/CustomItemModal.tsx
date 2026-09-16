@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { OrderItem } from '../types';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface CustomItemModalProps {
   isOpen: boolean;
@@ -241,32 +242,73 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#293040]/50 backdrop-blur-xs p-3 sm:p-4 animate-fade-in">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[92vh] border border-[#e1e8fd]">
-        {/* Modal Header */}
-        <div className="bg-[#d32f2f] text-white px-5 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[24px]">tune</span>
-            <div>
-              <h2 className="text-base sm:text-lg font-bold leading-tight">
-                Venta Custom: Configuración a Medida
-              </h2>
-              <span className="font-mono text-xs text-white/85">
-                Presas independientes + Acompañantes + Bebidas con cálculo en tiempo real
-              </span>
+    <AppModal
+      isOpen={isOpen}
+      onClose={onClose}
+      icon="tune"
+      title="Venta Custom: Configuración a Medida"
+      description="Presas independientes + Acompañantes + Bebidas con cálculo en tiempo real"
+      maxWidth="2xl"
+      customFooter={
+        <div className="flex flex-col gap-3 w-full">
+          {/* Breakdown summary */}
+          <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono py-1.5 px-2 bg-white rounded-xl border border-[#e2e8f0]">
+            <div className="flex flex-col">
+              <span className="text-[#5b403d] text-[10px]">1. Presas ({totalPiecesCount})</span>
+              <span className="font-bold text-[#af101a]">Bs. {piecesSubtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col border-x border-[#e2e8f0]">
+              <span className="text-[#5b403d] text-[10px]">2. Acomp. ({totalSidesCount})</span>
+              <span className="font-bold text-[#795900]">Bs. {sidesSubtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[#5b403d] text-[10px]">3. Bebidas ({totalDrinksCount})</span>
+              <span className="font-bold text-[#005c8d]">Bs. {drinksSubtotal.toFixed(2)}</span>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
-            aria-label="Cerrar modal"
-          >
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
 
+          {/* Action Row */}
+          <div className="flex items-center justify-between gap-3 pt-1">
+            <div className="flex flex-col">
+              <span className="text-[11px] text-[#5b403d] font-semibold">TOTAL CALCULADO:</span>
+              <span className="font-mono text-xl sm:text-2xl font-bold text-[#af101a] leading-none">
+                Bs. {grandTotal.toFixed(2)}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="px-3 py-2 rounded-xl text-xs font-mono text-[#5b403d] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/30 transition-colors cursor-pointer"
+                title="Reiniciar selección"
+              >
+                Limpiar
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 rounded-xl bg-white text-[#334155] hover:bg-[#f1f5f9] hover:text-[#0f172a] border border-[#cbd5e1] font-mono text-xs font-bold transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={grandTotal <= 0}
+                onClick={handleConfirmOrder}
+                className="px-5 py-2.5 rounded-xl bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs sm:text-sm font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                <span>Añadir a Orden ({totalItemsCount})</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col -mt-2 -mx-2">
         {/* Step Navigation Bar */}
-        <div className="bg-[#f8f9ff] border-b border-[#e1e8fd] px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 overflow-x-auto">
+        <div className="bg-[#f8f9ff] border-b border-[#e1e8fd] px-3 sm:px-4 py-2 flex items-center justify-between gap-2 overflow-x-auto rounded-t-lg">
           <div className="flex items-center gap-1 sm:gap-2">
             {/* Step 1 Tab */}
             <button
@@ -321,7 +363,7 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
         </div>
 
         {/* Modal Body (Scrollable) */}
-        <div className="p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto flex-1">
+        <div className="p-3 sm:p-4 flex flex-col gap-4 overflow-y-auto max-h-[55vh]">
           {/* STEP 1: PRESAS INDEPENDIENTES */}
           {activeStep === 1 && (
             <div className="flex flex-col gap-3 animate-fade-in">
@@ -670,63 +712,7 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
             />
           </div>
         </div>
-
-        {/* Live Calculation Footer */}
-        <div className="bg-[#f8f9ff] border-t border-[#e1e8fd] p-4 sm:p-5 flex flex-col gap-3">
-          {/* Breakdown summary */}
-          <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono py-1.5 px-2 bg-white rounded-xl border border-[#e1e8fd]">
-            <div className="flex flex-col">
-              <span className="text-[#5b403d] text-[10px]">1. Presas ({totalPiecesCount})</span>
-              <span className="font-bold text-[#af101a]">Bs. {piecesSubtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex flex-col border-x border-[#e1e8fd]">
-              <span className="text-[#5b403d] text-[10px]">2. Acomp. ({totalSidesCount})</span>
-              <span className="font-bold text-[#795900]">Bs. {sidesSubtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[#5b403d] text-[10px]">3. Bebidas ({totalDrinksCount})</span>
-              <span className="font-bold text-[#005c8d]">Bs. {drinksSubtotal.toFixed(2)}</span>
-            </div>
-          </div>
-
-          {/* Action Row */}
-          <div className="flex items-center justify-between gap-3 pt-1">
-            <div className="flex flex-col">
-              <span className="text-[11px] text-[#5b403d]">TOTAL CALCULADO:</span>
-              <span className="font-mono text-xl sm:text-2xl font-bold text-[#af101a] leading-none">
-                Bs. {grandTotal.toFixed(2)}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleReset}
-                className="px-3 py-2.5 rounded-xl text-xs font-mono text-[#5b403d] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/30 transition-colors cursor-pointer"
-                title="Reiniciar selección"
-              >
-                Limpiar
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#e9edff] font-mono text-xs font-bold text-[#141b2b] border border-[#e1e8fd] transition-colors cursor-pointer"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                disabled={grandTotal <= 0}
-                onClick={handleConfirmOrder}
-                className="px-5 py-2.5 rounded-xl bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                <span>Añadir a Orden ({totalItemsCount})</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
+    </AppModal>
   );
 };

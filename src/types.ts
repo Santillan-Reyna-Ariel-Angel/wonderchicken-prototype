@@ -2,18 +2,31 @@ export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'CAJERA' | 'DESPACHADORA';
 
 export type ScreenType = 
   | 'login' 
+  | '/login'
   | 'super-admin'
+  | '/super-admin'
   | 'branch-admin'
+  | '/branch-admin'
   | 'pos-ventas' 
+  | '/cashier/pos'
   | 'apertura-turno' 
+  | '/cashier/shift/open'
   | 'control-de-turnos-y-cajas'
+  | '/branch-admin/reports'
   | 'pedidos-pendientes'
   | 'despacho-cocina' 
+  | '/dispatcher'
   | 'catalogo-y-variantes' 
+  | '/branch-admin/products'
   | 'historial-de-pedidos' 
+  | '/cashier/orders'
   | 'clientes'
+  | '/cashier/customers'
+  | '/branch-admin/customers'
   | 'usuarios-y-personal'
+  | '/branch-admin/users'
   | 'sucursales'
+  | '/super-admin/branches'
   | 'comanda-publica';
 
 export type OrderType = 'MESA' | 'LLEVAR';
@@ -91,20 +104,48 @@ export interface PendingOrder {
   status: 'PENDIENTE' | 'COBRADO' | 'CANCELADO';
 }
 
+export interface ProductVariant {
+  id?: string;
+  name: string;
+  priceDelta?: number;
+  sku?: string;
+  active?: boolean;
+}
+
+export interface ProductVariantRules {
+  presCount?: number;
+  allowedPresas?: {
+    pecho: boolean;
+    ala: boolean;
+    pierna: boolean;
+    entrepierna: boolean;
+  };
+  defaultSide?: string;
+  allowedSides?: string[];
+  hasIncludedDrink?: boolean;
+  defaultDrink?: string;
+  allowedDrinks?: string[];
+}
+
 export interface Product {
   id: string;
   code: string;
   name: string;
   description: string;
   price: number;
-  category: 'principales' | 'bebidas' | 'extras';
+  basePrice?: number;
+  category: string; // "Plato principal" | "Bebida" | "Extra" o string libre
   imageUrl: string;
+  active: boolean;
+  isSellable?: boolean;
+  isInventoryItem?: boolean;
+  variants?: ProductVariant[];
+  variantRules?: ProductVariantRules;
   badge?: string;
   piecesBadge?: string;
   isCombo?: boolean;
   isPopular?: boolean;
   configurable?: boolean;
-  active: boolean;
   inventariable?: string;
   variantNotes?: string;
   variantsCount?: number;
@@ -153,6 +194,7 @@ export interface Customer {
   businessName?: string;
   isCorporate?: boolean;
   isFrequent?: boolean;
+  branch?: string;
   lastOrderTime?: string;
   lastOrderAmount?: number;
 }
