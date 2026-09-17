@@ -46,6 +46,7 @@ export const POSScreen: React.FC<POSScreenProps> = ({
 
   // Modals
   const [showComboModal, setShowComboModal] = useState(false);
+  const [selectedProductForConfig, setSelectedProductForConfig] = useState<Product | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
@@ -65,18 +66,20 @@ export const POSScreen: React.FC<POSScreenProps> = ({
     return matchesCategory && matchesSearch;
   });
 
-  // Adding standard product to cart
+  // Adding product to cart
   const handleAddProduct = (product: Product) => {
+    // Si es plato configurable (platos principales de 2 presas o con variantes configurables)
     if (product.configurable) {
+      setSelectedProductForConfig(product);
       setShowComboModal(true);
       return;
     }
 
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.productId === product.id);
+      const existing = prev.find((item) => item.productId === product.id && !item.config);
       if (existing) {
         return prev.map((item) =>
-          item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.productId === product.id && !item.config ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
       return [
@@ -93,9 +96,9 @@ export const POSScreen: React.FC<POSScreenProps> = ({
     showToast(`Añadido: ${product.name}`);
   };
 
-  // Confirm configured combo
+  // Confirm configured dish / combo
   const handleConfirmCombo = (config: ComboConfiguration) => {
-    const comboProduct = products.find((p) => p.id === 'p-003') || {
+    const currentProduct = selectedProductForConfig || products.find((p) => p.id === 'p-003') || {
       id: 'p-003',
       name: 'Combo Wonder',
       price: 36.00,
@@ -104,16 +107,17 @@ export const POSScreen: React.FC<POSScreenProps> = ({
     setCartItems((prev) => [
       ...prev,
       {
-        id: 'combo-' + Date.now(),
-        productId: comboProduct.id,
-        name: comboProduct.name,
-        unitPrice: comboProduct.price,
+        id: 'cfg-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+        productId: currentProduct.id,
+        name: currentProduct.name,
+        unitPrice: currentProduct.price,
         quantity: 1,
-        isCombo: true,
+        isCombo: Boolean(currentProduct.isCombo),
         config,
       },
     ]);
-    showToast('Combo Wonder personalizado añadido');
+    showToast(`${currentProduct.name} configurado añadido a la orden`);
+    setSelectedProductForConfig(null);
   };
 
   // Add custom manual item
@@ -155,11 +159,20 @@ export const POSScreen: React.FC<POSScreenProps> = ({
 
   // Finalize payment from modal
   const handlePaymentConfirmed = (
-    paymentMethod: 'EFECTIVO' | 'QR',
+    paymentMethod: 'EFECTIVO' | 'QR' | 'PENDIENTE',
     cashReceived: number,
-    change: number
+    change: number,
+    selectedCustomer?: Customer
   ) => {
-    onCompleteSale(cartItems, activeCustomer, orderType, tableNumber, paymentMethod, cashReceived, change);
+    const finalCustomer = selectedCustomer || activeCustomer;
+    if (paymentMethod === 'PENDIENTE') {
+      onCompleteSale(cartItems, finalCustomer, orderType, tableNumber, 'PENDIENTE', 0, 0);
+      setShowPaymentModal(false);
+      setCartItems([]);
+      showToast('Orden guardada con Pago Pendiente [FR-011]');
+      return;
+    }
+    onCompleteSale(cartItems, finalCustomer, orderType, tableNumber, paymentMethod, cashReceived, change);
     setShowPaymentModal(false);
     setCartItems([]);
     showToast('¡Venta registrada con éxito! Comanda enviada a cocina KDS.');
@@ -281,18 +294,14 @@ export const POSScreen: React.FC<POSScreenProps> = ({
                 >
                   {/* Image container - clickable */}
                   <div
-                    onClick={() => (product.configurable ? setShowComboModal(true) : handleAddProduct(product))}
+                    onClick={() => handleAddProduct(product)}
                     className="relative w-full h-36 bg-[#f1f3ff] overflow-hidden cursor-pointer select-none"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        if (product.configurable) {
-                          setShowComboModal(true);
-                        } else {
-                          handleAddProduct(product);
-                        }
+                        handleAddProduct(product);
                       }
                     }}
                     title={product.configurable ? `Configurar ${product.name}` : `Añadir ${product.name}`}
@@ -319,21 +328,14 @@ export const POSScreen: React.FC<POSScreenProps> = ({
 
                     {/* Centered Transparent Action Button */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors p-2 pointer-events-none">
-                      {product.configurable ? (
-                        <div
-                          className="px-4 py-1.5 bg-transparent border border-white/90 text-white font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 transition-transform duration-200 group-hover:scale-105 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] shadow-xs"
-                        >
-                          <span className="material-symbols-outlined text-[18px]">tune</span>
-                          <span>Configurar</span>
-                        </div>
-                      ) : (
-                        <div
-                          className="px-4 py-1.5 bg-transparent border border-white/90 text-white font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 transition-transform duration-200 group-hover:scale-105 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] shadow-xs"
-                        >
-                          <span className="material-symbols-outlined text-[18px]">add_circle</span>
-                          <span>Añadir</span>
-                        </div>
-                      )}
+                      <div
+                        className="px-4 py-1.5 bg-transparent border border-white/90 text-white font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 transition-transform duration-200 group-hover:scale-105 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] shadow-xs"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">
+                          {product.configurable ? 'add_circle' : 'add_circle'}
+                        </span>
+                        <span>Añadir</span>
+                      </div>
                     </div>
                   </div>
 
@@ -642,7 +644,11 @@ export const POSScreen: React.FC<POSScreenProps> = ({
       {/* Modals */}
       <ComboVariantModal
         isOpen={showComboModal}
-        onClose={() => setShowComboModal(false)}
+        product={selectedProductForConfig}
+        onClose={() => {
+          setShowComboModal(false);
+          setSelectedProductForConfig(null);
+        }}
         onConfirm={handleConfirmCombo}
       />
 
@@ -655,6 +661,10 @@ export const POSScreen: React.FC<POSScreenProps> = ({
         orderType={orderType}
         tableNumber={tableNumber}
         customer={activeCustomer}
+        customers={customers}
+        onNavigateToClients={onNavigateToClients}
+        onCustomerChange={(c) => onSelectCustomer(c)}
+        allowCustomerSelection={false}
         itemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
       />
 

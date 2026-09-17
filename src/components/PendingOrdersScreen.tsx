@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PendingOrder, Customer } from '../types';
 import { INITIAL_CUSTOMERS } from '../data/mockData';
 import { AppModal } from '../commonComponents/AppModal';
+import { PaymentModal } from './PaymentModal';
 
 interface PendingOrdersScreenProps {
   onBackToPOS: () => void;
@@ -70,15 +71,7 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
   // Modals state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [settleOrder, setSettleOrder] = useState<PendingOrder | null>(null);
-  const [payMethod, setPayMethod] = useState<'EFECTIVO' | 'QR'>('EFECTIVO');
-  const [cashReceived, setCashReceived] = useState(100.00);
-  const [withInvoice, setWithInvoice] = useState(false);
-  
-  // Customer selector state (matching POS)
   const [selectedCustomer, setSelectedCustomer] = useState<Customer>(INITIAL_CUSTOMERS[0]);
-  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
-  const [customerSearch, setCustomerSearch] = useState('');
-
   const [toast, setToast] = useState<{ title: string; message: string; icon: string } | null>(null);
 
   const showToastNotification = (title: string, message: string, icon = 'check_circle') => {
@@ -88,12 +81,6 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
 
   const handleOpenSettleModal = (order: PendingOrder) => {
     setSettleOrder(order);
-    const defaultCash = order.total <= 90 ? 100 : Math.ceil(order.total / 10) * 10;
-    setCashReceived(defaultCash);
-    setPayMethod('EFECTIVO');
-    setWithInvoice(false);
-    setShowCustomerDropdown(false);
-    setCustomerSearch('');
 
     // Find customer in list or create matching customer representation
     const orderName = (order.customerName || '').trim();
@@ -121,35 +108,36 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
 
   const handleCloseSettleModal = () => {
     setSettleOrder(null);
-    setShowCustomerDropdown(false);
   };
 
-  const handleExecutePayment = () => {
+  const handleExecutePayment = (
+    method: 'EFECTIVO' | 'QR' | 'PENDIENTE',
+    _cashReceived: number,
+    _change: number,
+    customerToCharge?: Customer,
+    invoiceFlag?: boolean
+  ) => {
     if (!settleOrder) return;
     const orderId = settleOrder.id;
     const total = settleOrder.total;
+    const finalCustomer = customerToCharge || selectedCustomer;
+    const paymentMethod = method === 'QR' ? 'QR' : 'EFECTIVO';
+    const isWithInvoice = invoiceFlag !== undefined ? invoiceFlag : false;
 
     setOrders((prev) => prev.filter((o) => o.id !== orderId));
     if (onOrderSettled) {
-      onOrderSettled(orderId, total, selectedCustomer, payMethod);
+      onOrderSettled(orderId, total, finalCustomer, paymentMethod);
     }
-    const idDisplay = selectedCustomer.nit ? `NIT: ${selectedCustomer.nit}` : selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI: ${selectedCustomer.ci}` : 'S/N';
+    const idDisplay = finalCustomer.nit ? `NIT: ${finalCustomer.nit}` : finalCustomer.ci && finalCustomer.ci !== '0' ? `CI: ${finalCustomer.ci}` : 'S/N';
     showToastNotification(
-      withInvoice ? `Comanda #${orderId} Facturada y Cobrada` : `Comanda #${orderId} Cobrada Exitosamente`,
-      withInvoice
-        ? `Factura emitida a ${selectedCustomer.fullName} (${idDisplay}). Inventario descontado.`
+      isWithInvoice ? `Comanda #${orderId} Facturada y Cobrada` : `Comanda #${orderId} Cobrada Exitosamente`,
+      isWithInvoice
+        ? `Factura emitida a ${finalCustomer.fullName} (${idDisplay}). Inventario descontado.`
         : 'Inventario descontado atómicamente y arqueo registrado en caja.',
       'receipt'
     );
     handleCloseSettleModal();
   };
-
-  const filteredCustomers = customers.filter(
-    (c) =>
-      c.fullName.toLowerCase().includes(customerSearch.toLowerCase()) ||
-      c.ci.includes(customerSearch) ||
-      (c.nit && c.nit.includes(customerSearch))
-  );
 
   const handleCancelOrder = (orderId: string) => {
     if (confirm(`¿Desea cancelar el pedido #${orderId}? Al no haber sido cobrado, no afectará el arqueo de caja.`)) {
@@ -392,276 +380,32 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
         </div>
       </AppModal>
 
-      {/* MODAL 2: Liquidación de Cobro (POST /orders/{id}/pay) */}
+      {/* MODAL 2: Liquidación de Cobro (reutilizando PaymentModal unificado con asignación de cliente) */}
       {settleOrder && (
-        <AppModal
+        <PaymentModal
           isOpen={Boolean(settleOrder)}
           onClose={handleCloseSettleModal}
           icon="payments"
           title={`Liquidación de Cobro: Comanda ${settleOrder.ticketNumber}`}
           description={`Comanda Pendiente • ${settleOrder.elapsedTime}`}
-          maxWidth="lg"
-          onConfirm={handleExecutePayment}
           confirmLabel="Confirmar Cobro y Liquidar"
-          confirmIcon="receipt"
-          confirmDisabled={payMethod === 'EFECTIVO' && cashReceived < settleOrder.total}
-          showCancel={true}
           cancelLabel="Cerrar"
-        >
-          <div className="flex flex-col gap-4">
-            {/* Total Banner (Monto a cobrar & ítems registrados) */}
-            <div className="flex items-center justify-between bg-[#f1f3ff] p-4 rounded-xl border border-[#e1e8fd]">
-              <div className="flex flex-col">
-                <span className="font-mono text-[11px] text-[#5b403d] uppercase font-semibold">
-                  Monto Total a Cobrar:
-                </span>
-                <span className="font-mono text-2xl sm:text-3xl text-[#af101a] font-bold leading-tight">
-                  Bs. {settleOrder.total.toFixed(2)}
-                </span>
-              </div>
-              <div className="text-right flex flex-col items-end">
-                <span className="font-mono text-xs bg-[#fec330] text-[#6f5100] px-2.5 py-0.5 rounded-full font-bold uppercase">
-                  {settleOrder.orderType === 'MESA' ? 'EN MESA' : settleOrder.orderType === 'DELIVERY' ? 'DELIVERY' : 'PARA LLEVAR'}
-                </span>
-                <span className="text-xs text-[#5b403d] mt-1 font-medium">
-                  {(() => {
-                    const match = settleOrder.itemsSummary?.match(/^(\d+)x/);
-                    const count = match ? match[1] : '1';
-                    return `${count} ${count === '1' ? 'ítem registrado' : 'ítems registrados'}`;
-                  })()}
-                </span>
-              </div>
-            </div>
-
-            {/* Customer Selector Bar (Matching POS Sales) */}
-            <div className="py-2.5 border-b border-[#e1e8fd] relative">
-              <label className="font-mono text-[10px] text-[#5b403d] uppercase font-bold block mb-1">
-                Cliente Asignado:
-              </label>
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="material-symbols-outlined text-[#af101a] text-[18px]">person</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowCustomerDropdown(!showCustomerDropdown)}
-                    className="text-left truncate text-xs font-bold text-[#141b2b] hover:text-[#af101a] cursor-pointer flex items-center gap-1"
-                  >
-                    <span className="truncate">{selectedCustomer.fullName}</span>
-                    <span className="font-mono text-[10px] text-[#5b403d]">
-                      ({selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI: ${selectedCustomer.ci}` : selectedCustomer.nit ? `NIT: ${selectedCustomer.nit}` : 'S/N'})
-                    </span>
-                    <span className="material-symbols-outlined text-[16px]">arrow_drop_down</span>
-                  </button>
-                </div>
-
-                {onNavigateToClients && (
-                  <button
-                    type="button"
-                    onClick={onNavigateToClients}
-                    className="px-2 py-1 bg-[#f1f3ff] hover:bg-[#e9edff] rounded text-[10px] font-mono font-bold text-[#af101a] flex items-center gap-1 cursor-pointer whitespace-nowrap"
-                    title="Registrar nuevo cliente en módulo SIN"
-                  >
-                    <span className="material-symbols-outlined text-[14px]">person_add</span>
-                    + Nuevo
-                  </button>
-                )}
-              </div>
-
-              {/* Autocomplete Dropdown */}
-              {showCustomerDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-xl shadow-xl border border-[#e1e8fd] p-2 flex flex-col gap-1.5 animate-fade-in">
-                  <input
-                    type="text"
-                    value={customerSearch}
-                    onChange={(e) => setCustomerSearch(e.target.value)}
-                    placeholder="Buscar por Nombre, CI o NIT..."
-                    className="p-2 bg-[#f1f3ff] text-xs font-medium rounded-lg border border-[#e1e8fd] outline-none"
-                    autoFocus
-                  />
-
-                  <div className="max-h-48 overflow-y-auto flex flex-col gap-1">
-                    {/* Anonymous S/N Option */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedCustomer({
-                          id: 'c-sn',
-                          ci: '0',
-                          fullName: 'Cliente S/N',
-                          phone: '-',
-                        });
-                        setShowCustomerDropdown(false);
-                      }}
-                      className="flex items-center justify-between p-2 rounded-lg hover:bg-[#f1f3ff] text-left cursor-pointer"
-                    >
-                      <div className="flex flex-col">
-                        <span className="font-bold text-xs text-[#141b2b]">Cliente S/N</span>
-                        <span className="text-[10px] text-[#5b403d]">Consumidor Final (Sin Factura Nominada)</span>
-                      </div>
-                      <span className="font-mono text-xs text-[#5b403d]">0</span>
-                    </button>
-
-                    {filteredCustomers.map((cust) => (
-                      <button
-                        key={cust.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedCustomer(cust);
-                          setShowCustomerDropdown(false);
-                        }}
-                        className={`flex items-center justify-between p-2 rounded-lg text-left cursor-pointer ${
-                          cust.id === selectedCustomer.id ? 'bg-[#ffdad6]/40' : 'hover:bg-[#f1f3ff]'
-                        }`}
-                      >
-                        <div className="flex flex-col min-w-0 pr-2">
-                          <span className="font-bold text-xs text-[#141b2b] truncate">{cust.fullName}</span>
-                          <span className="text-[10px] text-[#5b403d]">{cust.phone}</span>
-                        </div>
-                        <span className="font-mono text-xs font-bold text-[#af101a] shrink-0">
-                          {cust.nit ? `NIT ${cust.nit}` : `CI ${cust.ci}`}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Invoicing info check */}
-            <label className="flex items-center gap-2.5 cursor-pointer text-xs text-[#141b2b] select-none font-bold">
-              <input
-                type="checkbox"
-                checked={withInvoice}
-                onChange={(e) => setWithInvoice(e.target.checked)}
-                className="accent-[#af101a] rounded w-4 h-4 cursor-pointer"
-              />
-              <span>
-                Facturar con datos del cliente:{' '}
-                <strong className="text-[#af101a]">
-                  {selectedCustomer.fullName} ({selectedCustomer.nit ? `NIT ${selectedCustomer.nit}` : selectedCustomer.ci && selectedCustomer.ci !== '0' ? `CI ${selectedCustomer.ci}` : 'S/N'})
-                </strong>
-              </span>
-            </label>
-
-            {/* Payment Method Tabs */}
-            <div className="flex flex-col gap-1.5">
-              <label className="font-mono text-xs text-[#5b403d] uppercase font-bold">
-                Método de Pago:
-              </label>
-              <div className="grid grid-cols-2 gap-1.5 p-1 bg-[#e9edff] rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setPayMethod('EFECTIVO')}
-                  className={`py-2 rounded-md font-mono text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    payMethod === 'EFECTIVO'
-                      ? 'bg-white text-[#af101a] shadow-xs'
-                      : 'text-[#5b403d] hover:text-[#141b2b]'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">attach_money</span>
-                  Efectivo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPayMethod('QR')}
-                  className={`py-2 rounded-md font-mono text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    payMethod === 'QR'
-                      ? 'bg-white text-[#af101a] shadow-xs'
-                      : 'text-[#5b403d] hover:text-[#141b2b]'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">qr_code_2</span>
-                  QR / Tarjeta Simple
-                </button>
-              </div>
-            </div>
-
-            {payMethod === 'EFECTIVO' ? (
-              <div className="flex flex-col gap-3 bg-[#f1f3ff] p-3.5 rounded-xl border border-[#e1e8fd]">
-                <div className="flex items-center justify-between gap-4">
-                  <label className="text-xs font-bold text-[#141b2b]">
-                    Efectivo Recibido:
-                  </label>
-                  <div className="relative w-40">
-                    <span className="absolute left-3 top-2 font-mono text-xs font-bold text-[#5b403d]">
-                      Bs.
-                    </span>
-                    <input
-                      type="number"
-                      step="1.00"
-                      value={cashReceived}
-                      onChange={(e) => setCashReceived(parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white text-[#141b2b] font-mono text-base font-bold rounded-lg text-right border border-[#e1e8fd] focus:outline-none focus:border-[#af101a] focus:ring-2 focus:ring-[#af101a]/10"
-                    />
-                  </div>
-                </div>
-
-                {/* Quick chips */}
-                <div className="flex items-center gap-1.5 justify-end flex-wrap">
-                  <span className="font-mono text-xs text-[#5b403d] mr-1">Rápido:</span>
-                  <button
-                    type="button"
-                    onClick={() => setCashReceived(settleOrder.total)}
-                    className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
-                  >
-                    Exacto
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCashReceived(50)}
-                    className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
-                  >
-                    50 Bs
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCashReceived(100)}
-                    className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
-                  >
-                    100 Bs
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCashReceived(200)}
-                    className="px-2.5 py-1 bg-white hover:bg-[#e9edff] rounded border border-[#e1e8fd] font-mono text-xs font-bold text-[#141b2b] cursor-pointer"
-                  >
-                    200 Bs
-                  </button>
-                </div>
-
-                {/* Change Output */}
-                <div className="flex items-center justify-between pt-2 border-t border-[#e1e8fd]">
-                  <span className="text-xs font-bold text-[#141b2b]">
-                    Cambio / Vuelto a entregar:
-                  </span>
-                  {cashReceived < settleOrder.total ? (
-                    <span className="font-mono text-sm font-bold text-[#ba1a1a]">
-                      Faltante: Bs. {(settleOrder.total - cashReceived).toFixed(2)}
-                    </span>
-                  ) : (
-                    <span className="font-mono text-base font-bold text-[#15803d]">
-                      Bs. {(cashReceived - settleOrder.total).toFixed(2)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center p-4 bg-[#f1f3ff] rounded-xl border border-[#e1e8fd] gap-2">
-                <div className="w-28 h-28 bg-white p-2 rounded-xl flex items-center justify-center shadow-xs border border-[#e1e8fd]">
-                  <span className="material-symbols-outlined text-[#141b2b] text-[80px]">
-                    qr_code_2
-                  </span>
-                </div>
-                <span className="font-mono text-xs text-[#5b403d] font-semibold">
-                  Escanee con Simple Móvil / BCP / BNB
-                </span>
-                <span className="font-mono text-sm font-bold text-[#af101a]">
-                  Total: Bs. {settleOrder.total.toFixed(2)}
-                </span>
-              </div>
-            )}
-          </div>
-        </AppModal>
+          total={settleOrder.total}
+          ticketNumber={settleOrder.ticketNumber}
+          orderType={settleOrder.orderType}
+          customer={selectedCustomer}
+          allowCustomerSelection={true}
+          customers={customers}
+          onNavigateToClients={onNavigateToClients}
+          onCustomerChange={(cust) => setSelectedCustomer(cust)}
+          itemCount={(() => {
+            const match = settleOrder.itemsSummary?.match(/^(\d+)x/);
+            return match ? parseInt(match[1], 10) : 1;
+          })()}
+          allowPendingPayment={false}
+          defaultWithInvoice={false}
+          onConfirmPayment={handleExecutePayment}
+        />
       )}
     </div>
   );

@@ -446,25 +446,40 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
         </div>
       </div>
 
-      {/* MODAL: Definición de Variante y Reglas Operativas (FR-001 POS) */}
+      {/* MODAL: Definición de Variante y Reglas Operativas (Solo Lectura) */}
       {selectedProductRule && (
         <AppModal
           isOpen={showRuleModal}
           onClose={() => setShowRuleModal(false)}
-          icon="tune"
-          title={`Definición de Variante — ${selectedProductRule.name}`}
-          description="FR-001 POS • Restricciones de Cocina y Despacho"
+          icon="visibility"
+          title={`Reglas de Armado — ${selectedProductRule.name}`}
+          description="Solo Lectura • Configuración activa de componentes y variantes para cocina y POS"
           maxWidth="2xl"
-          onConfirm={() => {
-            showToast('Reglas de armado guardadas y sincronizadas con el POS');
-            setShowRuleModal(false);
-          }}
-          confirmLabel="Guardar Reglas y Actualizar POS"
-          confirmIcon="save"
           showCancel={true}
           cancelLabel="Cerrar"
+          confirmLabel=""
+          onConfirm={undefined}
+          footerExtra={
+            <div className="flex items-center gap-1.5 text-xs text-[#5b403d] font-mono">
+              <span className="material-symbols-outlined text-[16px] text-[#15803d]">lock</span>
+              <span>Modo Solo Lectura (Solo visualización)</span>
+            </div>
+          }
         >
           <div className="flex flex-col gap-4 text-xs -mt-2">
+            {/* Read-Only Notice Banner */}
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-950 text-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-blue-700 text-[18px]">info</span>
+                <span>
+                  <strong>Vista de Reglas Registradas:</strong> Refleja fielmente la configuración seleccionada en <em>"Configurar componentes y variantes"</em>.
+                </span>
+              </div>
+              <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-mono text-[10px] font-bold rounded uppercase">
+                Solo Lectura
+              </span>
+            </div>
+
             {/* Tabs */}
             <div className="flex items-center border-b border-[#e1e8fd] bg-[#f9f9ff] -mx-4 -mt-2 px-4 rounded-t-lg">
               <button

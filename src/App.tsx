@@ -37,6 +37,8 @@ export default function App() {
   const [shiftName, setShiftName] = useState<string>('MAÑANA');
   const [cashierName, setCashierName] = useState<string>('Roxana Rodríguez');
   const [userRole, setUserRole] = useState<UserRole>('CAJERA');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
   const { login, switchRole } = useAuthStore();
 
@@ -211,6 +213,10 @@ export default function App() {
         cashierName={cashierName}
         userRole={userRole}
         activeOrdersCount={activeKitchenCount}
+        sidebarCollapsed={sidebarCollapsed}
+        onToggleSidebar={() => setSidebarCollapsed((prev) => !prev)}
+        onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* POS Sidebar Navigation */}
@@ -220,10 +226,18 @@ export default function App() {
         onNavigate={setCurrentScreen}
         onLogout={handleLogout}
         activeKitchenCount={activeKitchenCount}
+        collapsed={sidebarCollapsed}
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
+        onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
       />
 
-      {/* Main Content Area (offset by header 4rem and sidebar 16rem) */}
-      <main className="pt-20 pl-4 pr-4 pb-8 sm:pr-6 md:pl-70 max-w-[1600px] min-h-[calc(100vh-4rem)]">
+      {/* Main Content Area (offset by header 4rem and dynamic responsive sidebar offset) */}
+      <main
+        className={`pt-20 px-3 sm:px-6 pb-8 transition-all duration-200 ease-in-out min-h-[calc(100vh-4rem)] ${
+          sidebarCollapsed ? 'md:pl-22' : 'md:pl-70'
+        } max-w-[1600px]`}
+      >
         {currentScreen === 'super-admin' && (
           <SuperAdminDashboard onNavigate={setCurrentScreen} />
         )}

@@ -11,72 +11,176 @@
   }
 }
 
-/* Dark theme global overrides and high contrast palette */
-.dark, [data-theme="dark"], body.dark-theme {
+/* ==========================================================================
+   MUI Palette Design Tokens & Dark Theme High-Contrast Integration
+   MUI Dark Mode Standards:
+   - background.default: #0b0f19 (deep slate)
+   - background.paper: #131b2e (elevated surface)
+   - background.subtle: #1a233b (segmented controls, secondary containers)
+   - text.primary: #f8fafc (high contrast WCAG AA)
+   - text.secondary: #94a3b8 (readable muted)
+   - divider / border: #263554 (crisp structure)
+   - action.hover: #243050 / #1e293b
+   ========================================================================== */
+
+.dark, [data-theme="dark"], body.dark-theme, [data-toolpad-color-scheme="dark"] {
   color-scheme: dark;
 }
 
-/* Backgrounds in dark mode */
+/* 1. App Root & General Canvas Background */
 .dark body,
 .dark .app-main-bg,
 [data-theme="dark"] body,
-[data-theme="dark"] .app-main-bg {
+[data-theme="dark"] .app-main-bg,
+[data-toolpad-color-scheme="dark"] body,
+[data-toolpad-color-scheme="dark"] .app-main-bg {
   background-color: #0b0f19 !important;
-  color: #f1f5f9 !important;
-}
-
-/* Card and surface elevation in dark mode */
-.dark .bg-white,
-[data-theme="dark"] .bg-white {
-  background-color: #131b2e !important;
-  color: #f1f5f9 !important;
-}
-
-/* Subtle inner background like f9f9ff, f8f9ff, f1f3ff */
-.dark .bg-\[\#f9f9ff\],
-.dark .bg-\[\#f8f9ff\],
-.dark .bg-\[\#f1f3ff\],
-[data-theme="dark"] .bg-\[\#f9f9ff\],
-[data-theme="dark"] .bg-\[\#f8f9ff\],
-[data-theme="dark"] .bg-\[\#f1f3ff\] {
-  background-color: #1a233b !important;
-}
-
-/* Hover surfaces */
-.dark .hover\:bg-\[\#f1f3ff\]:hover,
-.dark .hover\:bg-\[\#e9edff\]:hover,
-[data-theme="dark"] .hover\:bg-\[\#f1f3ff\]:hover,
-[data-theme="dark"] .hover\:bg-\[\#e9edff\]:hover {
-  background-color: #243050 !important;
-}
-
-/* Borders in dark mode */
-.dark .border-\[\#e1e8fd\],
-.dark .border-\[\#f1f3ff\],
-[data-theme="dark"] .border-\[\#e1e8fd\],
-[data-theme="dark"] .border-\[\#f1f3ff\] {
-  border-color: #263554 !important;
-}
-
-/* Primary text headers in dark mode */
-.dark .text-\[\#141b2b\],
-[data-theme="dark"] .text-\[\#141b2b\] {
   color: #f8fafc !important;
 }
 
-/* Secondary muted text in dark mode - high readability contrast */
+/* 2. Paper & Elevated Card Surfaces (MUI background.paper: #131b2e) */
+.dark .bg-white,
+[data-theme="dark"] .bg-white,
+[data-toolpad-color-scheme="dark"] .bg-white {
+  background-color: #131b2e !important;
+  color: #f8fafc !important;
+}
+
+/* 3. Subtle & Inner Surfaces (Category bars, segmented button trays, table headers) */
+.dark .bg-\[\#f9f9ff\],
+.dark .bg-\[\#f8f9ff\],
+.dark .bg-\[\#f1f3ff\],
+.dark .bg-\[\#fff8f7\],
+.dark .bg-\[\#f8f9fc\],
+.dark .bg-\[\#f1f5f9\],
+.dark .bg-slate-50,
+.dark .bg-gray-50,
+[data-theme="dark"] .bg-\[\#f9f9ff\],
+[data-theme="dark"] .bg-\[\#f8f9ff\],
+[data-theme="dark"] .bg-\[\#f1f3ff\],
+[data-theme="dark"] .bg-\[\#fff8f7\],
+[data-theme="dark"] .bg-\[\#f8f9fc\],
+[data-theme="dark"] .bg-\[\#f1f5f9\],
+[data-theme="dark"] .bg-slate-50,
+[data-theme="dark"] .bg-gray-50,
+[data-toolpad-color-scheme="dark"] .bg-\[\#f9f9ff\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#f8f9ff\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#f1f3ff\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#fff8f7\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#f8f9fc\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#f1f5f9\],
+[data-toolpad-color-scheme="dark"] .bg-slate-50,
+[data-toolpad-color-scheme="dark"] .bg-gray-50 {
+  background-color: #1a233b !important;
+  color: #cbd5e1 !important;
+}
+
+/* 4. Active Segmented Buttons & Cards on Dark Mode */
+.dark button.bg-white,
+[data-theme="dark"] button.bg-white,
+[data-toolpad-color-scheme="dark"] button.bg-white {
+  background-color: #243050 !important;
+  color: #f8fafc !important;
+}
+
+/* Active red branding accents remain punchy with high contrast text */
+.dark .bg-\[\#d32f2f\],
+[data-theme="dark"] .bg-\[\#d32f2f\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#d32f2f\] {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+}
+
+/* 5. Hover Surfaces (MUI action.hover: #243050) */
+.dark .hover\:bg-\[\#f1f3ff\]:hover,
+.dark .hover\:bg-\[\#e9edff\]:hover,
+.dark .hover\:bg-\[\#f9f9ff\]:hover,
+.dark .hover\:bg-\[\#f1f5f9\]:hover,
+.dark .hover\:bg-gray-50:hover,
+[data-theme="dark"] .hover\:bg-\[\#f1f3ff\]:hover,
+[data-theme="dark"] .hover\:bg-\[\#e9edff\]:hover,
+[data-theme="dark"] .hover\:bg-\[\#f9f9ff\]:hover,
+[data-theme="dark"] .hover\:bg-\[\#f1f5f9\]:hover,
+[data-theme="dark"] .hover\:bg-gray-50:hover,
+[data-toolpad-color-scheme="dark"] .hover\:bg-\[\#f1f3ff\]:hover,
+[data-toolpad-color-scheme="dark"] .hover\:bg-\[\#e9edff\]:hover,
+[data-toolpad-color-scheme="dark"] .hover\:bg-\[\#f9f9ff\]:hover,
+[data-toolpad-color-scheme="dark"] .hover\:bg-\[\#f1f5f9\]:hover,
+[data-toolpad-color-scheme="dark"] .hover\:bg-gray-50:hover {
+  background-color: #243050 !important;
+}
+
+/* 6. Structural Borders & Dividers (MUI divider: #263554) */
+.dark .border-\[\#e1e8fd\],
+.dark .border-\[\#f1f3ff\],
+.dark .border-\[\#e2e8f0\],
+.dark .border-\[\#cbd5e1\],
+.dark .divide-\[\#f1f3ff\] > :not([hidden]) ~ :not([hidden]),
+.dark .divide-\[\#e1e8fd\] > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .border-\[\#e1e8fd\],
+[data-theme="dark"] .border-\[\#f1f3ff\],
+[data-theme="dark"] .border-\[\#e2e8f0\],
+[data-theme="dark"] .border-\[\#cbd5e1\],
+[data-theme="dark"] .divide-\[\#f1f3ff\] > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .divide-\[\#e1e8fd\] > :not([hidden]) ~ :not([hidden]),
+[data-toolpad-color-scheme="dark"] .border-\[\#e1e8fd\],
+[data-toolpad-color-scheme="dark"] .border-\[\#f1f3ff\],
+[data-toolpad-color-scheme="dark"] .border-\[\#e2e8f0\],
+[data-toolpad-color-scheme="dark"] .border-\[\#cbd5e1\],
+[data-toolpad-color-scheme="dark"] .divide-\[\#f1f3ff\] > :not([hidden]) ~ :not([hidden]),
+[data-toolpad-color-scheme="dark"] .divide-\[\#e1e8fd\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #263554 !important;
+}
+
+/* 7. Primary Text (MUI text.primary: #f8fafc) */
+.dark .text-\[\#141b2b\],
+.dark .text-\[\#1e293b\],
+.dark .text-\[\#0f172a\],
+.dark .text-\[\#334155\],
+[data-theme="dark"] .text-\[\#141b2b\],
+[data-theme="dark"] .text-\[\#1e293b\],
+[data-theme="dark"] .text-\[\#0f172a\],
+[data-theme="dark"] .text-\[\#334155\],
+[data-toolpad-color-scheme="dark"] .text-\[\#141b2b\],
+[data-toolpad-color-scheme="dark"] .text-\[\#1e293b\],
+[data-toolpad-color-scheme="dark"] .text-\[\#0f172a\],
+[data-toolpad-color-scheme="dark"] .text-\[\#334155\] {
+  color: #f8fafc !important;
+}
+
+/* 8. Secondary Muted Text (MUI text.secondary: #94a3b8) */
 .dark .text-\[\#5b403d\],
-[data-theme="dark"] .text-\[\#5b403d\] {
+.dark .text-\[\#64748b\],
+.dark .text-gray-500,
+.dark .text-slate-500,
+[data-theme="dark"] .text-\[\#5b403d\],
+[data-theme="dark"] .text-\[\#64748b\],
+[data-theme="dark"] .text-gray-500,
+[data-theme="dark"] .text-slate-500,
+[data-toolpad-color-scheme="dark"] .text-\[\#5b403d\],
+[data-toolpad-color-scheme="dark"] .text-\[\#64748b\],
+[data-toolpad-color-scheme="dark"] .text-gray-500,
+[data-toolpad-color-scheme="dark"] .text-slate-500 {
   color: #94a3b8 !important;
 }
 
-/* Inputs in dark mode */
+/* Red accents in dark mode are tuned for clear contrast */
+.dark .text-\[\#af101a\],
+[data-theme="dark"] .text-\[\#af101a\],
+[data-toolpad-color-scheme="dark"] .text-\[\#af101a\] {
+  color: #ff6b6b !important;
+}
+
+/* 9. Form Inputs, Selects & Textareas */
 .dark input,
 .dark select,
 .dark textarea,
 [data-theme="dark"] input,
 [data-theme="dark"] select,
-[data-theme="dark"] textarea {
+[data-theme="dark"] textarea,
+[data-toolpad-color-scheme="dark"] input,
+[data-toolpad-color-scheme="dark"] select,
+[data-toolpad-color-scheme="dark"] textarea {
   background-color: #162036 !important;
   color: #f8fafc !important;
   border-color: #2a3a5c !important;
@@ -85,59 +189,144 @@
 .dark input::placeholder,
 .dark textarea::placeholder,
 [data-theme="dark"] input::placeholder,
-[data-theme="dark"] textarea::placeholder {
+[data-theme="dark"] textarea::placeholder,
+[data-toolpad-color-scheme="dark"] input::placeholder,
+[data-toolpad-color-scheme="dark"] textarea::placeholder {
   color: #64748b !important;
 }
 
-/* Header and navigation surface in dark mode */
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus,
+[data-toolpad-color-scheme="dark"] input:focus,
+[data-toolpad-color-scheme="dark"] select:focus,
+[data-toolpad-color-scheme="dark"] textarea:focus {
+  border-color: #d32f2f !important;
+  background-color: #1a243d !important;
+}
+
+/* 10. Header, Sidebar & Navigation Surfaces */
 .dark header,
-[data-theme="dark"] header {
-  background-color: rgba(19, 27, 46, 0.95) !important;
+[data-theme="dark"] header,
+[data-toolpad-color-scheme="dark"] header {
+  background-color: rgba(19, 27, 46, 0.96) !important;
   border-bottom-color: #263554 !important;
 }
 
 .dark aside,
-[data-theme="dark"] aside {
+[data-theme="dark"] aside,
+[data-toolpad-color-scheme="dark"] aside {
   background-color: #111827 !important;
   border-right-color: #263554 !important;
 }
 
-/* Modal overlays and dialog containers in dark mode */
+.dark aside .bg-\[\#e1e8fd\],
+[data-theme="dark"] aside .bg-\[\#e1e8fd\],
+[data-toolpad-color-scheme="dark"] aside .bg-\[\#e1e8fd\] {
+  background-color: #263554 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark aside button:not(.bg-\[\#d32f2f\]),
+[data-theme="dark"] aside button:not(.bg-\[\#d32f2f\]),
+[data-toolpad-color-scheme="dark"] aside button:not(.bg-\[\#d32f2f\]) {
+  color: #94a3b8 !important;
+}
+
+.dark aside button:not(.bg-\[\#d32f2f\]):hover,
+[data-theme="dark"] aside button:not(.bg-\[\#d32f2f\]):hover,
+[data-toolpad-color-scheme="dark"] aside button:not(.bg-\[\#d32f2f\]):hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* 11. Modal Overlays & Dialog Containers */
 .dark .bg-white.rounded-2xl,
 .dark .bg-white.rounded-xl,
 [data-theme="dark"] .bg-white.rounded-2xl,
-[data-theme="dark"] .bg-white.rounded-xl {
+[data-theme="dark"] .bg-white.rounded-xl,
+[data-toolpad-color-scheme="dark"] .bg-white.rounded-2xl,
+[data-toolpad-color-scheme="dark"] .bg-white.rounded-xl {
   background-color: #131b2e !important;
   border-color: #263554 !important;
 }
 
-/* Pill tags in dark mode */
+/* Modal Dialog Footer */
+.dark .bg-\[\#f8f9fc\],
+[data-theme="dark"] .bg-\[\#f8f9fc\],
+[data-toolpad-color-scheme="dark"] .bg-\[\#f8f9fc\] {
+  background-color: #0f1626 !important;
+  border-color: #263554 !important;
+}
+
+/* 12. Badges & Chips */
 .dark .bg-amber-50,
-[data-theme="dark"] .bg-amber-50 {
-  background-color: rgba(245, 158, 11, 0.12) !important;
+[data-theme="dark"] .bg-amber-50,
+[data-toolpad-color-scheme="dark"] .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
   color: #fbbf24 !important;
   border-color: rgba(245, 158, 11, 0.3) !important;
 }
 
 .dark .bg-blue-50,
-[data-theme="dark"] .bg-blue-50 {
+[data-theme="dark"] .bg-blue-50,
+[data-toolpad-color-scheme="dark"] .bg-blue-50 {
   background-color: rgba(59, 130, 246, 0.15) !important;
   color: #93c5fd !important;
   border-color: rgba(59, 130, 246, 0.3) !important;
 }
 
 .dark .bg-red-50,
-[data-theme="dark"] .bg-red-50 {
-  background-color: rgba(239, 68, 68, 0.15) !important;
+.dark .bg-rose-50,
+.dark .bg-\[\#ffdad6\],
+[data-theme="dark"] .bg-red-50,
+[data-theme="dark"] .bg-rose-50,
+[data-theme="dark"] .bg-\[\#ffdad6\],
+[data-toolpad-color-scheme="dark"] .bg-red-50,
+[data-toolpad-color-scheme="dark"] .bg-rose-50,
+[data-toolpad-color-scheme="dark"] .bg-\[\#ffdad6\] {
+  background-color: rgba(239, 68, 68, 0.18) !important;
   color: #fca5a5 !important;
   border-color: rgba(239, 68, 68, 0.3) !important;
 }
 
 .dark .bg-emerald-50,
-[data-theme="dark"] .bg-emerald-50 {
+[data-theme="dark"] .bg-emerald-50,
+[data-toolpad-color-scheme="dark"] .bg-emerald-50 {
   background-color: rgba(16, 185, 129, 0.15) !important;
   color: #6ee7b7 !important;
   border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* 13. Tables (Headers, Zebra rows & cell borders) */
+.dark table thead,
+[data-theme="dark"] table thead,
+[data-toolpad-color-scheme="dark"] table thead {
+  background-color: #1a233b !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #263554 !important;
+}
+
+.dark table th,
+[data-theme="dark"] table th,
+[data-toolpad-color-scheme="dark"] table th {
+  color: #94a3b8 !important;
+  background-color: #1a233b !important;
+}
+
+.dark table tbody tr,
+[data-theme="dark"] table tbody tr,
+[data-toolpad-color-scheme="dark"] table tbody tr {
+  background-color: #131b2e !important;
+}
+
+.dark table tbody tr:hover,
+[data-theme="dark"] table tbody tr:hover,
+[data-toolpad-color-scheme="dark"] table tbody tr:hover {
+  background-color: #1d2740 !important;
 }
 
 /* Hide native scrollbars where appropriate */
@@ -148,5 +337,3 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-

@@ -22,6 +22,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('wonder_theme', theme);
     const root = document.documentElement;
+    root.setAttribute('data-toolpad-color-scheme', theme);
     if (theme === 'dark') {
       root.classList.add('dark');
       root.setAttribute('data-theme', 'dark');

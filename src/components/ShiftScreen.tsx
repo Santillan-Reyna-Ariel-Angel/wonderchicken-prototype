@@ -60,21 +60,21 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
         )}
 
         {/* Top Banner Status */}
-        <div className="bg-[#141b2b] text-white p-4 sm:p-5 rounded-xl border border-white/10 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 rounded-xl border border-[#e1e8fd] bg-transparent shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center shrink-0 border border-white/20">
+            <div className="w-10 h-10 rounded-full bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
               <span className="material-symbols-outlined text-[20px]">lock_open</span>
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm sm:text-base text-white">
+                <span className="font-bold text-sm sm:text-base text-inherit">
                   Turno Activo en Operación
                 </span>
-                <span className="bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase border border-emerald-500/30">
+                <span className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase border border-emerald-500/30">
                   ABIERTO
                 </span>
               </div>
-              <span className="font-mono text-xs text-[#e1e8fd] opacity-80">
+              <span className="font-mono text-xs opacity-75">
                 Operador: {shift.cashierName} • Caja {shift.cashRegisterId} • {shift.openedAt || 'Hoy'}
               </span>
             </div>
@@ -147,16 +147,16 @@ export const ShiftScreen: React.FC<ShiftScreenProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#fff8f7] p-4 rounded-xl border border-[#af101a]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-[#fff8f7] dark:bg-[#1a233b] p-4 rounded-xl border border-[#af101a]/20 dark:border-[#263554] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs text-[#5b403d]">Fondo Inicial Declarado en Gaveta</span>
-              <div className="text-2xl font-mono font-bold text-[#15803d]">
+              <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">Fondo Inicial Declarado en Gaveta</span>
+              <div className="text-2xl font-mono font-bold text-[#15803d] dark:text-[#4ade80]">
                 Bs. {Number(shift.initialAmount || 0).toFixed(2)}
               </div>
             </div>
-            <div className="text-right sm:text-right text-xs text-[#5b403d]">
+            <div className="text-right sm:text-right text-xs text-[#5b403d] dark:text-[#94a3b8]">
               <div>Apertura registrada:</div>
-              <div className="font-mono font-bold text-[#141b2b]">{shift.openedAt || 'Hoy'}</div>
+              <div className="font-mono font-bold text-[#141b2b] dark:text-[#f8fafc]">{shift.openedAt || 'Hoy'}</div>
             </div>
           </div>
 

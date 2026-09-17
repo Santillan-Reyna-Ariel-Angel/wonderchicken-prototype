@@ -6,18 +6,26 @@ interface SidebarProps {
   currentScreen: ScreenType;
   currentRole?: UserRole;
   onNavigate: (screen: ScreenType) => void;
-  onLogout: () => void;
+  onLogout?: () => void;
   activeKitchenCount?: number;
   pendingOrdersCount?: number;
+  collapsed?: boolean;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
+  onToggleCollapse?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentScreen,
   currentRole = 'CAJERA',
   onNavigate,
-  onLogout,
+  onLogout: _onLogout,
   activeKitchenCount = 4,
   pendingOrdersCount = 3,
+  collapsed = false,
+  mobileOpen = false,
+  onCloseMobile,
+  onToggleCollapse,
 }) => {
   const { shift } = useShiftsStore();
 
@@ -116,86 +124,157 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const sections = getNavSections();
 
   return (
-    <aside className="fixed left-0 top-16 bottom-0 w-64 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-r border-[#e1e8fd] z-40 flex flex-col justify-between p-3 select-none overflow-y-auto">
-      <div className="flex flex-col gap-4">
-        {/* Dynamic Navigation Sections */}
-        {sections.map((sec, secIdx) => (
-          <div key={secIdx} className="flex flex-col gap-1">
-            <div className="px-2 py-1 font-mono text-[10px] text-[#5b403d] uppercase tracking-wider font-bold">
-              {sec.title}
-            </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 md:hidden transition-opacity"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
 
-            <nav className="flex flex-col gap-0.5">
-              {sec.items.map((item) => {
-                const isActive = currentScreen === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => onNavigate(item.id)}
-                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all text-left cursor-pointer group ${
-                      isActive
-                        ? 'bg-[#d32f2f] text-white font-bold shadow-xs'
-                        : 'text-[#5b403d] hover:bg-[#f1f3ff] hover:text-[#141b2b] font-medium'
-                    }`}
-                    title={item.path ? `Ruta: ${item.path}` : undefined}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="material-symbols-outlined text-[19px] shrink-0">{item.icon}</span>
-                      <div className="flex flex-col min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          {item.nodeBadge && (
+      {/* Main Sidebar (Desktop collapsible & Mobile off-canvas drawer) */}
+      <aside
+        className={`fixed top-16 bottom-0 z-40 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-r border-[#e1e8fd] flex flex-col justify-between p-2 sm:p-3 select-none overflow-y-auto transition-all duration-200 ease-in-out ${
+          /* Mobile Drawer: visible if mobileOpen, hidden off-screen otherwise */
+          mobileOpen ? 'left-0 w-72' : '-left-80 md:left-0'
+        } ${
+          /* Desktop collapsed vs expanded */
+          collapsed ? 'md:w-18' : 'md:w-64'
+        }`}
+      >
+        <div className="flex flex-col gap-3">
+          {/* Mobile Drawer Header with Close button */}
+          <div className="flex md:hidden items-center justify-between pb-2 border-b border-[#f1f3ff] px-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-[#141b2b]">MENÚ DE NAVEGACIÓN</span>
+            </div>
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="p-1 rounded-md text-[#5b403d] hover:bg-[#ffdad6] hover:text-[#ba1a1a] cursor-pointer"
+              title="Cerrar menú"
+            >
+              <span className="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
+
+          {/* Dynamic Navigation Sections */}
+          {sections.map((sec, secIdx) => (
+            <div key={secIdx} className="flex flex-col gap-1">
+              {/* Section title (hidden when collapsed on desktop) */}
+              <div
+                className={`px-2 py-1 font-mono text-[10px] text-[#5b403d] uppercase tracking-wider font-bold transition-opacity ${
+                  collapsed ? 'md:hidden' : 'block'
+                }`}
+              >
+                {sec.title}
+              </div>
+
+              {/* Collapsed divider for desktop */}
+              {collapsed && secIdx > 0 && (
+                <div className="hidden md:block my-1 border-t border-[#f1f3ff]" />
+              )}
+
+              <nav className="flex flex-col gap-0.5">
+                {sec.items.map((item) => {
+                  const isActive = currentScreen === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        onNavigate(item.id);
+                        if (mobileOpen && onCloseMobile) {
+                          onCloseMobile();
+                        }
+                      }}
+                      className={`relative flex items-center ${
+                        collapsed ? 'md:justify-center md:px-2' : 'justify-between px-3'
+                      } py-2.5 rounded-lg text-xs transition-all text-left cursor-pointer group ${
+                        isActive
+                          ? 'bg-[#d32f2f] text-white font-bold shadow-xs'
+                          : 'text-[#5b403d] hover:bg-[#f1f3ff] hover:text-[#141b2b] font-medium'
+                      }`}
+                      title={collapsed ? `${item.label} (${item.path || ''})` : item.path ? `Ruta: ${item.path}` : undefined}
+                    >
+                      <div className={`flex items-center ${collapsed ? 'md:justify-center' : 'gap-2.5'} min-w-0`}>
+                        <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
+
+                        {/* Text and badges (hidden on desktop if collapsed) */}
+                        <div
+                          className={`flex flex-col min-w-0 transition-opacity ${
+                            collapsed ? 'md:hidden' : 'flex'
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5">
+                            {item.nodeBadge && (
+                              <span
+                                className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold shrink-0 ${
+                                  isActive
+                                    ? 'bg-white/20 text-white'
+                                    : 'bg-[#e1e8fd] dark:bg-[#263554] text-[#141b2b] dark:text-[#e2e8f0]'
+                                }`}
+                              >
+                                {item.nodeBadge}
+                              </span>
+                            )}
+                            <span className={`truncate ${isActive ? 'text-white' : 'text-inherit'}`}>{item.label}</span>
+                          </div>
+                          {item.path && (
                             <span
-                              className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold shrink-0 ${
-                                isActive
-                                  ? 'bg-white/20 text-white'
-                                  : 'bg-[#e1e8fd] text-[#141b2b]'
+                              className={`font-mono text-[9px] tracking-tight truncate ${
+                                isActive ? 'text-white/75' : 'text-[#5b403d]/70 group-hover:text-[#af101a]'
                               }`}
                             >
+                              {item.path}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Item counter badge */}
+                      {item.badge && (
+                        <span
+                          className={`font-mono text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ml-1 ${
+                            collapsed ? 'md:absolute md:-top-1 md:-right-1 md:text-[8px] md:px-1' : ''
+                          } ${
+                            isActive
+                              ? 'bg-white text-[#d32f2f]'
+                              : 'bg-[#fec330] text-[#6f5100]'
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+
+                      {/* Tooltip flyout on desktop when collapsed */}
+                      {collapsed && (
+                        <div className="hidden md:group-hover:flex absolute left-full ml-2.5 px-2.5 py-1.5 bg-[#141b2b] text-white text-xs rounded-md shadow-lg font-medium whitespace-nowrap z-50 items-center gap-1.5 pointer-events-none animate-fade-in">
+                          {item.nodeBadge && (
+                            <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-white/20 text-white font-bold">
                               {item.nodeBadge}
                             </span>
                           )}
-                          <span className="truncate">{item.label}</span>
+                          <span>{item.label}</span>
+                          {item.badge && (
+                            <span className="bg-[#fec330] text-[#6f5100] font-mono text-[9px] font-bold px-1 rounded-full ml-1">
+                              {item.badge}
+                            </span>
+                          )}
                         </div>
-                        {item.path && (
-                          <span
-                            className={`font-mono text-[9px] tracking-tight truncate ${
-                              isActive ? 'text-white/75' : 'text-[#5b403d]/70 group-hover:text-[#af101a]'
-                            }`}
-                          >
-                            {item.path}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {item.badge && (
-                      <span
-                        className={`font-mono text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ml-1 ${
-                          isActive
-                            ? 'bg-white text-[#d32f2f]'
-                            : 'bg-[#fec330] text-[#6f5100]'
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        ))}
-      </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          ))}
+        </div>
 
-      <div className="pt-3 flex flex-col gap-1.5 border-t border-[#f1f3ff]">
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-[#5b403d] hover:bg-[#ffdad6] hover:text-[#ba1a1a] transition-colors font-medium cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[19px]">logout</span>
-          <span>Cerrar Sesión</span>
-        </button>
-      </div>
-    </aside>
+        {/* Sidebar bottom actions */}
+      </aside>
+    </>
   );
 };
 

@@ -162,9 +162,9 @@ export interface PresasCount {
 
 export interface ComboConfiguration {
   presas: PresasCount;
-  side: 'mixto' | 'solo-arroz' | 'solo-papa' | 'smiles';
-  drink: string;
-  temperature: 'FRÍA' | 'NATURAL';
+  side?: 'mixto' | 'solo-arroz' | 'solo-papa' | 'smiles' | string;
+  drink?: string;
+  temperature?: 'FRÍA' | 'NATURAL';
   notes?: string;
 }
 
