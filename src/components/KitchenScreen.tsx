@@ -420,7 +420,7 @@ export const KitchenScreen: React.FC<KitchenScreenProps> = ({ orders = [], onBac
         <OrderTurnsBankDisplay
           orders={(() => {
             // Strictly tickets ready for pickup (status: 'LISTO' or 'ANUNCIADO')
-            const kdsReady = tickets
+            const kdsReady: ReadyTurnOrder[] = tickets
               .filter((t) => t.status === 'LISTO' || t.status === 'ANUNCIADO')
               .map((t, idx) => ({
                 id: t.id,
@@ -434,20 +434,20 @@ export const KitchenScreen: React.FC<KitchenScreenProps> = ({ orders = [], onBac
               }));
 
             // Include ready orders from POS / Completed orders if not duplicate
-            const completedReady = orders
+            const completedReady: ReadyTurnOrder[] = orders
               .filter((o) => o.status === 'LISTO')
               .map((o, idx) => ({
-                id: o.id,
+                id: `completed-${o.ticketNumber}`,
                 ticketNumber: o.ticketNumber,
-                orderType: o.orderType,
-                customerName: o.customer.name,
+                orderType: o.orderType === 'MESA' ? 'MESA' : 'LLEVAR',
+                customerName: o.customer.fullName,
                 cashRegister: (kdsReady.length + idx) % 2 === 0 ? 'caja01' : 'caja02',
                 pickupPoint: (kdsReady.length + idx) % 2 === 0 ? 'Caja 01' : 'Caja 02',
                 timeElapsed: 'Listo',
                 readyTimestamp: 'Listo',
               }));
 
-            const combined = [...kdsReady];
+            const combined: ReadyTurnOrder[] = [...kdsReady];
             completedReady.forEach((co) => {
               if (!combined.some((t) => t.ticketNumber === co.ticketNumber)) {
                 combined.push(co);

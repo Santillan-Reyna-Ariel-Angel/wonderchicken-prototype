@@ -29,7 +29,7 @@ export type ScreenType =
   | '/super-admin/branches'
   | 'comanda-publica';
 
-export type OrderType = 'MESA' | 'LLEVAR';
+export type OrderType = 'MESA' | 'LLEVAR' | 'DELIVERY';
 
 export type OrderStatus = 
   | 'CREATED' 

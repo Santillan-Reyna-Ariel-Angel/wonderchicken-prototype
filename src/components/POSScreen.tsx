@@ -104,6 +104,7 @@ export const POSScreen: React.FC<POSScreenProps> = ({
       id: 'p-003',
       name: 'Combo Wonder',
       price: 36.00,
+      isCombo: true,
     };
 
     setCartItems((prev) => [

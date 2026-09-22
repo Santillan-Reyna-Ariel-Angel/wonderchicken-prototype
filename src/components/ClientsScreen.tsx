@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Customer, UserRole } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDataGridTable, TableColumn, TableAction } from '../commonComponents/MuiDataGridTable';
 
 interface ClientsScreenProps {
   customers: Customer[];
@@ -32,11 +33,6 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [birthdate, setBirthdate] = useState('');
-
-  // Table filtering & pagination state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [page, setPage] = useState<number>(0);
 
   // Toast notification
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -146,28 +142,122 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
     handleCloseModal();
   };
 
-  // Filtered customers across the entire brand
-  const filteredList = useMemo(() => {
-    return customers.filter((cust) => {
-      if (!searchQuery.trim()) return true;
-      const q = searchQuery.toLowerCase();
-      const matchName = cust.fullName.toLowerCase().includes(q);
-      const matchCi = cust.ci?.toLowerCase().includes(q);
-      const matchNit = cust.nit?.toLowerCase().includes(q);
-      const matchPhone = cust.phone?.toLowerCase().includes(q);
-      const matchEmail = cust.email?.toLowerCase().includes(q);
+  // Column definitions for MuiDataGridTable
+  const clientColumns: TableColumn<Customer>[] = useMemo(
+    () => [
+      {
+        field: 'fullName',
+        headerName: 'Cliente / Razón Social',
+        minWidth: 320,
+        flex: 2,
+        renderCell: ({ row }) => (
+          <div className="flex flex-col justify-center min-w-0 w-full py-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-sm text-[#0f172a] leading-tight">
+                {row.fullName}
+              </span>
+              {row.isCorporate ? (
+                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] font-mono text-[10px] font-bold px-1.5 py-0.5 rounded leading-none shrink-0">
+                  CORP
+                </span>
+              ) : (
+                <span className="bg-[#f1f5f9] text-[#475569] font-mono text-[10px] font-medium px-1.5 py-0.5 rounded leading-none shrink-0">
+                  NATURAL
+                </span>
+              )}
+            </div>
+            {row.email ? (
+              <span className="text-xs text-[#64748b] leading-tight mt-1 truncate">
+                {row.email}
+              </span>
+            ) : (
+              <span className="text-xs text-[#94a3b8] italic leading-tight mt-1">
+                Sin correo registrado
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        field: 'document',
+        headerName: 'Documento (CI / NIT)',
+        minWidth: 160,
+        flex: 1,
+        valueGetter: (_, row) => row.nit || row.ci || '',
+        renderCell: ({ row }) => (
+          <div className="flex flex-col justify-center text-xs">
+            {row.nit ? (
+              <div className="flex items-center gap-1.5 font-mono">
+                <span className="bg-[#fee2e2] text-[#991b1b] font-bold text-[10px] px-1.5 py-0.5 rounded">
+                  NIT
+                </span>
+                <span className="font-bold text-[#b91c1c]">{row.nit}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 font-mono text-[#1e293b]">
+                <span className="bg-[#f1f5f9] text-[#475569] font-semibold text-[10px] px-1.5 py-0.5 rounded">
+                  CI
+                </span>
+                <span className="font-semibold">{row.ci || '-'}</span>
+              </div>
+            )}
+          </div>
+        ),
+      },
+      {
+        field: 'phone',
+        headerName: 'Contacto',
+        minWidth: 150,
+        flex: 0.9,
+        renderCell: ({ row }) => (
+          <div className="flex items-center gap-1.5 text-xs text-[#334155] font-mono">
+            <span className="material-symbols-outlined text-[#16a34a] text-[16px]">
+              call
+            </span>
+            <span className="font-medium">{row.phone || '-'}</span>
+          </div>
+        ),
+      },
+      {
+        field: 'demographics',
+        headerName: 'Datos Demográficos',
+        minWidth: 170,
+        flex: 1,
+        valueGetter: (_, row) => `${row.gender || ''} ${row.birthdate || ''}`,
+        renderCell: ({ row }) => (
+          <div className="flex flex-col justify-center min-w-0 w-full py-1">
+            <span className="font-semibold text-xs text-[#0f172a] leading-tight">
+              {row.gender || 'Hombre'}
+            </span>
+            {row.birthdate ? (
+              <span className="font-mono text-[11px] text-[#64748b] leading-tight mt-1">
+                Nac: {row.birthdate}
+              </span>
+            ) : (
+              <span className="text-[11px] text-[#94a3b8] italic leading-tight mt-1">
+                Sin fecha registrada
+              </span>
+            )}
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
-      return matchName || matchCi || matchNit || matchPhone || matchEmail;
-    });
-  }, [customers, searchQuery]);
-
-  // Pagination calculation
-  const totalRows = filteredList.length;
-  const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
-  const paginatedRows = useMemo(() => {
-    const start = page * rowsPerPage;
-    return filteredList.slice(start, start + rowsPerPage);
-  }, [filteredList, page, rowsPerPage]);
+  // Reusable actions configuration: triggers editing customer modal
+  const clientActions: TableAction<Customer>[] = useMemo(
+    () => [
+      {
+        label: 'Editar',
+        tooltip: 'Editar datos del cliente',
+        color: 'primary',
+        variant: 'outlined',
+        onClick: (cust) => handleOpenEditModal(cust),
+      },
+    ],
+    []
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -218,228 +308,31 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
         </div>
       </div>
 
-      {/* MUI-Style Data Table Container */}
-      <div className="bg-white rounded-xl border border-[#e2e8f0] shadow-xs overflow-hidden flex flex-col w-full">
-        {/* MUI Table Toolbar: Search */}
-        <div className="p-3.5 sm:p-4 bg-[#f8f9fc] border-b border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#334155]">
-              Clientes Registrados (Red Central)
-            </span>
-            <span className="bg-[#e2e8f0] text-[#334155] font-mono text-[11px] font-semibold px-2 py-0.5 rounded-full">
-              {filteredList.length} registrados
-            </span>
-          </div>
-
-          {/* Global Search Input */}
-          <div className="relative min-w-[260px] sm:w-80">
-            <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#64748b] text-[16px]">
-              search
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPage(0);
-              }}
-              placeholder="Buscar por nombre, CI, NIT, teléfono..."
-              className="w-full pl-8 pr-7 py-1.5 bg-white text-xs text-[#1e293b] rounded-lg border border-[#cbd5e1] outline-none focus:border-[#d32f2f] transition-all font-sans"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2 top-2 text-[#94a3b8] hover:text-[#334155] cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[14px]">close</span>
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* MUI Table View */}
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs border-collapse">
-            {/* Table Head - Removed 'Sucursal de Origen' */}
-            <thead className="bg-[#f1f3f9] text-[#475569] font-mono text-[11px] uppercase tracking-wider border-b border-[#e2e8f0]">
-              <tr>
-                <th className="py-3 px-4 font-bold">Cliente / Razón Social</th>
-                <th className="py-3 px-4 font-bold">Documento (CI / NIT)</th>
-                <th className="py-3 px-4 font-bold">Contacto</th>
-                <th className="py-3 px-4 font-bold">Datos Demográficos</th>
-                <th className="py-3 px-4 font-bold text-right">Acciones</th>
-              </tr>
-            </thead>
-
-            {/* Table Body */}
-            <tbody className="divide-y divide-[#f1f5f9]">
-              {paginatedRows.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-12 px-4 text-center">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <div className="w-12 h-12 rounded-full bg-[#f1f5f9] flex items-center justify-center text-[#94a3b8]">
-                        <span className="material-symbols-outlined text-[28px]">search_off</span>
-                      </div>
-                      <span className="font-bold text-sm text-[#334155]">
-                        No se encontraron clientes
-                      </span>
-                      <span className="text-xs text-[#64748b]">
-                        Intente ajustar los términos de búsqueda ingresados.
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                paginatedRows.map((cust) => {
-                  const initials = (cust.firstName?.[0] || cust.fullName[0] || 'C').toUpperCase();
-
-                  return (
-                    <tr
-                      key={cust.id}
-                      className="hover:bg-[#f8faff] transition-colors group"
-                    >
-                      {/* Cliente / Razón Social */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#f1f3ff] border border-[#cbd5e1] text-[#1e293b] font-mono font-bold text-xs flex items-center justify-center shrink-0">
-                            {initials}
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="font-bold text-xs text-[#0f172a] truncate">
-                                {cust.fullName}
-                              </span>
-                              {cust.isCorporate ? (
-                                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] font-mono text-[9px] font-bold px-1.5 py-0.5 rounded">
-                                  CORP
-                                </span>
-                              ) : (
-                                <span className="bg-[#f1f5f9] text-[#475569] font-mono text-[9px] font-medium px-1.5 py-0.5 rounded">
-                                  NATURAL
-                                </span>
-                              )}
-                            </div>
-                            {cust.email && (
-                              <span className="text-[11px] text-[#64748b] truncate">
-                                {cust.email}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Documento (CI / NIT) */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-1 font-mono text-xs text-[#0f172a]">
-                          {cust.nit ? (
-                            <span className="font-bold text-[#b91c1c]">NIT: {cust.nit}</span>
-                          ) : (
-                            <span className="font-semibold">{cust.ci}</span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Contacto */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-1.5 text-xs text-[#334155] font-mono">
-                          <span className="material-symbols-outlined text-[#15803d] text-[15px]">
-                            call
-                          </span>
-                          <span>{cust.phone || '-'}</span>
-                        </div>
-                      </td>
-
-                      {/* Datos Demográficos */}
-                      <td className="py-3 px-4">
-                        <div className="flex flex-col text-[11px] text-[#64748b]">
-                          <div className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[13px] text-[#64748b]">
-                              {cust.gender === 'Mujer' ? 'female' : 'male'}
-                            </span>
-                            <span>{cust.gender || 'Hombre'}</span>
-                          </div>
-                          {cust.birthdate && (
-                            <span className="font-mono text-[10px] text-[#475569]">
-                              Nac: {cust.birthdate}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Acciones: Exclusivamente editar sus datos */}
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(cust)}
-                          className="px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] hover:border-[#d32f2f] text-[#334155] hover:text-[#d32f2f] hover:bg-[#fff5f5] font-mono text-xs font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer"
-                          title="Editar datos del cliente"
-                        >
-                          <span className="material-symbols-outlined text-[15px]">edit</span>
-                          <span>Editar</span>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* MUI Table Pagination Footer */}
-        <div className="p-3 bg-[#f8f9fc] border-t border-[#e2e8f0] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#475569] font-mono">
-          <div className="flex items-center gap-2">
-            <span>Filas por página:</span>
-            <select
-              value={rowsPerPage}
-              onChange={(e) => {
-                setRowsPerPage(Number(e.target.value));
-                setPage(0);
-              }}
-              className="bg-white border border-[#cbd5e1] rounded px-2 py-0.5 outline-none text-xs text-[#1e293b] cursor-pointer"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span>
-              {totalRows === 0
-                ? '0 de 0'
-                : `${page * rowsPerPage + 1}–${Math.min((page + 1) * rowsPerPage, totalRows)} de ${totalRows}`}
-            </span>
-
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                disabled={page === 0}
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                className="w-7 h-7 rounded border border-[#cbd5e1] bg-white hover:bg-[#f1f5f9] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-[#334155]"
-                title="Página anterior"
-              >
-                <span className="material-symbols-outlined text-[16px]">chevron_left</span>
-              </button>
-
-              <span className="text-[11px] font-bold px-1">
-                {page + 1} / {totalPages}
-              </span>
-
-              <button
-                type="button"
-                disabled={page >= totalPages - 1}
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                className="w-7 h-7 rounded border border-[#cbd5e1] bg-white hover:bg-[#f1f5f9] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-[#334155]"
-                title="Página siguiente"
-              >
-                <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Reusable MUI X DataGrid Table Component */}
+      <MuiDataGridTable<Customer>
+        rows={customers}
+        columns={clientColumns}
+        actions={clientActions}
+        actionsColumnName="Acciones"
+        actionsColumnWidth={140}
+        rowHeight={64}
+        title="Directorio Central de Clientes"
+        badgeText={`${customers.length} registrados`}
+        showSearch={true}
+        searchPlaceholder="Buscar por nombre, CI, NIT, teléfono..."
+        searchFilter={(cust, q) =>
+          cust.fullName.toLowerCase().includes(q) ||
+          (cust.ci?.toLowerCase().includes(q) ?? false) ||
+          (cust.nit?.toLowerCase().includes(q) ?? false) ||
+          (cust.phone?.toLowerCase().includes(q) ?? false) ||
+          (cust.email?.toLowerCase().includes(q) ?? false)
+        }
+        emptyMessage="No se encontraron clientes"
+        emptySubMessage="Intente ajustar los términos de búsqueda ingresados."
+        pageSize={10}
+        pageSizeOptions={[5, 10, 20, 50]}
+        minHeight={500}
+      />
 
       {/* Modal: Nuevo Cliente / Editar Datos de Cliente */}
       <AppModal
