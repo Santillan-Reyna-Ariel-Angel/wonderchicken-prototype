@@ -8,6 +8,34 @@ interface HistoryScreenProps {
   onMarkPaid?: (ticketNumber: string) => void;
 }
 
+const formatComandaDate = (timestamp?: string): string => {
+  if (!timestamp) return '04/05/2024      20:46';
+  // If it already has DD/MM/YYYY and time
+  const matchFull = timestamp.match(/(\d{2}\/\d{2}\/\d{4})\s*(\d{1,2}:\d{2})/);
+  if (matchFull) {
+    return `${matchFull[1]}      ${matchFull[2]}`;
+  }
+  const timeMatch = timestamp.match(/(\d{1,2}:\d{2})/);
+  const timeStr = timeMatch ? timeMatch[1] : '20:46';
+  return `04/05/2024      ${timeStr}`;
+};
+
+const getComandaTicketHeader = (order: CompletedOrder): string => {
+  const ticketNum = order.ticketNumber.replace('#', '');
+  let destination = 'LLEVAR';
+  if (order.orderType === 'MESA') {
+    if (order.tableNumber && order.tableNumber.trim()) {
+      const cleanTable = order.tableNumber.trim().toUpperCase();
+      destination = cleanTable.startsWith('MESA') ? cleanTable : `MESA ${cleanTable}`;
+    } else {
+      destination = 'MESA';
+    }
+  } else {
+    destination = 'LLEVAR';
+  }
+  return `TICKET ${ticketNum} - ${destination}`;
+};
+
 export const HistoryScreen: React.FC<HistoryScreenProps> = ({
   orders,
   onBackToPOS,
@@ -101,8 +129,8 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                   <td className="py-3 px-4 font-mono font-bold text-[#af101a]">
                     {ord.ticketNumber}
                   </td>
-                  <td className="py-3 px-4 font-mono text-[#5b403d]">
-                    {ord.timestamp}
+                  <td className="py-3 px-4 font-mono text-[#5b403d] whitespace-pre">
+                    {formatComandaDate(ord.timestamp)}
                   </td>
                   <td className="py-3 px-4 font-mono font-semibold">
                     {ord.orderType === 'MESA' ? ord.tableNumber || 'Mesa' : 'Llevar'}
@@ -181,7 +209,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
           onClose={() => setSelectedOrder(null)}
           icon="receipt_long"
           title={`Ticket Comanda ${selectedOrder.ticketNumber}`}
-          description={`Sucursal Central • Caja 01 • ${selectedOrder.timestamp}`}
+          description={`Sucursal Central • Caja 01 • ${formatComandaDate(selectedOrder.timestamp)}`}
           maxWidth="sm"
           onConfirm={() => {
             showToast(`Imprimiendo copia del ticket ${selectedOrder.ticketNumber}`);
@@ -196,11 +224,11 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
           <div className="flex flex-col items-center text-center border-b border-dashed border-[#e2e8f0] pb-4">
             <span className="font-bold text-base text-[#141b2b]">WONDER CHICKEN</span>
             <span className="font-mono text-[11px] text-[#5b403d]">Sucursal Central • Caja 01</span>
-            <span className="font-mono text-xs font-bold text-[#af101a] mt-1">
-              TICKET COMANDA {selectedOrder.ticketNumber}
+            <span className="font-mono text-xs font-bold text-[#141b2b] mt-1">
+              {getComandaTicketHeader(selectedOrder)}
             </span>
-            <span className="font-mono text-[11px] text-[#5b403d]">
-              {selectedOrder.timestamp} • {selectedOrder.orderType === 'MESA' ? selectedOrder.tableNumber : 'LLEVAR'}
+            <span className="font-mono text-[11px] text-[#141b2b] whitespace-pre">
+              FECHA: {formatComandaDate(selectedOrder.timestamp)}
             </span>
           </div>
 
@@ -226,27 +254,16 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             ))}
           </div>
 
-          <div className="flex flex-col gap-1 text-xs font-mono bg-[#f8f9fc] p-3 rounded-xl border border-[#e2e8f0]">
-            <div className="flex justify-between font-bold text-sm text-[#af101a]">
+          {/* Información clara, plana y sin muchos colores solo texto (sin recuadro de color ni filas de efectivo/cambio) */}
+          <div className="flex flex-col gap-1.5 text-xs font-mono pt-1 text-[#141b2b]">
+            <div className="flex justify-between font-bold text-sm text-[#141b2b]">
               <span>TOTAL:</span>
               <span>Bs. {selectedOrder.total.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-[#5b403d]">
+            <div className="flex justify-between text-[#141b2b]">
               <span>Método de Pago:</span>
               <span>{selectedOrder.paymentMethod}</span>
             </div>
-            {selectedOrder.cashReceived ? (
-              <>
-                <div className="flex justify-between text-[#5b403d]">
-                  <span>Efectivo Recibido:</span>
-                  <span>Bs. {selectedOrder.cashReceived.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-[#15803d] font-semibold">
-                  <span>Cambio / Vuelto:</span>
-                  <span>Bs. {(selectedOrder.cashChange || 0).toFixed(2)}</span>
-                </div>
-              </>
-            ) : null}
           </div>
         </AppModal>
       )}

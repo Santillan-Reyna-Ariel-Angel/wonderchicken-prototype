@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { useTheme } from '../context/ThemeContext';
 import { AppModal } from '../commonComponents/AppModal';

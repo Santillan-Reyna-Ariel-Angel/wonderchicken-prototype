@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CompletedOrder } from '../types';
+import { OrderTurnsBankDisplay, ReadyTurnOrder } from './OrderTurnsBankDisplay';
 
 interface KitchenScreenProps {
   orders: CompletedOrder[];
@@ -114,7 +115,7 @@ const INITIAL_KDS_ORDERS: KDSTicket[] = [
   },
 ];
 
-export const KitchenScreen: React.FC<KitchenScreenProps> = ({ onBackToPOS }) => {
+export const KitchenScreen: React.FC<KitchenScreenProps> = ({ orders = [], onBackToPOS }) => {
   const [tickets, setTickets] = useState<KDSTicket[]>(INITIAL_KDS_ORDERS);
   const [filter, setFilter] = useState<'ALL' | 'EN_PREPARACION' | 'LISTO' | 'MESA' | 'LLEVAR'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -414,109 +415,80 @@ export const KitchenScreen: React.FC<KitchenScreenProps> = ({ onBackToPOS }) => 
         })}
       </div>
 
-      {/* Modal: Pantalla Pública de Turnos (PDR §2.8 / FR-007) */}
+      {/* Modal: Pantalla Pública de Turnos (Fichas de Banco - Solo Listos) */}
       {showPublicScreen && (
-        <div className="fixed inset-0 z-50 bg-[#141b2b] text-white flex flex-col p-6 sm:p-10 animate-fade-in">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white p-1">
-                <img
-                  src="https://lh3.googleusercontent.com/aida/AEtjO1UeU-dPW2xV51uDn6xjSYBx5aQ_phV1RW0qXrx1lh6__UO10EB8Q-Vo_iXTafRjk1G-tU-pg7ElZlfVyedi1YFPkh46MiMI7E4HJnbgYzS2ILQq1si0Dmb-dpRQJB0a7rWkZHIF8rtEgs0YW3NB9k9Pey6ki6L9uX9kRj5QDjf4sWTKlQUpz-5o2zh3qLOJy9c23bvWq-ZaN6RFE8_hvoHmMbRthFwyDqJcM3F8v78bIBRFYFLWrAww25KdAjmjcoKltSVNVyalaQ"
-                  alt="Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#fec330]">
-                  WONDER CHICKEN — TURNOS DE PEDIDOS
-                </h2>
-                <span className="font-mono text-xs text-[#e1e8fd]">
-                  PDR §2.8 / FR-007 • Pantalla Pública para Comensales y Delivery
-                </span>
-              </div>
-            </div>
+        <OrderTurnsBankDisplay
+          orders={(() => {
+            // Strictly tickets ready for pickup (status: 'LISTO' or 'ANUNCIADO')
+            const kdsReady = tickets
+              .filter((t) => t.status === 'LISTO' || t.status === 'ANUNCIADO')
+              .map((t, idx) => ({
+                id: t.id,
+                ticketNumber: t.ticketNumber,
+                orderType: t.orderType,
+                customerName: t.customerName,
+                cashRegister: idx % 2 === 0 ? 'caja01' : 'caja02',
+                pickupPoint: t.channelSub || (idx % 2 === 0 ? 'Caja 01' : 'Caja 02'),
+                timeElapsed: t.timeElapsed,
+                readyTimestamp: 'Listo',
+              }));
 
-            <button
-              type="button"
-              onClick={() => setShowPublicScreen(false)}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold rounded-lg cursor-pointer"
-            >
-              Cerrar Monitor Público (Esc)
-            </button>
-          </div>
+            // Include ready orders from POS / Completed orders if not duplicate
+            const completedReady = orders
+              .filter((o) => o.status === 'LISTO')
+              .map((o, idx) => ({
+                id: o.id,
+                ticketNumber: o.ticketNumber,
+                orderType: o.orderType,
+                customerName: o.customer.name,
+                cashRegister: (kdsReady.length + idx) % 2 === 0 ? 'caja01' : 'caja02',
+                pickupPoint: (kdsReady.length + idx) % 2 === 0 ? 'Caja 01' : 'Caja 02',
+                timeElapsed: 'Listo',
+                readyTimestamp: 'Listo',
+              }));
 
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-            {/* Left: PEDIDOS LISTOS */}
-            <div className="bg-emerald-950/40 border-2 border-[#15803d] rounded-2xl p-6 flex flex-col">
-              <div className="flex items-center justify-between border-b border-emerald-800 pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full bg-[#15803d] animate-ping"></span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#15803d]">
-                    PEDIDOS LISTOS PARA RECOGER
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-emerald-300">Mesón de Entrega</span>
-              </div>
+            const combined = [...kdsReady];
+            completedReady.forEach((co) => {
+              if (!combined.some((t) => t.ticketNumber === co.ticketNumber)) {
+                combined.push(co);
+              }
+            });
 
-              <div className="grid grid-cols-2 gap-4 flex-1">
-                <div className="bg-[#15803d] text-white p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl">
-                  <span className="font-mono text-5xl sm:text-7xl font-extrabold tracking-tighter">
-                    #101
-                  </span>
-                  <span className="font-mono text-sm font-bold uppercase mt-2 bg-black/20 px-3 py-1 rounded-full">
-                    MESA 02 • DESPACHADO
-                  </span>
-                </div>
+            // Ensure we have representative bank tickets if kitchen just booted
+            if (combined.length < 4) {
+              const demoReady: ReadyTurnOrder[] = [
+                {
+                  id: 'demo-104',
+                  ticketNumber: '#104',
+                  orderType: 'LLEVAR',
+                  customerName: 'Carlos Mendizábal',
+                  cashRegister: 'caja01',
+                  pickupPoint: 'Caja 01',
+                  timeElapsed: 'Hace 3 min',
+                  readyTimestamp: 'Listo',
+                },
+                {
+                  id: 'demo-106',
+                  ticketNumber: '#106',
+                  orderType: 'MESA',
+                  customerName: 'Valeria Torrico',
+                  cashRegister: 'caja02',
+                  pickupPoint: 'Caja 02',
+                  timeElapsed: 'Hace 1 min',
+                  readyTimestamp: 'Listo',
+                },
+              ];
+              demoReady.forEach((d) => {
+                if (!combined.some((t) => t.ticketNumber === d.ticketNumber)) {
+                  combined.push(d);
+                }
+              });
+            }
 
-                <div className="bg-[#15803d] text-white p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl">
-                  <span className="font-mono text-5xl sm:text-7xl font-extrabold tracking-tighter">
-                    #102
-                  </span>
-                  <span className="font-mono text-sm font-bold uppercase mt-2 bg-black/20 px-3 py-1 rounded-full">
-                    MESA 04 • LISTO
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: EN PREPARACIÓN */}
-            <div className="bg-[#293040]/40 border-2 border-amber-500/50 rounded-2xl p-6 flex flex-col">
-              <div className="flex items-center justify-between border-b border-amber-500/30 pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#fec330] text-[24px]">outdoor_grill</span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#fec330]">
-                    EN PREPARACIÓN (LÍNEA DE BRASA)
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-amber-200">Tiempo est. 4-8 min</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 flex-1">
-                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex flex-col items-center justify-center text-center">
-                  <span className="font-mono text-4xl sm:text-6xl font-bold text-gray-200">
-                    #103
-                  </span>
-                  <span className="font-mono text-xs font-semibold uppercase mt-2 text-amber-400">
-                    LLEVAR • ESPERANDO
-                  </span>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex flex-col items-center justify-center text-center">
-                  <span className="font-mono text-4xl sm:text-6xl font-bold text-gray-200">
-                    #105
-                  </span>
-                  <span className="font-mono text-xs font-semibold uppercase mt-2 text-amber-400">
-                    MESA 06 • EN LÍNEA
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center font-mono text-xs text-gray-400 mt-4">
-            Wonder Chicken Bolivia • Sistema Centralizado de Línea de Producción KDS
-          </div>
-        </div>
+            return combined;
+          })()}
+          onClose={() => setShowPublicScreen(false)}
+        />
       )}
     </div>
   );

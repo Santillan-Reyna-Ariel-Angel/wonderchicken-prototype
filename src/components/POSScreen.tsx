@@ -3,6 +3,7 @@ import { Product, OrderItem, Customer, OrderType, ComboConfiguration } from '../
 import { ComboVariantModal } from './ComboVariantModal';
 import { PaymentModal } from './PaymentModal';
 import { CustomItemModal } from './CustomItemModal';
+import { AppModal } from '../commonComponents/AppModal';
 
 interface POSScreenProps {
   products: Product[];
@@ -49,6 +50,7 @@ export const POSScreen: React.FC<POSScreenProps> = ({
   const [selectedProductForConfig, setSelectedProductForConfig] = useState<Product | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
+  const [confirmModalType, setConfirmModalType] = useState<'CLEAR_CART' | 'PENDING_PAYMENT' | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -147,9 +149,34 @@ export const POSScreen: React.FC<POSScreenProps> = ({
 
   const handleClearCart = () => {
     if (cartItems.length === 0) return;
-    if (confirm('¿Desea limpiar todos los ítems de la orden actual?')) {
-      setCartItems([]);
-    }
+    setConfirmModalType('CLEAR_CART');
+  };
+
+  const handleConfirmClearCart = () => {
+    setCartItems([]);
+    setConfirmModalType(null);
+    showToast(`Productos removidos del pedido. Cliente conservado (${activeCustomer.fullName}).`);
+  };
+
+  const handlePendingPayment = () => {
+    if (cartItems.length === 0) return;
+    setConfirmModalType('PENDING_PAYMENT');
+  };
+
+  const handleConfirmPendingPayment = () => {
+    const defaultCustomer = customers.find((c) => c.id === 'c-sn') || {
+      id: 'c-sn',
+      ci: '0',
+      fullName: 'Cliente S/N (Sin Nombre)',
+      phone: '-',
+    };
+    onCompleteSale(cartItems, activeCustomer, orderType, tableNumber, 'PENDIENTE', 0, 0);
+    setCartItems([]);
+    setConfirmModalType(null);
+    setCustomerSearch('');
+    setShowCustomerDropdown(false);
+    onSelectCustomer(defaultCustomer);
+    showToast('Orden guardada con Pago Pendiente [FR-011]');
   };
 
   // Totals
@@ -165,27 +192,30 @@ export const POSScreen: React.FC<POSScreenProps> = ({
     selectedCustomer?: Customer
   ) => {
     const finalCustomer = selectedCustomer || activeCustomer;
+    const defaultCustomer = customers.find((c) => c.id === 'c-sn') || {
+      id: 'c-sn',
+      ci: '0',
+      fullName: 'Cliente S/N (Sin Nombre)',
+      phone: '-',
+    };
+
     if (paymentMethod === 'PENDIENTE') {
       onCompleteSale(cartItems, finalCustomer, orderType, tableNumber, 'PENDIENTE', 0, 0);
       setShowPaymentModal(false);
       setCartItems([]);
+      setCustomerSearch('');
+      setShowCustomerDropdown(false);
+      onSelectCustomer(defaultCustomer);
       showToast('Orden guardada con Pago Pendiente [FR-011]');
       return;
     }
     onCompleteSale(cartItems, finalCustomer, orderType, tableNumber, paymentMethod, cashReceived, change);
     setShowPaymentModal(false);
     setCartItems([]);
+    setCustomerSearch('');
+    setShowCustomerDropdown(false);
+    onSelectCustomer(defaultCustomer);
     showToast('¡Venta registrada con éxito! Comanda enviada a cocina KDS.');
-  };
-
-  const handlePendingPayment = () => {
-    if (cartItems.length === 0) {
-      alert('La orden está vacía.');
-      return;
-    }
-    onCompleteSale(cartItems, activeCustomer, orderType, tableNumber, 'PENDIENTE', 0, 0);
-    setCartItems([]);
-    showToast('Orden guardada con Pago Pendiente [FR-011]');
   };
 
   // Customer suggestions
@@ -423,7 +453,7 @@ export const POSScreen: React.FC<POSScreenProps> = ({
               >
                 <span className="truncate">{activeCustomer.fullName}</span>
                 <span className="font-mono text-[10px] text-[#5b403d]">
-                  ({activeCustomer.ci || activeCustomer.nit || 'S/N'})
+                  ({activeCustomer.nit ? `NIT: ${activeCustomer.nit}` : (activeCustomer.ci && activeCustomer.ci !== '0' ? `CI: ${activeCustomer.ci}` : 'S/N')})
                 </span>
                 <span className="material-symbols-outlined text-[16px]">arrow_drop_down</span>
               </button>
@@ -488,10 +518,12 @@ export const POSScreen: React.FC<POSScreenProps> = ({
                   >
                     <div className="flex flex-col min-w-0 pr-2">
                       <span className="font-bold text-xs text-[#141b2b] truncate">{cust.fullName}</span>
-                      <span className="text-[10px] text-[#5b403d]">{cust.phone}</span>
+                      <span className="text-[10px] text-[#5b403d] font-mono">
+                        NIT: {cust.nit || cust.ci || 'Sin NIT'}
+                      </span>
                     </div>
-                    <span className="font-mono text-xs font-semibold text-[#af101a]">
-                      {cust.ci || cust.nit}
+                    <span className="font-mono text-xs font-semibold text-[#af101a] shrink-0">
+                      {cust.ci ? `CI ${cust.ci}` : (cust.nit ? `NIT ${cust.nit}` : '')}
                     </span>
                   </button>
                 ))}
@@ -621,9 +653,10 @@ export const POSScreen: React.FC<POSScreenProps> = ({
                 type="button"
                 disabled={cartItems.length === 0}
                 onClick={handlePendingPayment}
-                className="w-full py-2 px-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-[11px] font-bold rounded-lg border border-[#e1e8fd] transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="w-full py-2.5 px-3 bg-[#eef2ff] hover:bg-[#e0e7ff] text-[#1e1b4b] hover:text-[#4338ca] font-mono text-xs font-bold rounded-xl border border-[#c7d2fe] hover:border-[#818cf8] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Registrar la orden en cocina y guardarla como cuenta pendiente de cobro"
               >
-                <span className="material-symbols-outlined text-[16px]">pending_actions</span>
+                <span className="material-symbols-outlined text-[18px] text-[#4f46e5]">pending_actions</span>
                 <span>Pago Pendiente [FR-011]</span>
               </button>
             </div>
@@ -632,9 +665,11 @@ export const POSScreen: React.FC<POSScreenProps> = ({
               <button
                 type="button"
                 onClick={handleClearCart}
-                className="text-center font-mono text-[11px] text-[#5b403d] hover:text-[#ba1a1a] transition-colors py-1 cursor-pointer"
+                className="w-full py-2 px-3 rounded-lg font-mono text-xs font-semibold text-[#ba1a1a] hover:bg-[#ffdad6]/30 border border-dashed border-[#ba1a1a]/40 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Vacía los productos seleccionados y conserva el cliente asignado"
               >
-                Limpiar Pedido
+                <span className="material-symbols-outlined text-[16px]">remove_shopping_cart</span>
+                <span>Limpiar Pedido</span>
               </button>
             )}
           </div>
@@ -673,6 +708,76 @@ export const POSScreen: React.FC<POSScreenProps> = ({
         onClose={() => setShowCustomModal(false)}
         onAddCustomItem={handleAddCustomItem}
       />
+
+      {/* Modal Reutilizado de Confirmación (Limpiar Pedido / Pago Pendiente) */}
+      <AppModal
+        isOpen={confirmModalType !== null}
+        onClose={() => setConfirmModalType(null)}
+        icon={confirmModalType === 'CLEAR_CART' ? 'delete_sweep' : 'pending_actions'}
+        title={
+          confirmModalType === 'CLEAR_CART'
+            ? '¿Limpiar Pedido Actual?'
+            : '¿Confirmar Orden con Pago Pendiente?'
+        }
+        description={
+          confirmModalType === 'CLEAR_CART'
+            ? 'Esta acción eliminará todos los ítems agregados al pedido actual.'
+            : 'La comanda se enviará a cocina (KDS) y quedará registrada como cuenta por cobrar [FR-011].'
+        }
+        maxWidth="md"
+        confirmLabel="Aceptar"
+        confirmIcon="check"
+        cancelLabel="Cancelar"
+        showCancel={true}
+        onConfirm={
+          confirmModalType === 'CLEAR_CART'
+            ? handleConfirmClearCart
+            : handleConfirmPendingPayment
+        }
+      >
+        {confirmModalType === 'CLEAR_CART' ? (
+          <div className="flex flex-col gap-3 py-1">
+            <p className="text-sm text-[#334155] leading-relaxed">
+              Se eliminarán <strong className="text-[#ba1a1a] font-mono">{cartItems.reduce((acc, i) => acc + i.quantity, 0)} producto(s)</strong> de la comanda en curso.
+            </p>
+
+            <div className="bg-[#f8f9fc] p-3 rounded-xl border border-[#e2e8f0] flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-[#15803d] text-[20px]">person_check</span>
+              <div className="flex flex-col text-xs">
+                <span className="text-[#64748b] font-medium">El cliente seleccionado se mantendrá:</span>
+                <span className="font-bold text-[#0f172a] font-mono">{activeCustomer.fullName}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 py-1">
+            <p className="text-sm text-[#334155] leading-relaxed">
+              Verifique los detalles antes de enviar la orden con saldo pendiente:
+            </p>
+
+            <div className="bg-[#f8f9fc] p-3.5 rounded-xl border border-[#e2e8f0] flex flex-col gap-2.5 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-[#e2e8f0]">
+                <span className="text-[#64748b] font-medium">Total pendiente de cobro:</span>
+                <span className="font-mono font-bold text-base text-[#af101a]">Bs. {total.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#64748b]">Total productos:</span>
+                <span className="font-mono font-bold text-[#0f172a]">{cartItems.reduce((acc, i) => acc + i.quantity, 0)} producto(s)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#64748b]">Tipo de pedido:</span>
+                <span className="font-bold text-[#0f172a] uppercase font-mono">
+                  {orderType}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-[#e2e8f0]">
+                <span className="text-[#64748b]">Cliente titular:</span>
+                <span className="font-bold text-[#0f172a] font-mono">{activeCustomer.fullName}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </AppModal>
     </div>
   );
 };

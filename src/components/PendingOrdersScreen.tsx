@@ -3,6 +3,7 @@ import { PendingOrder, Customer } from '../types';
 import { INITIAL_CUSTOMERS } from '../data/mockData';
 import { AppModal } from '../commonComponents/AppModal';
 import { PaymentModal } from './PaymentModal';
+import { OrderTurnsBankDisplay, ReadyTurnOrder } from './OrderTurnsBankDisplay';
 
 interface PendingOrdersScreenProps {
   onBackToPOS: () => void;
@@ -70,6 +71,7 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
 
   // Modals state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showTurnsDisplay, setShowTurnsDisplay] = useState(false);
   const [settleOrder, setSettleOrder] = useState<PendingOrder | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer>(INITIAL_CUSTOMERS[0]);
   const [toast, setToast] = useState<{ title: string; message: string; icon: string } | null>(null);
@@ -191,6 +193,14 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setShowTurnsDisplay(true)}
+            className="px-3.5 py-2 bg-[#141b2b] hover:bg-[#293040] text-white font-mono text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[#fec330] text-[18px]">tv</span>
+            Pantalla Turnos (Fichas)
+          </button>
           <button
             type="button"
             onClick={onBackToPOS}
@@ -405,6 +415,55 @@ export const PendingOrdersScreen: React.FC<PendingOrdersScreenProps> = ({
           allowPendingPayment={false}
           defaultWithInvoice={false}
           onConfirmPayment={handleExecutePayment}
+        />
+      )}
+
+      {/* Modal: Pantalla de Turnos de Banco (Solo Listos para Recoger) */}
+      {showTurnsDisplay && (
+        <OrderTurnsBankDisplay
+          orders={[
+            {
+              id: '101',
+              ticketNumber: '#101',
+              orderType: 'MESA',
+              customerName: 'Fredy Arévalo',
+              cashRegister: 'caja01',
+              pickupPoint: 'Caja 01',
+              timeElapsed: 'Listo',
+              readyTimestamp: 'Listo',
+            },
+            {
+              id: '102',
+              ticketNumber: '#102',
+              orderType: 'MESA',
+              customerName: 'Sandra Melgar',
+              cashRegister: 'caja02',
+              pickupPoint: 'Caja 02',
+              timeElapsed: 'Listo',
+              readyTimestamp: 'Listo',
+            },
+            {
+              id: '104',
+              ticketNumber: '#104',
+              orderType: 'LLEVAR',
+              customerName: 'Carlos Mendizábal',
+              cashRegister: 'caja01',
+              pickupPoint: 'Caja 01',
+              timeElapsed: 'Listo',
+              readyTimestamp: 'Listo',
+            },
+            {
+              id: '106',
+              ticketNumber: '#106',
+              orderType: 'MESA',
+              customerName: 'Valeria Torrico',
+              cashRegister: 'caja02',
+              pickupPoint: 'Caja 02',
+              timeElapsed: 'Listo',
+              readyTimestamp: 'Listo',
+            },
+          ]}
+          onClose={() => setShowTurnsDisplay(false)}
         />
       )}
     </div>

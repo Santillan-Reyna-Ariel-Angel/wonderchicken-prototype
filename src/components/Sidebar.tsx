@@ -95,28 +95,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
 
     // Default: CAJERA
+    // Cuando el turno no está abierto: muestra "Apertura de Turno" (Requerido)
+    // Cuando el turno ya está activo: muestra "Resumen de Apertura" (Solo Lectura)
+    const cashierItems = [
+      {
+        id: 'apertura-turno' as ScreenType,
+        label: shift.isOpen ? 'Resumen de Apertura' : 'Apertura de Turno',
+        icon: shift.isOpen ? 'assignment' : 'lock_clock',
+        nodeBadge: 'E',
+        path: shift.isOpen ? '/cashier/shift/summary' : '/cashier/shift/open',
+        badge: shift.isOpen ? 'Lectura' : 'Requerido',
+      },
+      { id: 'pos-ventas' as ScreenType, label: 'POS Ventas', icon: 'point_of_sale', nodeBadge: 'F', path: '/cashier/pos' },
+      { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long', nodeBadge: 'J', path: '/cashier/orders' },
+      { id: 'clientes' as ScreenType, label: 'Clientes (FR-019)', icon: 'group', nodeBadge: 'P', path: '/cashier/customers' },
+      { 
+        id: 'pedidos-pendientes' as ScreenType, 
+        label: 'Pago Pendiente [FR-011]', 
+        icon: 'pending_actions', 
+        badge: pendingOrdersCount > 0 ? `${pendingOrdersCount}` : undefined 
+      },
+    ];
+
     return [
       {
         title: 'Operaciones de Caja & POS',
-        items: [
-          {
-            id: 'apertura-turno' as ScreenType,
-            label: shift.isOpen ? 'Turno Abierto' : 'Apertura de Turno',
-            icon: shift.isOpen ? 'lock_open' : 'lock_clock',
-            nodeBadge: 'E',
-            path: '/cashier/shift/open',
-            badge: shift.isOpen ? 'Activo' : 'Requerido',
-          },
-          { id: 'pos-ventas' as ScreenType, label: 'POS Ventas', icon: 'point_of_sale', nodeBadge: 'F', path: '/cashier/pos' },
-          { id: 'historial-de-pedidos' as ScreenType, label: 'Historial de Pedidos', icon: 'receipt_long', nodeBadge: 'J', path: '/cashier/orders' },
-          { id: 'clientes' as ScreenType, label: 'Clientes (FR-019)', icon: 'group', nodeBadge: 'P', path: '/cashier/customers' },
-          { 
-            id: 'pedidos-pendientes' as ScreenType, 
-            label: 'Pago Pendiente [FR-011]', 
-            icon: 'pending_actions', 
-            badge: pendingOrdersCount > 0 ? `${pendingOrdersCount}` : undefined 
-          },
-        ],
+        items: cashierItems,
       },
     ];
   };

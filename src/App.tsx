@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScreenType, Product, Customer, CompletedOrder, OrderItem, OrderType, UserRole } from './types';
 import { INITIAL_PRODUCTS, INITIAL_CUSTOMERS, INITIAL_ORDERS } from './data/mockData';
 import { Header } from './components/Header';
@@ -48,6 +48,19 @@ export default function App() {
     .filter((o) => o.paymentMethod !== 'PENDIENTE')
     .reduce((acc, o) => acc + o.total, 0);
 
+  // Guard de acceso estricto: la pantalla 'apertura-turno' SOLO puede verse para la CAJERA.
+  // Si el usuario no es CAJERA, se redirige inmediatamente a su respectivo módulo.
+  useEffect(() => {
+    if (currentScreen === 'apertura-turno') {
+      if (userRole !== 'CAJERA') {
+        if (userRole === 'SUPER_ADMIN') setCurrentScreen('super-admin');
+        else if (userRole === 'ADMIN') setCurrentScreen('branch-admin');
+        else if (userRole === 'DESPACHADORA') setCurrentScreen('despacho-cocina');
+        else setCurrentScreen('pos-ventas');
+      }
+    }
+  }, [currentScreen, userRole]);
+
   // Handlers
   const handleLoginSuccess = (name: string, role: UserRole) => {
     setCashierName(name);
@@ -62,11 +75,11 @@ export default function App() {
     } else if (role === 'DESPACHADORA') {
       setCurrentScreen('despacho-cocina');
     } else {
-      // Para cajera, si el turno no está abierto, va directamente a apertura-turno
-      if (!shift.isOpen) {
-        setCurrentScreen('apertura-turno');
-      } else {
+      // Para cajera: si tiene turno abierto/activo -> POS directo; si no -> apertura-turno
+      if (shift.isOpen) {
         setCurrentScreen('pos-ventas');
+      } else {
+        setCurrentScreen('apertura-turno');
       }
     }
   };
@@ -91,12 +104,26 @@ export default function App() {
     } else if (newRole === 'DESPACHADORA') {
       setCurrentScreen('despacho-cocina');
     } else {
-      setCurrentScreen('pos-ventas');
+      // CAJERA: verificar si el turno ya está activo o requiere apertura
+      if (shift.isOpen) {
+        setCurrentScreen('pos-ventas');
+      } else {
+        setCurrentScreen('apertura-turno');
+      }
     }
   };
 
   const handleLogout = () => {
     setCurrentScreen('login');
+  };
+
+  const getFormattedOrderTimestamp = () => {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${day}/${month}/${year}      ${time}`;
   };
 
   const handleCompleteSale = (
@@ -111,7 +138,7 @@ export default function App() {
     const subtotal = items.reduce((acc, i) => acc + i.unitPrice * i.quantity, 0);
     const newOrder: CompletedOrder = {
       ticketNumber: `#${String(orders.length + 143).padStart(5, '0')}`,
-      timestamp: `Hoy ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      timestamp: getFormattedOrderTimestamp(),
       orderType,
       tableNumber: orderType === 'MESA' ? tableNumber : undefined,
       customer,
@@ -140,6 +167,10 @@ export default function App() {
           : c
       )
     );
+
+    // Deselect customer after confirming sale (reset to default Cliente S/N)
+    const defaultCustomer = customers.find((c) => c.id === 'c-sn') || INITIAL_CUSTOMERS[0];
+    setActiveCustomer(defaultCustomer);
   };
 
   const handleUpdateOrderStatus = (
@@ -188,8 +219,8 @@ export default function App() {
     );
   }
 
-  // If opening shift before starting work, render standalone screen like login (without extra menus)
-  if (currentScreen === 'apertura-turno' && !shift.isOpen) {
+  // Esta pantalla SOLO debe verse para la CAJERA y SOLO 1 vez en todo su turno (mientras el turno no esté abierto)
+  if (currentScreen === 'apertura-turno' && userRole === 'CAJERA' && !shift.isOpen) {
     return (
       <ShiftScreen
         shiftName={shiftName}
@@ -270,7 +301,7 @@ export default function App() {
               // Add to completed orders
               const settledOrder: CompletedOrder = {
                 ticketNumber: `#${ticketId}`,
-                timestamp: `Hoy ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+                timestamp: getFormattedOrderTimestamp(),
                 orderType: 'LLEVAR',
                 customer: customer || activeCustomer,
                 items: [

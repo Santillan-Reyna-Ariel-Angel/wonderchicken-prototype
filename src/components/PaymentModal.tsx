@@ -272,10 +272,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     >
                       <div className="flex flex-col min-w-0 pr-2">
                         <span className="font-bold text-xs text-[#141b2b] truncate">{cust.fullName}</span>
-                        <span className="text-[10px] text-[#5b403d]">{cust.phone}</span>
+                        <span className="text-[10px] text-[#5b403d] font-mono">
+                          NIT: {cust.nit || cust.ci || 'Sin NIT'}
+                        </span>
                       </div>
                       <span className="font-mono text-xs font-bold text-[#af101a] shrink-0">
-                        {cust.nit ? `NIT ${cust.nit}` : `CI ${cust.ci}`}
+                        {cust.ci ? `CI ${cust.ci}` : (cust.nit ? `NIT ${cust.nit}` : '')}
                       </span>
                     </button>
                   ))}
@@ -334,7 +336,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               }`}
             >
               <span className="material-symbols-outlined text-[17px]">qr_code_2</span>
-              <span>{allowCustomerSelection ? 'QR / Tarjeta Simple' : 'QR Simple'}</span>
+              <span>QR Simple</span>
             </button>
             {canShowPending && (
               <button

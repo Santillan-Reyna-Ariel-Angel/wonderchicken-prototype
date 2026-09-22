@@ -268,19 +268,19 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center justify-between gap-3 pt-1">
-            <div className="flex flex-col">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1 min-w-0 w-full">
+            <div className="flex flex-col min-w-0">
               <span className="text-[11px] text-[#5b403d] font-semibold">TOTAL CALCULADO:</span>
               <span className="font-mono text-xl sm:text-2xl font-bold text-[#af101a] leading-none">
                 Bs. {grandTotal.toFixed(2)}
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2 ml-auto min-w-0">
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-3 py-2 rounded-xl text-xs font-mono text-[#5b403d] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/30 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-xl text-xs font-mono text-[#5b403d] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/30 transition-colors cursor-pointer shrink-0"
                 title="Reiniciar selección"
               >
                 Limpiar
@@ -288,7 +288,7 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl bg-white text-[#334155] hover:bg-[#f1f5f9] hover:text-[#0f172a] border border-[#cbd5e1] font-mono text-xs font-bold transition-colors cursor-pointer"
+                className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white text-[#334155] hover:bg-[#f1f5f9] hover:text-[#0f172a] border border-[#cbd5e1] font-mono text-xs font-bold transition-colors cursor-pointer shrink-0"
               >
                 Cancelar
               </button>
@@ -296,10 +296,10 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                 type="button"
                 disabled={grandTotal <= 0}
                 onClick={handleConfirmOrder}
-                className="px-5 py-2.5 rounded-xl bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs sm:text-sm font-bold shadow-xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs sm:text-sm font-bold shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed max-w-full"
               >
-                <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                <span>Añadir a Orden ({totalItemsCount})</span>
+                <span className="material-symbols-outlined text-[18px] shrink-0">add_shopping_cart</span>
+                <span className="truncate">Añadir a Orden ({totalItemsCount})</span>
               </button>
             </div>
           </div>
@@ -308,52 +308,52 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
     >
       <div className="flex flex-col -mt-2 -mx-2">
         {/* Step Navigation Bar */}
-        <div className="bg-[#f8f9ff] border-b border-[#e1e8fd] px-3 sm:px-4 py-2 flex items-center justify-between gap-2 overflow-x-auto rounded-t-lg">
+        <div className="bg-[#f8f9ff] border-b border-[#e1e8fd] px-2.5 sm:px-4 py-2 flex items-center justify-between gap-2 overflow-x-auto rounded-t-lg">
           <div className="flex items-center gap-1 sm:gap-2">
             {/* Step 1 Tab */}
             <button
               type="button"
               onClick={() => setActiveStep(1)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeStep === 1
                   ? 'bg-[#af101a] text-white shadow-xs'
                   : 'bg-white text-[#5b403d] hover:bg-[#e9edff] border border-[#e1e8fd]'
               }`}
             >
-              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">1</span>
-              <span>1. Presas ({totalPiecesCount})</span>
+              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] sm:text-[11px]">1</span>
+              <span>Presas ({totalPiecesCount})</span>
             </button>
 
-            <span className="material-symbols-outlined text-[#5b403d]/40 text-sm">chevron_right</span>
+            <span className="material-symbols-outlined text-[#5b403d]/40 text-xs sm:text-sm">chevron_right</span>
 
             {/* Step 2 Tab */}
             <button
               type="button"
               onClick={() => setActiveStep(2)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeStep === 2
                   ? 'bg-[#af101a] text-white shadow-xs'
                   : 'bg-white text-[#5b403d] hover:bg-[#e9edff] border border-[#e1e8fd]'
               }`}
             >
-              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">2</span>
-              <span>2. Acompañantes ({totalSidesCount})</span>
+              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] sm:text-[11px]">2</span>
+              <span>Acomp. ({totalSidesCount})</span>
             </button>
 
-            <span className="material-symbols-outlined text-[#5b403d]/40 text-sm">chevron_right</span>
+            <span className="material-symbols-outlined text-[#5b403d]/40 text-xs sm:text-sm">chevron_right</span>
 
             {/* Step 3 Tab */}
             <button
               type="button"
               onClick={() => setActiveStep(3)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeStep === 3
                   ? 'bg-[#af101a] text-white shadow-xs'
                   : 'bg-white text-[#5b403d] hover:bg-[#e9edff] border border-[#e1e8fd]'
               }`}
             >
-              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">3</span>
-              <span>3. Bebidas ({totalDrinksCount})</span>
+              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] sm:text-[11px]">3</span>
+              <span>Bebidas ({totalDrinksCount})</span>
             </button>
           </div>
 
@@ -387,8 +387,8 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                 </div>
               </div>
 
-              {/* Pieces Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Pieces Grid: 2 cols on mobile, 4 cols on tablet/desktop */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                 {AVAILABLE_PIECES.map((piece) => {
                   const qty = piecesQty[piece.id] || 0;
                   const itemSubtotal = qty * piece.price;
@@ -397,54 +397,50 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                   return (
                     <div
                       key={piece.id}
-                      className={`p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                      className={`p-2.5 sm:p-3 rounded-xl border transition-all flex flex-col justify-between items-center text-center gap-1.5 sm:gap-2 ${
                         isSelected
                           ? 'border-[#af101a]/60 bg-[#fff5f5] shadow-xs'
                           : 'border-[#e1e8fd] bg-white hover:border-[#af101a]/30'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-full">
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${
                           isSelected ? 'bg-[#af101a] text-white' : 'bg-[#f1f3ff] text-[#5b403d]'
                         }`}>
-                          <span className="material-symbols-outlined text-[22px]">{piece.icon}</span>
+                          <span className="material-symbols-outlined text-[20px] sm:text-[22px]">{piece.icon}</span>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-sm text-[#141b2b]">{piece.name}</span>
-                          <span className="text-[11px] text-[#5b403d]">{piece.desc}</span>
-                          <span className="font-mono text-xs font-bold text-[#af101a] mt-0.5">
-                            Bs. {piece.price.toFixed(2)} c/u
-                          </span>
-                        </div>
+                        <span className="font-bold text-xs sm:text-sm text-[#141b2b] mt-0.5 truncate max-w-full">{piece.name}</span>
+                        <span className="text-[10px] sm:text-[11px] text-[#5b403d] line-clamp-1">{piece.desc}</span>
+                        <span className="font-mono text-xs font-bold text-[#af101a]">
+                          Bs. {piece.price.toFixed(2)}
+                        </span>
                       </div>
 
                       {/* Quantity Controller */}
-                      <div className="flex flex-col items-end gap-1">
-                        <div className="flex items-center gap-1.5 bg-white px-1.5 py-1 rounded-lg border border-[#e1e8fd] shadow-xs">
+                      <div className="flex flex-col items-center gap-1 w-full pt-1.5 sm:pt-2 border-t border-[#e1e8fd]/60">
+                        <div className="flex items-center justify-between bg-[#f8f9fc] px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-lg border border-[#e1e8fd] shadow-xs w-full max-w-[120px]">
                           <button
                             type="button"
                             onClick={() => handleAdjustPiece(piece.id, -1)}
                             disabled={qty === 0}
-                            className="w-7 h-7 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
                           >
                             -
                           </button>
-                          <span className="font-mono text-sm font-bold text-[#141b2b] w-6 text-center">
+                          <span className="font-mono text-xs sm:text-sm font-bold text-[#141b2b] flex-1 text-center">
                             {qty}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleAdjustPiece(piece.id, 1)}
-                            className="w-7 h-7 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold flex items-center justify-center transition-colors cursor-pointer"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                           >
                             +
                           </button>
                         </div>
-                        {qty > 0 && (
-                          <span className="font-mono text-[10px] text-[#af101a] font-bold">
-                            = Bs. {itemSubtotal.toFixed(2)}
-                          </span>
-                        )}
+                        <span className="font-mono text-[10px] text-[#af101a] font-bold h-3.5 flex items-center">
+                          {qty > 0 ? `= Bs. ${itemSubtotal.toFixed(2)}` : ''}
+                        </span>
                       </div>
                     </div>
                   );
@@ -491,8 +487,8 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                 </div>
               </div>
 
-              {/* Sides List */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Sides List: 2 cols on mobile, 4 cols on tablet/desktop */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                 {AVAILABLE_SIDES.map((side) => {
                   const qty = sidesQty[side.id] || 0;
                   const itemSubtotal = qty * side.price;
@@ -501,54 +497,50 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                   return (
                     <div
                       key={side.id}
-                      className={`p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                      className={`p-2.5 sm:p-3 rounded-xl border transition-all flex flex-col justify-between items-center text-center gap-1.5 sm:gap-2 ${
                         isSelected
                           ? 'border-[#795900]/50 bg-[#fffdf0] shadow-xs'
                           : 'border-[#e1e8fd] bg-white hover:border-[#795900]/30'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-full">
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${
                           isSelected ? 'bg-[#795900] text-white' : 'bg-[#f1f3ff] text-[#5b403d]'
                         }`}>
-                          <span className="material-symbols-outlined text-[22px]">{side.icon}</span>
+                          <span className="material-symbols-outlined text-[20px] sm:text-[22px]">{side.icon}</span>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-sm text-[#141b2b]">{side.name}</span>
-                          <span className="text-[11px] text-[#5b403d]">{side.desc}</span>
-                          <span className="font-mono text-xs font-bold text-[#795900] mt-0.5">
-                            Bs. {side.price.toFixed(2)} c/u
-                          </span>
-                        </div>
+                        <span className="font-bold text-xs sm:text-sm text-[#141b2b] mt-0.5 truncate max-w-full">{side.name}</span>
+                        <span className="text-[10px] sm:text-[11px] text-[#5b403d] line-clamp-1">{side.desc}</span>
+                        <span className="font-mono text-xs font-bold text-[#795900]">
+                          Bs. {side.price.toFixed(2)}
+                        </span>
                       </div>
 
                       {/* Quantity Controller */}
-                      <div className="flex flex-col items-end gap-1">
-                        <div className="flex items-center gap-1.5 bg-white px-1.5 py-1 rounded-lg border border-[#e1e8fd] shadow-xs">
+                      <div className="flex flex-col items-center gap-1 w-full pt-1.5 sm:pt-2 border-t border-[#e1e8fd]/60">
+                        <div className="flex items-center justify-between bg-[#f8f9fc] px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-lg border border-[#e1e8fd] shadow-xs w-full max-w-[120px]">
                           <button
                             type="button"
                             onClick={() => handleAdjustSide(side.id, -1)}
                             disabled={qty === 0}
-                            className="w-7 h-7 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
                           >
                             -
                           </button>
-                          <span className="font-mono text-sm font-bold text-[#141b2b] w-6 text-center">
+                          <span className="font-mono text-xs sm:text-sm font-bold text-[#141b2b] flex-1 text-center">
                             {qty}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleAdjustSide(side.id, 1)}
-                            className="w-7 h-7 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold flex items-center justify-center transition-colors cursor-pointer"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                           >
                             +
                           </button>
                         </div>
-                        {qty > 0 && (
-                          <span className="font-mono text-[10px] text-[#795900] font-bold">
-                            = Bs. {itemSubtotal.toFixed(2)}
-                          </span>
-                        )}
+                        <span className="font-mono text-[10px] text-[#795900] font-bold h-3.5 flex items-center">
+                          {qty > 0 ? `= Bs. ${itemSubtotal.toFixed(2)}` : ''}
+                        </span>
                       </div>
                     </div>
                   );
@@ -600,8 +592,8 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                 </div>
               </div>
 
-              {/* Drinks Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Drinks Grid: 2 cols on mobile, 4 cols on tablet/desktop */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                 {AVAILABLE_DRINKS.map((drink) => {
                   const qty = drinksQty[drink.id] || 0;
                   const temp = drinkTemps[drink.id] || 'FRÍA';
@@ -611,72 +603,70 @@ export const CustomItemModal: React.FC<CustomItemModalProps> = ({
                   return (
                     <div
                       key={drink.id}
-                      className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between gap-2.5 ${
+                      className={`p-2.5 sm:p-3 rounded-xl border transition-all flex flex-col justify-between items-center text-center gap-1.5 sm:gap-2 ${
                         isSelected
                           ? 'border-blue-400 bg-blue-50/40 shadow-xs'
                           : 'border-[#e1e8fd] bg-white hover:border-blue-300'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                            isSelected ? 'bg-[#005c8d] text-white' : 'bg-[#f1f3ff] text-[#5b403d]'
-                          }`}>
-                            <span className="material-symbols-outlined text-[20px]">{drink.icon}</span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-bold text-xs sm:text-sm text-[#141b2b]">{drink.name}</span>
-                            <span className="text-[10px] text-[#5b403d]">{drink.desc}</span>
-                            <span className="font-mono text-xs font-bold text-[#005c8d]">
-                              Bs. {drink.price.toFixed(2)} c/u
-                            </span>
-                          </div>
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-full">
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${
+                          isSelected ? 'bg-[#005c8d] text-white' : 'bg-[#f1f3ff] text-[#5b403d]'
+                        }`}>
+                          <span className="material-symbols-outlined text-[20px] sm:text-[22px]">{drink.icon}</span>
                         </div>
+                        <span className="font-bold text-xs sm:text-sm text-[#141b2b] mt-0.5 truncate max-w-full">{drink.name}</span>
+                        <span className="text-[10px] sm:text-[11px] text-[#5b403d] line-clamp-1">{drink.desc}</span>
+                        <span className="font-mono text-xs font-bold text-[#005c8d]">
+                          Bs. {drink.price.toFixed(2)}
+                        </span>
+                      </div>
 
-                        {/* Quantity Controller */}
-                        <div className="flex items-center gap-1.5 bg-white px-1.5 py-1 rounded-lg border border-[#e1e8fd] shadow-xs shrink-0">
+                      {/* Quantity & Temperature Controller */}
+                      <div className="flex flex-col items-center gap-1 w-full pt-1.5 sm:pt-2 border-t border-[#e1e8fd]/60">
+                        <div className="flex items-center justify-between bg-[#f8f9fc] px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-lg border border-[#e1e8fd] shadow-xs w-full max-w-[120px]">
                           <button
                             type="button"
                             onClick={() => handleAdjustDrink(drink.id, -1)}
                             disabled={qty === 0}
-                            className="w-6 h-6 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
                           >
                             -
                           </button>
-                          <span className="font-mono text-xs font-bold text-[#141b2b] w-5 text-center">
+                          <span className="font-mono text-xs sm:text-sm font-bold text-[#141b2b] flex-1 text-center">
                             {qty}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleAdjustDrink(drink.id, 1)}
-                            className="w-6 h-6 rounded bg-[#f1f3ff] hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer"
+                            className="w-7 h-7 rounded bg-white hover:bg-[#e1e8fd] text-[#141b2b] font-bold text-xs flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                           >
                             +
                           </button>
                         </div>
-                      </div>
 
-                      {/* Temperature selector & subtotal */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-[#e1e8fd]/60">
-                        <button
-                          type="button"
-                          onClick={() => toggleDrinkTemp(drink.id)}
-                          className={`flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-bold cursor-pointer transition-colors ${
-                            temp === 'FRÍA'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-amber-100 text-amber-800'
-                          }`}
-                          title="Haga clic para alternar Fría / Natural"
-                        >
-                          <span className="material-symbols-outlined text-[14px]">
-                            {temp === 'FRÍA' ? 'ac_unit' : 'thermostat'}
+                        {/* Temperature selector & subtotal */}
+                        <div className="flex items-center justify-between w-full px-0.5 pt-0.5">
+                          <button
+                            type="button"
+                            onClick={() => toggleDrinkTemp(drink.id)}
+                            className={`flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold cursor-pointer transition-colors ${
+                              temp === 'FRÍA'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                            title="Haga clic para alternar Fría / Natural"
+                          >
+                            <span className="material-symbols-outlined text-[12px]">
+                              {temp === 'FRÍA' ? 'ac_unit' : 'thermostat'}
+                            </span>
+                            <span>{temp}</span>
+                          </button>
+
+                          <span className="font-mono text-[11px] sm:text-xs font-bold text-[#005c8d]">
+                            {qty > 0 ? `Bs. ${itemSubtotal.toFixed(2)}` : '0.00 Bs'}
                           </span>
-                          <span>{temp}</span>
-                        </button>
-
-                        <span className="font-mono text-xs font-bold text-[#005c8d]">
-                          {qty > 0 ? `Bs. ${itemSubtotal.toFixed(2)}` : '0.00 Bs'}
-                        </span>
+                        </div>
                       </div>
                     </div>
                   );

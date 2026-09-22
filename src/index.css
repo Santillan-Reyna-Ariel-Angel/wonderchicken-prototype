@@ -1,6 +1,28 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
 @layer base {
+  :root {
+    --mui-bg-default: #f4f6f8;
+    --mui-bg-paper: #ffffff;
+    --mui-bg-subtle: #f8f9fd;
+    --mui-border-divider: #e2e8f0;
+    --mui-text-primary: #141b2b;
+    --mui-text-secondary: #5b403d;
+    --mui-action-hover: #e9edff;
+  }
+
+  .dark, [data-theme="dark"], body.dark-theme, [data-toolpad-color-scheme="dark"] {
+    --mui-bg-default: #0b0f19;
+    --mui-bg-paper: #131b2e;
+    --mui-bg-subtle: #1a233b;
+    --mui-border-divider: #263554;
+    --mui-text-primary: #f8fafc;
+    --mui-text-secondary: #94a3b8;
+    --mui-action-hover: #243050;
+  }
+
   body {
     font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -9,6 +31,21 @@
   .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
+}
+
+/* MUI Automatic Theme Utilities */
+.mui-container-subtle {
+  background-color: var(--mui-bg-subtle) !important;
+  border-color: var(--mui-border-divider) !important;
+  color: var(--mui-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.mui-card-paper {
+  background-color: var(--mui-bg-paper) !important;
+  border-color: var(--mui-border-divider) !important;
+  color: var(--mui-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* ==========================================================================

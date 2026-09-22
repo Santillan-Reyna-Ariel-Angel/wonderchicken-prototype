@@ -23,7 +23,6 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
 
   // Form states (independent of any branch)
   const [ci, setCi] = useState('');
-  const [ciExt, setCiExt] = useState('LP');
   const [isCorporate, setIsCorporate] = useState(false);
   const [nit, setNit] = useState('');
   const [businessName, setBusinessName] = useState('');
@@ -49,7 +48,6 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
 
   const resetForm = () => {
     setCi('');
-    setCiExt('LP');
     setIsCorporate(false);
     setNit('');
     setBusinessName('');
@@ -70,7 +68,6 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
   const handleOpenEditModal = (cust: Customer) => {
     setEditingCustomer(cust);
     setCi(cust.ci || '');
-    setCiExt(cust.ciExt || 'LP');
     setIsCorporate(Boolean(cust.isCorporate));
     setNit(cust.nit || '');
     setBusinessName(cust.businessName || '');
@@ -103,7 +100,7 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
       const updated: Customer = {
         ...editingCustomer,
         ci: ci.trim(),
-        ciExt,
+        ciExt: undefined,
         nit: isCorporate ? nit.trim() : undefined,
         fullName: calculatedFullName,
         firstName: firstName.trim(),
@@ -127,7 +124,7 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
       const newCust: Customer = {
         id: 'cust-' + Date.now(),
         ci: ci.trim(),
-        ciExt,
+        ciExt: undefined,
         nit: isCorporate ? nit.trim() : undefined,
         fullName: calculatedFullName,
         firstName: firstName.trim(),
@@ -338,14 +335,7 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
                           {cust.nit ? (
                             <span className="font-bold text-[#b91c1c]">NIT: {cust.nit}</span>
                           ) : (
-                            <>
-                              <span className="font-semibold">{cust.ci}</span>
-                              {cust.ciExt && (
-                                <span className="bg-[#e2e8f0] text-[#334155] text-[10px] font-bold px-1 rounded">
-                                  {cust.ciExt}
-                                </span>
-                              )}
-                            </>
+                            <span className="font-semibold">{cust.ci}</span>
                           )}
                         </div>
                       </td>
@@ -462,7 +452,7 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
             ? `Actualización de ficha tributaria y contacto para ${editingCustomer.fullName}`
             : 'Ficha de datos para facturación electrónica y directorio central'
         }
-        maxWidth="xl"
+        maxWidth="md"
         onConfirm={handleSaveCustomer}
         confirmLabel={editingCustomer ? 'Guardar Cambios' : 'Guardar Cliente'}
         confirmIcon={editingCustomer ? 'save' : 'person_add'}
@@ -470,50 +460,32 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
         cancelLabel="Cancelar"
       >
         <div className="flex flex-col gap-4">
-          {/* Row 1: CI + Extensión + Toggle Razón Social */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="sm:col-span-2 flex flex-col gap-1">
+          {/* Row 1: CI + Toggle Razón Social */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2.5">
+            <div className="flex-1 flex flex-col gap-1">
               <label className="text-xs font-bold text-[#1e293b]">
                 Cédula de Identidad (CI) * <span className="text-[#ba1a1a] font-normal">(Obligatorio)</span>
               </label>
-              <div className="flex rounded-lg border border-[#cbd5e1] bg-white focus-within:border-[#d32f2f] overflow-hidden">
-                <input
-                  type="text"
-                  required
-                  value={ci}
-                  onChange={(e) => setCi(e.target.value)}
-                  placeholder="Ej. 8493021"
-                  className="w-full px-3 py-2 text-xs font-mono font-bold text-[#1e293b] outline-none"
-                />
-                <select
-                  value={ciExt}
-                  onChange={(e) => setCiExt(e.target.value)}
-                  className="bg-[#f8f9fc] px-2.5 py-2 text-xs font-mono font-bold border-l border-[#cbd5e1] text-[#475569] outline-none cursor-pointer"
-                >
-                  <option value="LP">LP (La Paz)</option>
-                  <option value="SC">SC (Santa Cruz)</option>
-                  <option value="CB">CB (Cochabamba)</option>
-                  <option value="OR">OR (Oruro)</option>
-                  <option value="PT">PT (Potosí)</option>
-                  <option value="TJ">TJ (Tarija)</option>
-                  <option value="CH">CH (Chuquisaca)</option>
-                  <option value="BE">BE (Beni)</option>
-                  <option value="PA">PA (Pando)</option>
-                  <option value="EA">EA (El Alto)</option>
-                </select>
-              </div>
+              <input
+                type="text"
+                required
+                value={ci}
+                onChange={(e) => setCi(e.target.value)}
+                placeholder="Ej. 8493021"
+                className="w-full px-3 py-2 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono font-bold text-[#1e293b] outline-none focus:border-[#d32f2f]"
+              />
             </div>
 
             {/* Toggle Razón Social */}
-            <div className="flex flex-col justify-end">
-              <label className="flex items-center gap-2 p-2 bg-[#f8f9fc] rounded-lg border border-[#cbd5e1] cursor-pointer text-xs font-bold text-[#1e293b] hover:bg-[#f1f5f9] transition-colors">
+            <div className="shrink-0 flex items-end">
+              <label className="flex items-center gap-2 px-2.5 py-2 bg-[#f8f9fc] rounded-lg border border-[#cbd5e1] cursor-pointer text-xs font-bold text-[#1e293b] hover:bg-[#f1f5f9] transition-colors whitespace-nowrap">
                 <input
                   type="checkbox"
                   checked={isCorporate}
                   onChange={(e) => setIsCorporate(e.target.checked)}
                   className="accent-[#d32f2f] rounded w-4 h-4 cursor-pointer"
                 />
-                <span>¿Factura Razón Social?</span>
+                <span>¿Razón Social?</span>
               </label>
             </div>
           </div>

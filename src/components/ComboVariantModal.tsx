@@ -211,7 +211,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
       icon="tune"
       title={`Configurar Variante: ${targetProduct.name}`}
       description={modalDescription}
-      maxWidth="xl"
+      maxWidth="2xl"
       footerExtra={
         <div className="flex flex-col">
           <span className="font-mono text-xs text-[#5b403d] dark:text-[#94a3b8]">Precio Final:</span>
@@ -229,7 +229,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
     >
       <div className="flex flex-col gap-4">
         {/* Step 1: Presas Requeridas */}
-        <div className="bg-[#f1f3ff] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e1e8fd] dark:border-[#263554] flex flex-col gap-3">
+        <div className="mui-container-subtle bg-[#f8f9fc] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e2e8f0] dark:border-[#263554] flex flex-col gap-3 transition-colors duration-200">
           <div className="flex items-center justify-between">
             <span className="text-xs sm:text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[18px]">kebab_dining</span>
@@ -250,7 +250,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
           </p>
 
           {/* Navigation Tabs Header */}
-          <div className="grid grid-cols-2 gap-1 p-1 bg-[#e9edff] dark:bg-[#243050] rounded-lg">
+          <div className="grid grid-cols-2 gap-1 p-1 bg-[#e9edf8] dark:bg-[#243050] rounded-lg">
             <button
               type="button"
               onClick={() => setPresaTab('rapido')}
@@ -281,104 +281,105 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
           {presaTab === 'rapido' && (
             <div className="flex flex-col gap-2">
               {targetPresasRequired === 4 ? (
-                // 4 Presas Quick Presets
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                // 4 Presas Quick Presets: 3 columns on desktop/tablet, 1 column on mobile
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {/* Preset 1: Completo Clásico (1 Pecho, 1 Ala, 1 Pierna, 1 Entrepierna) */}
                   <label
                     onClick={() => handleSelectQuickPreset('completo')}
-                    className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
                       selectedQuickPreset === 'completo'
                         ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e1e8fd] dark:border-[#263554] bg-white/70 dark:bg-[#131b2e]/60 hover:border-[#af101a]/40'
+                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="preset-selection"
-                        checked={selectedQuickPreset === 'completo'}
-                        onChange={() => handleSelectQuickPreset('completo')}
-                        className="accent-[#af101a] w-4 h-4 cursor-pointer"
-                      />
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">Medio Pollo Completo</span>
-                          <span className="bg-[#fec330] text-[#6f5100] font-mono text-[9px] px-1 py-0.2 rounded font-bold uppercase">
-                            Estándar
+                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="preset-selection"
+                            checked={selectedQuickPreset === 'completo'}
+                            onChange={() => handleSelectQuickPreset('completo')}
+                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
+                          />
+                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
+                            Medio Completo
                           </span>
                         </div>
-                        <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-                          1 Pecho + 1 Ala + 1 Pierna + 1 Entrepierna
+                        <span className="bg-[#fec330] text-[#6f5100] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
+                          Estándar
                         </span>
                       </div>
+                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
+                        1 Pecho + 1 Ala + 1 Pierna + 1 Entrepierna
+                      </span>
                     </div>
-                    {selectedQuickPreset === 'completo' ? (
-                      <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px] shrink-0">check_circle</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[#5b403d]/30 dark:text-[#94a3b8]/30 text-[20px] shrink-0">radio_button_unchecked</span>
-                    )}
                   </label>
 
                   {/* Preset 2: Doble Pecho - Ala */}
                   <label
                     onClick={() => handleSelectQuickPreset('doble-pecho-ala')}
-                    className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
                       selectedQuickPreset === 'doble-pecho-ala'
                         ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e1e8fd] dark:border-[#263554] bg-white/70 dark:bg-[#131b2e]/60 hover:border-[#af101a]/40'
+                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="preset-selection"
-                        checked={selectedQuickPreset === 'doble-pecho-ala'}
-                        onChange={() => handleSelectQuickPreset('doble-pecho-ala')}
-                        className="accent-[#af101a] w-4 h-4 cursor-pointer"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">Doble Pecho + Ala</span>
-                        <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-                          2 Pechos + 2 Alas (Blanca)
+                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="preset-selection"
+                            checked={selectedQuickPreset === 'doble-pecho-ala'}
+                            onChange={() => handleSelectQuickPreset('doble-pecho-ala')}
+                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
+                          />
+                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
+                            Doble Pecho + Ala
+                          </span>
+                        </div>
+                        <span className="bg-[#f1f3ff] text-[#af101a] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
+                          Blanca
                         </span>
                       </div>
+                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
+                        2 Pechos + 2 Alas
+                      </span>
                     </div>
-                    {selectedQuickPreset === 'doble-pecho-ala' ? (
-                      <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px] shrink-0">check_circle</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[#5b403d]/30 dark:text-[#94a3b8]/30 text-[20px] shrink-0">radio_button_unchecked</span>
-                    )}
                   </label>
 
                   {/* Preset 3: Doble Pierna - Entrepierna */}
                   <label
                     onClick={() => handleSelectQuickPreset('doble-pierna-entrepierna')}
-                    className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
                       selectedQuickPreset === 'doble-pierna-entrepierna'
                         ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e1e8fd] dark:border-[#263554] bg-white/70 dark:bg-[#131b2e]/60 hover:border-[#af101a]/40'
+                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="preset-selection"
-                        checked={selectedQuickPreset === 'doble-pierna-entrepierna'}
-                        onChange={() => handleSelectQuickPreset('doble-pierna-entrepierna')}
-                        className="accent-[#af101a] w-4 h-4 cursor-pointer"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">Doble Pierna + Entrepierna</span>
-                        <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-                          2 Piernas + 2 Entrepiernas (Jugosa)
+                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="preset-selection"
+                            checked={selectedQuickPreset === 'doble-pierna-entrepierna'}
+                            onChange={() => handleSelectQuickPreset('doble-pierna-entrepierna')}
+                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
+                          />
+                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
+                            Doble Pierna + Entrep.
+                          </span>
+                        </div>
+                        <span className="bg-[#fff5f5] text-[#af101a] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
+                          Jugosa
                         </span>
                       </div>
+                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
+                        2 Piernas + 2 Entrepiernas
+                      </span>
                     </div>
-                    {selectedQuickPreset === 'doble-pierna-entrepierna' ? (
-                      <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px] shrink-0">check_circle</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[#5b403d]/30 dark:text-[#94a3b8]/30 text-[20px] shrink-0">radio_button_unchecked</span>
-                    )}
                   </label>
                 </div>
               ) : (
@@ -390,7 +391,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
                     className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       selectedQuickPreset === 'pecho-ala'
                         ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e1e8fd] dark:border-[#263554] bg-white/70 dark:bg-[#131b2e]/60 hover:border-[#af101a]/40'
+                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -413,11 +414,6 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
                         </span>
                       </div>
                     </div>
-                    {selectedQuickPreset === 'pecho-ala' ? (
-                      <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[22px]">check_circle</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[#5b403d]/30 dark:text-[#94a3b8]/30 text-[22px]">radio_button_unchecked</span>
-                    )}
                   </label>
 
                   {/* Option 2: Pierna - Entrepierna */}
@@ -426,7 +422,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
                     className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       selectedQuickPreset === 'pierna-entrepierna'
                         ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e1e8fd] dark:border-[#263554] bg-white/70 dark:bg-[#131b2e]/60 hover:border-[#af101a]/40'
+                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -444,11 +440,6 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
                         </span>
                       </div>
                     </div>
-                    {selectedQuickPreset === 'pierna-entrepierna' ? (
-                      <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[22px]">check_circle</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[#5b403d]/30 dark:text-[#94a3b8]/30 text-[22px]">radio_button_unchecked</span>
-                    )}
                   </label>
                 </div>
               )}
@@ -628,7 +619,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
 
         {/* Step 2: Acompañamiento y Sustitución (ONLY IF INCLUDED IN DISH) */}
         {hasSide && (
-          <div className="bg-[#f1f3ff] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e1e8fd] dark:border-[#263554] flex flex-col gap-3">
+          <div className="mui-container-subtle bg-[#f8f9fc] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e2e8f0] dark:border-[#263554] flex flex-col gap-3 transition-colors duration-200">
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[#795900] dark:text-[#facc15] text-[18px]">swap_horiz</span>
@@ -640,7 +631,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {allowedSidesList.includes('mixto') && (
                 <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'mixto' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e1e8fd] dark:border-[#263554]'
+                  sideOption === 'mixto' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
                 }`}>
                   <input
                     type="radio"
@@ -659,7 +650,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
 
               {allowedSidesList.includes('solo-papa') && (
                 <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'solo-papa' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e1e8fd] dark:border-[#263554]'
+                  sideOption === 'solo-papa' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
                 }`}>
                   <input
                     type="radio"
@@ -678,7 +669,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
 
               {allowedSidesList.includes('solo-arroz') && (
                 <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'solo-arroz' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e1e8fd] dark:border-[#263554]'
+                  sideOption === 'solo-arroz' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
                 }`}>
                   <input
                     type="radio"
@@ -697,7 +688,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
 
               {allowedSidesList.includes('smiles') && (
                 <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'smiles' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e1e8fd] dark:border-[#263554]'
+                  sideOption === 'smiles' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
                 }`}>
                   <input
                     type="radio"

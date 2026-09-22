@@ -349,7 +349,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
 export const INITIAL_ORDERS: CompletedOrder[] = [
   {
     ticketNumber: '#00142',
-    timestamp: 'Hoy 15:42',
+    timestamp: '04/05/2024      20:46',
     orderType: 'MESA',
     tableNumber: 'Mesa 04',
     customer: INITIAL_CUSTOMERS[0],
@@ -387,7 +387,7 @@ export const INITIAL_ORDERS: CompletedOrder[] = [
   },
   {
     ticketNumber: '#00141',
-    timestamp: 'Hoy 15:35',
+    timestamp: '04/05/2024      20:35',
     orderType: 'LLEVAR',
     customer: INITIAL_CUSTOMERS[2],
     items: [
@@ -414,7 +414,7 @@ export const INITIAL_ORDERS: CompletedOrder[] = [
   },
   {
     ticketNumber: '#00140',
-    timestamp: 'Hoy 15:10',
+    timestamp: '04/05/2024      20:10',
     orderType: 'MESA',
     tableNumber: 'Mesa 02',
     customer: INITIAL_CUSTOMERS[4],
