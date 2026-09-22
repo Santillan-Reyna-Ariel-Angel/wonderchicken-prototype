@@ -4,73 +4,23 @@ import {
   GridColDef,
   GridRenderCellParams,
   GridPaginationModel,
+  GridFilterModel,
+  GridToolbarQuickFilter,
+  GridToolbarContainer,
 } from '@mui/x-data-grid';
 import { esES } from '@mui/x-data-grid/locales';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
-import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
-
-// Theme customization ensuring high-fidelity Material UI styling
-const muiTableTheme = createTheme(
-  {
-    palette: {
-      primary: {
-        main: '#d32f2f',
-        light: '#ef5350',
-        dark: '#af101a',
-      },
-      secondary: {
-        main: '#475569',
-      },
-      text: {
-        primary: '#1e293b',
-        secondary: '#64748b',
-      },
-      background: {
-        default: '#ffffff',
-        paper: '#ffffff',
-      },
-      divider: '#e2e8f0',
-    },
-    typography: {
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontSize: 13,
-    },
-    shape: {
-      borderRadius: 8,
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-            fontWeight: 600,
-            borderRadius: 8,
-          },
-        },
-      },
-      MuiOutlinedInput: {
-        styleOverrides: {
-          root: {
-            borderRadius: 8,
-          },
-        },
-      },
-    },
-  },
-  esES // Spanish localization for DataGrid
-);
+import { useTheme } from '../context/ThemeContext';
 
 export interface TableColumn<T = any> {
   field: string;
@@ -111,6 +61,13 @@ export interface MuiDataGridTableProps<T = any> {
   searchValue?: string;
   onSearchChange?: (val: string) => void;
   searchFilter?: (row: T, query: string) => boolean;
+  initialQuickFilterValues?: string[];
+  quickFilterValues?: string[];
+  onQuickFilterChange?: (values: string[]) => void;
+  showToolbar?: boolean;
+  disableColumnFilter?: boolean;
+  disableColumnSelector?: boolean;
+  disableDensitySelector?: boolean;
   actions?: TableAction<T>[] | ((row: T) => React.ReactNode);
   actionsColumnName?: string;
   actionsColumnWidth?: number;
@@ -125,6 +82,7 @@ export interface MuiDataGridTableProps<T = any> {
   onRowClick?: (row: T) => void;
   checkboxSelection?: boolean;
   disableRowSelectionOnClick?: boolean;
+  themeMode?: 'light' | 'dark' | 'auto';
 }
 
 export function MuiDataGridTable<T extends Record<string, any>>({
@@ -140,6 +98,13 @@ export function MuiDataGridTable<T extends Record<string, any>>({
   searchValue,
   onSearchChange,
   searchFilter,
+  initialQuickFilterValues,
+  quickFilterValues,
+  onQuickFilterChange,
+  showToolbar: showToolbarProp,
+  disableColumnFilter = true,
+  disableColumnSelector = true,
+  disableDensitySelector = true,
   actions,
   actionsColumnName = 'Acciones',
   actionsColumnWidth = 130,
@@ -154,18 +119,72 @@ export function MuiDataGridTable<T extends Record<string, any>>({
   onRowClick,
   checkboxSelection = false,
   disableRowSelectionOnClick = true,
+  themeMode = 'auto',
 }: MuiDataGridTableProps<T>) {
-  // Search state (internal or controlled via props)
-  const [internalSearch, setInternalSearch] = useState('');
-  const query = searchValue !== undefined ? searchValue : internalSearch;
+  // Sync with application ThemeContext
+  const { theme: appTheme } = useTheme();
+  const isDark = themeMode === 'dark' ? true : themeMode === 'light' ? false : appTheme === 'dark';
 
-  const handleQueryChange = (val: string) => {
-    if (onSearchChange) {
-      onSearchChange(val);
-    } else {
-      setInternalSearch(val);
-    }
-  };
+  // Dynamic Material UI theme matching application light and dark palette
+  const muiTableTheme = useMemo(() => {
+    return createTheme(
+      {
+        palette: {
+          mode: isDark ? 'dark' : 'light',
+          primary: {
+            main: isDark ? '#ef5350' : '#d32f2f',
+            light: isDark ? '#ff867c' : '#ef5350',
+            dark: isDark ? '#b71c1c' : '#af101a',
+            contrastText: '#ffffff',
+          },
+          secondary: {
+            main: isDark ? '#94a3b8' : '#475569',
+          },
+          text: {
+            primary: isDark ? '#f8fafc' : '#1e293b',
+            secondary: isDark ? '#94a3b8' : '#64748b',
+            disabled: isDark ? '#64748b' : '#94a3b8',
+          },
+          background: {
+            default: isDark ? '#0b0f19' : '#ffffff',
+            paper: isDark ? '#131b2e' : '#ffffff',
+          },
+          divider: isDark ? '#263554' : '#e2e8f0',
+          action: {
+            hover: isDark ? '#1e293b' : '#f8faff',
+            selected: isDark ? '#243050' : '#f1f5f9',
+            disabled: isDark ? '#475569' : '#cbd5e1',
+          },
+        },
+        typography: {
+          fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          fontSize: 13,
+        },
+        shape: {
+          borderRadius: 8,
+        },
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: 'none',
+                fontWeight: 600,
+                borderRadius: 8,
+              },
+            },
+          },
+          MuiOutlinedInput: {
+            styleOverrides: {
+              root: {
+                borderRadius: 8,
+              },
+            },
+          },
+        },
+      },
+      esES // Spanish localization for DataGrid
+    );
+  }, [isDark]);
 
   // Pagination model
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -173,29 +192,133 @@ export function MuiDataGridTable<T extends Record<string, any>>({
     page: 0,
   });
 
-  // Filtered rows based on search query
-  const filteredRows = useMemo(() => {
-    if (!showSearch || !query.trim()) return rows;
+  // Calculate whether toolbar is needed
+  const shouldShowToolbar =
+    showToolbarProp !== undefined
+      ? showToolbarProp
+      : showSearch || Boolean(title) || Boolean(toolbarActions);
 
-    const lowerQuery = query.toLowerCase().trim();
+  // Custom Toolbar component leveraging native MUI GridToolbarContainer and GridToolbarQuickFilter
+  const TableToolbar = useMemo(() => {
+    return function CustomToolbar() {
+      return (
+        <GridToolbarContainer
+          sx={{
+            p: { xs: 1.5, sm: 2 },
+            borderBottom: '1px solid',
+            borderColor: isDark ? '#263554' : '#e2e8f0',
+            backgroundColor: isDark ? '#162036' : '#f8fafc',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 1.5,
+            minHeight: 56,
+          }}
+        >
+          {/* Left side: Title, Badge and Subtitle */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+            {title && (
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 700,
+                      color: isDark ? '#f8fafc' : '#1e293b',
+                      fontSize: '0.875rem',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    {title}
+                  </Typography>
+                  {badgeText && (
+                    <Chip
+                      label={badgeText}
+                      size="small"
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        backgroundColor: isDark ? '#263554' : '#e2e8f0',
+                        color: isDark ? '#cbd5e1' : '#334155',
+                        border: isDark ? '1px solid #334155' : 'none',
+                        height: 22,
+                      }}
+                    />
+                  )}
+                </Box>
+                {subtitle && (
+                  <Typography
+                    variant="caption"
+                    sx={{ color: isDark ? '#94a3b8' : '#64748b', display: 'block', mt: 0.25 }}
+                  >
+                    {subtitle}
+                  </Typography>
+                )}
+              </Box>
+            )}
+          </Box>
 
-    if (searchFilter) {
-      return rows.filter((r) => searchFilter(r, lowerQuery));
-    }
-
-    // Default global search across all fields of the row
-    return rows.filter((row) =>
-      Object.values(row).some((val) => {
-        if (val === null || val === undefined) return false;
-        if (typeof val === 'object') {
-          return Object.values(val).some((nestedVal) =>
-            String(nestedVal ?? '').toLowerCase().includes(lowerQuery)
-          );
-        }
-        return String(val).toLowerCase().includes(lowerQuery);
-      })
-    );
-  }, [rows, showSearch, query, searchFilter]);
+          {/* Right side: Native MUI DataGrid Quick Filter + Toolbar Actions */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              ml: 'auto',
+              flexWrap: 'wrap',
+              justifyContent: { xs: 'stretch', sm: 'flex-end' },
+              width: { xs: '100%', sm: 'auto' },
+            }}
+          >
+            {showSearch && (
+              <Box
+                sx={{
+                  minWidth: { xs: '100%', sm: 280 },
+                  '& .MuiInputBase-root': {
+                    backgroundColor: isDark ? '#131b2e' : '#ffffff',
+                    color: isDark ? '#f8fafc' : '#1e293b',
+                    fontSize: '0.8125rem',
+                    borderRadius: '8px',
+                    '& fieldset': {
+                      borderColor: isDark ? '#263554' : '#cbd5e1',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: isDark ? '#3b4d75' : '#94a3b8',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: isDark ? '#ef5350' : '#d32f2f',
+                    },
+                    '& .MuiSvgIcon-root': {
+                      color: isDark ? '#94a3b8' : '#64748b',
+                    },
+                    '& input': {
+                      color: isDark ? '#f8fafc' : '#1e293b',
+                      '&::placeholder': {
+                        color: isDark ? '#64748b' : '#94a3b8',
+                        opacity: 1,
+                      },
+                    },
+                  },
+                }}
+              >
+                <GridToolbarQuickFilter
+                  debounceMs={200}
+                  slotProps={{
+                    root: {
+                      placeholder: searchPlaceholder,
+                      size: 'small',
+                    },
+                  }}
+                />
+              </Box>
+            )}
+            {toolbarActions}
+          </Box>
+        </GridToolbarContainer>
+      );
+    };
+  }, [title, subtitle, badgeText, showSearch, searchPlaceholder, toolbarActions, isDark]);
 
   // Build DataGrid columns with action column if defined
   const gridColumns = useMemo<GridColDef[]>(() => {
@@ -303,11 +426,11 @@ export function MuiDataGridTable<T extends Record<string, any>>({
                       py: 0.75,
                       px: 1.5,
                       borderRadius: 1.5,
-                      borderColor: '#cbd5e1',
-                      color: act.color === 'primary' ? '#d32f2f' : undefined,
+                      borderColor: act.variant === 'outlined' ? (isDark ? '#3b4d75' : '#cbd5e1') : undefined,
+                      color: act.color === 'primary' ? (isDark ? '#ef5350' : '#d32f2f') : undefined,
                       '&:hover': {
-                        borderColor: '#d32f2f',
-                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                        borderColor: isDark ? '#ef5350' : '#d32f2f',
+                        backgroundColor: isDark ? 'rgba(239, 83, 80, 0.12)' : 'rgba(211, 47, 47, 0.05)',
                       },
                     }}
                   >
@@ -338,6 +461,7 @@ export function MuiDataGridTable<T extends Record<string, any>>({
     actionsColumnName,
     actionsColumnWidth,
     actionsColumnAlign,
+    isDark,
   ]);
 
   // Custom empty overlay
@@ -351,6 +475,7 @@ export function MuiDataGridTable<T extends Record<string, any>>({
         height: '100%',
         p: 4,
         textAlign: 'center',
+        backgroundColor: isDark ? '#131b2e' : '#ffffff',
       }}
     >
       <Box
@@ -358,21 +483,22 @@ export function MuiDataGridTable<T extends Record<string, any>>({
           width: 48,
           height: 48,
           borderRadius: '50%',
-          backgroundColor: '#f1f5f9',
-          border: '1px solid #e2e8f0',
+          backgroundColor: isDark ? '#1a233b' : '#f1f5f9',
+          border: '1px solid',
+          borderColor: isDark ? '#263554' : '#e2e8f0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#94a3b8',
+          color: isDark ? '#94a3b8' : '#94a3b8',
           mb: 1.5,
         }}
       >
         <SearchIcon sx={{ fontSize: 26 }} />
       </Box>
-      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155' }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: isDark ? '#f8fafc' : '#334155' }}>
         {emptyMessage}
       </Typography>
-      <Typography variant="caption" sx={{ color: '#64748b', maxWidth: 360, mt: 0.5 }}>
+      <Typography variant="caption" sx={{ color: isDark ? '#94a3b8' : '#64748b', maxWidth: 360, mt: 0.5 }}>
         {emptySubMessage}
       </Typography>
     </Box>
@@ -389,12 +515,12 @@ export function MuiDataGridTable<T extends Record<string, any>>({
         height: '100%',
         gap: 1.5,
         p: 4,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: isDark ? 'rgba(19, 27, 46, 0.85)' : 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(2px)',
       }}
     >
-      <CircularProgress size={36} sx={{ color: '#d32f2f' }} />
-      <Typography variant="caption" sx={{ fontWeight: 600, color: '#475569' }}>
+      <CircularProgress size={36} sx={{ color: isDark ? '#ef5350' : '#d32f2f' }} />
+      <Typography variant="caption" sx={{ fontWeight: 600, color: isDark ? '#94a3b8' : '#475569' }}>
         Cargando datos...
       </Typography>
     </Box>
@@ -407,182 +533,107 @@ export function MuiDataGridTable<T extends Record<string, any>>({
         variant="outlined"
         sx={{
           borderRadius: 3,
-          borderColor: '#e2e8f0',
+          borderColor: isDark ? '#263554' : '#e2e8f0',
           overflow: 'hidden',
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#ffffff',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.04)',
+          backgroundColor: isDark ? '#131b2e' : '#ffffff',
+          boxShadow: isDark
+            ? '0 1px 3px 0 rgba(0, 0, 0, 0.4)'
+            : '0 1px 3px 0 rgba(0, 0, 0, 0.04)',
         }}
       >
-        {/* Material UI Table Toolbar Header */}
-        {(title || showSearch || toolbarActions) && (
-          <Box
-            sx={{
-              p: { xs: 1.75, sm: 2 },
-              backgroundColor: '#f8fafc',
-              borderBottom: '1px solid #e2e8f0',
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'stretch', sm: 'center' },
-              justifyContent: 'space-between',
-              gap: 2,
-            }}
-          >
-            {/* Title and Badge */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-              {title && (
-                <Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 700,
-                        color: '#1e293b',
-                        fontSize: '0.875rem',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      {title}
-                    </Typography>
-                    {badgeText && (
-                      <Chip
-                        label={badgeText}
-                        size="small"
-                        sx={{
-                          fontWeight: 600,
-                          fontSize: '0.75rem',
-                          backgroundColor: '#e2e8f0',
-                          color: '#334155',
-                          height: 22,
-                        }}
-                      />
-                    )}
-                  </Box>
-                  {subtitle && (
-                    <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mt: 0.25 }}>
-                      {subtitle}
-                    </Typography>
-                  )}
-                </Box>
-              )}
-            </Box>
-
-            {/* Right side: Search Box and Actions */}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
-                flexWrap: 'wrap',
-                justifyContent: { xs: 'stretch', sm: 'flex-end' },
-              }}
-            >
-              {/* Material UI Outlined Search Input */}
-              {showSearch && (
-                <TextField
-                  size="small"
-                  value={query}
-                  onChange={(e) => handleQueryChange(e.target.value)}
-                  placeholder={searchPlaceholder}
-                  sx={{
-                    minWidth: { xs: '100%', sm: 280 },
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#ffffff',
-                      fontSize: '0.8125rem',
-                      '& fieldset': {
-                        borderColor: '#cbd5e1',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: '#94a3b8',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#d32f2f',
-                      },
-                    },
-                  }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon sx={{ color: '#64748b', fontSize: 19 }} />
-                        </InputAdornment>
-                      ),
-                      endAdornment: query ? (
-                        <InputAdornment position="end">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleQueryChange('')}
-                            edge="end"
-                            title="Limpiar búsqueda"
-                          >
-                            <CloseIcon sx={{ fontSize: 16, color: '#94a3b8' }} />
-                          </IconButton>
-                        </InputAdornment>
-                      ) : null,
-                    },
-                  }}
-                />
-              )}
-
-              {/* Extra toolbar actions */}
-              {toolbarActions}
-            </Box>
-          </Box>
-        )}
-
-        {/* Material UI DataGrid with full responsiveness */}
+        {/* Material UI DataGrid with native quick filtering and toolbar */}
         <Box
           sx={{
             width: '100%',
             minHeight,
             overflowX: 'auto',
+            backgroundColor: isDark ? '#131b2e' : '#ffffff',
             '& .MuiDataGrid-root': {
               border: 'none',
               fontFamily: 'inherit',
+              color: isDark ? '#f8fafc' : '#1e293b',
+              '--DataGrid-rowBorderColor': isDark ? '#263554' : '#f1f5f9',
+            },
+            '& .MuiDataGrid-main': {
+              backgroundColor: isDark ? '#131b2e' : '#ffffff',
+            },
+            '& .MuiDataGrid-toolbarContainer': {
+              padding: { xs: '12px 14px', sm: '12px 16px' },
+              borderBottom: '1px solid',
+              borderColor: isDark ? '#263554' : '#e2e8f0',
+              backgroundColor: isDark ? '#162036' : '#f8fafc',
             },
             '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: '#f8fafc',
-              borderBottom: '1px solid #e2e8f0',
+              backgroundColor: isDark ? '#162036' : '#f8fafc',
+              borderBottom: '1px solid',
+              borderColor: isDark ? '#263554' : '#e2e8f0',
               fontSize: '0.75rem',
               fontWeight: 700,
               letterSpacing: '0.04em',
-              color: '#475569',
+              color: isDark ? '#94a3b8' : '#475569',
               textTransform: 'uppercase',
             },
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 700,
+              color: isDark ? '#cbd5e1' : '#475569',
+            },
+            '& .MuiDataGrid-iconButtonContainer .MuiIconButton-root, & .MuiDataGrid-sortIcon, & .MuiDataGrid-menuIcon .MuiIconButton-root': {
+              color: isDark ? '#94a3b8' : '#64748b',
             },
             '& .MuiDataGrid-cell': {
-              borderBottom: '1px solid #f1f5f9',
+              borderBottom: '1px solid',
+              borderColor: isDark ? '#1e293b' : '#f1f5f9',
               fontSize: '0.8125rem',
-              color: '#1e293b',
+              color: isDark ? '#f8fafc' : '#1e293b',
               paddingX: 2,
               display: 'flex',
               alignItems: 'center',
             },
+            '& .MuiDataGrid-row': {
+              backgroundColor: isDark ? '#131b2e' : '#ffffff',
+              transition: 'background-color 0.15s ease',
+            },
             '& .MuiDataGrid-row:hover': {
-              backgroundColor: '#f8faff',
+              backgroundColor: isDark ? '#1e293b !important' : '#f8faff !important',
+            },
+            '& .MuiDataGrid-row.Mui-selected': {
+              backgroundColor: isDark ? '#243050 !important' : '#f1f5f9 !important',
+            },
+            '& .MuiDataGrid-row.Mui-selected:hover': {
+              backgroundColor: isDark ? '#2c3b63 !important' : '#e2e8f0 !important',
             },
             '& .MuiDataGrid-footerContainer': {
-              borderTop: '1px solid #e2e8f0',
-              backgroundColor: '#f8fafc',
+              borderTop: '1px solid',
+              borderColor: isDark ? '#263554' : '#e2e8f0',
+              backgroundColor: isDark ? '#162036' : '#f8fafc',
               minHeight: '48px',
+              color: isDark ? '#94a3b8' : '#475569',
             },
             '& .MuiTablePagination-root': {
               fontSize: '0.8125rem',
-              color: '#475569',
+              color: isDark ? '#94a3b8' : '#475569',
             },
             '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
               fontSize: '0.75rem',
-              color: '#64748b',
+              color: isDark ? '#94a3b8' : '#64748b',
               fontWeight: 500,
+            },
+            '& .MuiTablePagination-select': {
+              color: isDark ? '#f8fafc' : '#1e293b',
+            },
+            '& .MuiTablePagination-actions .MuiIconButton-root': {
+              color: isDark ? '#cbd5e1' : '#475569',
+              '&.Mui-disabled': {
+                color: isDark ? '#334155' : '#cbd5e1',
+              },
             },
           }}
         >
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={gridColumns}
             getRowId={getRowId}
             loading={loading}
@@ -595,6 +646,41 @@ export function MuiDataGridTable<T extends Record<string, any>>({
             slots={{
               noRowsOverlay: CustomNoRowsOverlay,
               loadingOverlay: CustomLoadingOverlay,
+              toolbar: shouldShowToolbar ? TableToolbar : undefined,
+            }}
+            showToolbar={shouldShowToolbar}
+            disableColumnFilter={disableColumnFilter}
+            disableColumnSelector={disableColumnSelector}
+            disableDensitySelector={disableDensitySelector}
+            initialState={{
+              filter: {
+                filterModel: {
+                  items: [],
+                  quickFilterValues:
+                    initialQuickFilterValues || (searchValue ? [searchValue] : []),
+                },
+              },
+            }}
+            onFilterModelChange={(model: GridFilterModel) => {
+              if (onSearchChange) {
+                onSearchChange(model.quickFilterValues?.join(' ') || '');
+              }
+              if (onQuickFilterChange) {
+                onQuickFilterChange(model.quickFilterValues || []);
+              }
+            }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: showSearch,
+                quickFilterProps: {
+                  debounceMs: 200,
+                  slotProps: {
+                    root: {
+                      placeholder: searchPlaceholder,
+                    },
+                  },
+                },
+              },
             }}
             rowHeight={rowHeight}
             sx={{
