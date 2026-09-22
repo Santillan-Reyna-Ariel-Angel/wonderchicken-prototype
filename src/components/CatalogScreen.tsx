@@ -10,7 +10,7 @@ interface CatalogScreenProps {
 
 export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackToPOS }) => {
   const [productList, setProductList] = useState<Product[]>(products);
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'principales' | 'bebidas' | 'extras'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
