@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Branch } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 
 interface BranchesScreenProps {
   onBackToPOS: () => void;
@@ -173,156 +174,186 @@ export const BranchesScreen: React.FC<BranchesScreenProps> = ({ onBackToPOS }) =
         </div>
       </div>
 
-      {/* Main Table Card */}
-      <div className="bg-white rounded-xl border border-[#e1e8fd] shadow-xs overflow-hidden flex flex-col">
-        <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e1e8fd] bg-[#f9f9ff]">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#af101a]"></span>
-            <h2 className="font-bold text-sm sm:text-base text-[#141b2b]">
-              Sucursales de la Cadena Wonder Chicken
-            </h2>
-            <span className="px-2 py-0.5 rounded-full bg-[#e1e8fd] text-[#141b2b] font-mono text-xs font-semibold">
-              {branches.length} Registradas
-            </span>
-          </div>
-
-          <div className="relative w-full sm:w-64">
-            <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#5b403d] text-[16px]">
-              search
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por código, zona o admin..."
-              className="w-full pl-8 pr-3 py-1.5 bg-white text-xs text-[#141b2b] rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
-            />
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="bg-[#f1f3ff] text-[#5b403d] font-mono uppercase tracking-wider border-b border-[#e1e8fd]">
-                <th className="py-3 px-4">Código / ID</th>
-                <th className="py-3 px-4">Nombre de Sucursal</th>
-                <th className="py-3 px-4">Dirección</th>
-                <th className="py-3 px-4">Ciudad / Zona</th>
-                <th className="py-3 px-4">Administrador Responsable</th>
-                <th className="py-3 px-4 text-center">Terminales</th>
-                <th className="py-3 px-4 text-center">Estado Red</th>
-                <th className="py-3 px-4 text-center">Sync DB</th>
-                <th className="py-3 px-4 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f1f3ff] text-[#141b2b]">
-              {filteredBranches.map((branch) => (
-                <tr key={branch.code} className="hover:bg-[#f9f9ff] transition-colors">
-                  <td className="py-3 px-4 font-mono font-bold text-[#af101a]">
-                    {branch.code}
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded bg-[#ffdad6] text-[#af101a] font-bold flex items-center justify-center shrink-0">
-                        {branch.name.charAt(branch.name.indexOf(' ') + 1) || 'S'}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[#141b2b]">{branch.name}</span>
-                        <span className="text-[11px] text-[#5b403d]">{branch.subtitle}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-[#5b403d]">{branch.address}</td>
-                  <td className="py-3 px-4">
-                    <span className="bg-[#f1f3ff] px-2 py-0.5 rounded font-mono text-[11px] text-[#141b2b]">
-                      {branch.city}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                      {branch.adminAvatar ? (
-                        <img
-                          src={branch.adminAvatar}
-                          alt={branch.adminName}
-                          className="w-7 h-7 rounded-full object-cover shrink-0"
-                        />
-                      ) : (
-                        <div className="w-7 h-7 rounded-full bg-[#fec330] text-[#6f5100] font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
-                          {branch.adminName.split(' ').map((n) => n[0]).join('')}
-                        </div>
-                      )}
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[11px] leading-tight">{branch.adminName}</span>
-                        <span className="text-[10px] text-[#5b403d] font-mono">{branch.adminEmail}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#f1f3ff] text-[#141b2b]">
-                      {branch.terminalsCount} POS
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleActive(branch.code)}
-                      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                        branch.active ? 'bg-[#fec330]' : 'bg-[#e1e8fd]'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
-                          branch.active ? 'translate-x-4' : 'translate-x-0.5'
-                        }`}
-                      />
-                    </button>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <span className="material-symbols-outlined text-[18px] text-[#15803d]">
-                      check_circle
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Editando parámetros de ${branch.name}`)}
-                        className="p-1.5 rounded hover:bg-[#f1f3ff] text-[#5b403d] hover:text-[#141b2b] cursor-pointer"
-                        title="Editar Sucursal"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">edit_location_alt</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Ventas del día: 142 tickets en ${branch.name}`)}
-                        className="p-1.5 rounded hover:bg-[#f1f3ff] text-[#5b403d] hover:text-[#af101a] cursor-pointer"
-                        title="Ver Métricas"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">analytics</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Impresoras térmicas OK en ${branch.name}`)}
-                        className="p-1.5 rounded hover:bg-[#f1f3ff] text-[#5b403d] hover:text-[#005c8d] cursor-pointer"
-                        title="Configurar Impresoras"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">print</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 bg-[#f1f3ff] flex items-center justify-between font-mono text-[11px] text-[#5b403d]">
-          <span>Mostrando {filteredBranches.length} de {branches.length} sedes autorizadas por la franquicia</span>
-          <span className="font-bold text-[#141b2b]">Clúster Operativo Activo</span>
-        </div>
-      </div>
+      {/* Main Table Card using MuiDataGridTable */}
+      <MuiDataGridTable<Branch>
+        rows={branches}
+        getRowId={(row) => row.code}
+        columns={[
+          {
+            field: 'code',
+            headerName: 'Código / ID',
+            width: 120,
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-[#af101a] dark:text-[#ef5350]">
+                {row.code}
+              </span>
+            ),
+          },
+          {
+            field: 'name',
+            headerName: 'Nombre de Sucursal',
+            minWidth: 220,
+            flex: 1.5,
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#ffdad6] dark:bg-rose-950/60 text-[#af101a] dark:text-[#ef5350] font-bold flex items-center justify-center shrink-0">
+                  {row.name.charAt(row.name.indexOf(' ') + 1) || 'S'}
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.name}</span>
+                  <span className="text-[11px] text-[#5b403d] dark:text-[#94a3b8]">{row.subtitle}</span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            field: 'address',
+            headerName: 'Dirección',
+            minWidth: 180,
+            flex: 1.2,
+            renderCell: ({ row }) => (
+              <span className="text-xs text-[#5b403d] dark:text-[#cbd5e1]">
+                {row.address}
+              </span>
+            ),
+          },
+          {
+            field: 'city',
+            headerName: 'Ciudad / Zona',
+            width: 160,
+            renderCell: ({ row }) => (
+              <span className="bg-[#f1f3ff] dark:bg-[#1a233b] px-2 py-0.5 rounded font-mono text-[11px] text-[#141b2b] dark:text-[#f8fafc]">
+                {row.city}
+              </span>
+            ),
+          },
+          {
+            field: 'adminName',
+            headerName: 'Administrador Responsable',
+            minWidth: 200,
+            flex: 1.3,
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-2">
+                {row.adminAvatar ? (
+                  <img
+                    src={row.adminAvatar}
+                    alt={row.adminName}
+                    className="w-7 h-7 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-[#fec330] text-[#6f5100] font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
+                    {row.adminName.split(' ').map((n) => n[0]).join('')}
+                  </div>
+                )}
+                <div className="flex flex-col leading-tight">
+                  <span className="font-bold text-[11px] leading-tight text-[#141b2b] dark:text-[#f8fafc]">
+                    {row.adminName}
+                  </span>
+                  <span className="text-[10px] text-[#5b403d] dark:text-[#94a3b8] font-mono">
+                    {row.adminEmail}
+                  </span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            field: 'terminalsCount',
+            headerName: 'Terminales',
+            width: 110,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc]">
+                {row.terminalsCount} POS
+              </span>
+            ),
+          },
+          {
+            field: 'active',
+            headerName: 'Estado Red',
+            width: 110,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <button
+                type="button"
+                onClick={() => handleToggleActive(row.code)}
+                className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
+                  row.active ? 'bg-[#fec330]' : 'bg-[#e1e8fd] dark:bg-slate-700'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
+                    row.active ? 'translate-x-4' : 'translate-x-0.5'
+                  }`}
+                />
+              </button>
+            ),
+          },
+          {
+            field: 'syncDb',
+            headerName: 'Sync DB',
+            width: 90,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: () => (
+              <span className="material-symbols-outlined text-[18px] text-[#15803d] dark:text-[#4ade80]">
+                check_circle
+              </span>
+            ),
+          },
+          {
+            field: 'actions',
+            headerName: 'Acciones',
+            width: 130,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <div className="flex items-center justify-end gap-1">
+                <button
+                  type="button"
+                  onClick={() => showToast(`Editando parámetros de ${row.name}`)}
+                  className="p-1.5 rounded hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8] hover:text-[#141b2b] dark:hover:text-white cursor-pointer transition-colors"
+                  title="Editar Sucursal"
+                >
+                  <span className="material-symbols-outlined text-[16px]">edit_location_alt</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showToast(`Ventas del día: 142 tickets en ${row.name}`)}
+                  className="p-1.5 rounded hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8] hover:text-[#af101a] dark:hover:text-[#ef5350] cursor-pointer transition-colors"
+                  title="Ver Métricas"
+                >
+                  <span className="material-symbols-outlined text-[16px]">analytics</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showToast(`Impresoras térmicas OK en ${row.name}`)}
+                  className="p-1.5 rounded hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8] hover:text-[#005c8d] cursor-pointer transition-colors"
+                  title="Configurar Impresoras"
+                >
+                  <span className="material-symbols-outlined text-[16px]">print</span>
+                </button>
+              </div>
+            ),
+          },
+        ]}
+        header={{
+          title: 'Sucursales de la Cadena Wonder Chicken',
+          badgeText: `${branches.length} Registradas`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar por código, zona o administrador...',
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20],
+        }}
+        emptyState={{
+          message: 'No se encontraron sucursales',
+        }}
+        rowHeight={64}
+        minHeight={480}
+      />
 
       {/* Modal: Registrar Nueva Sucursal */}
       <AppModal

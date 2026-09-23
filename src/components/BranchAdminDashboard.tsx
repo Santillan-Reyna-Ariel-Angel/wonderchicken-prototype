@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommonTable, ColumnDef } from '../commonComponents/CommonTable';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { useOrdersStore } from '../features/orders/stores/orders.store';
 import { ScreenType } from '../types';
@@ -54,65 +54,78 @@ export const BranchAdminDashboard: React.FC<BranchAdminDashboardProps> = ({ onNa
 
   const pendingPaymentTickets = kdsTickets.filter((t) => t.isPendingPayment);
 
-  const columns: ColumnDef<ShiftSummary>[] = [
+  const columns: TableColumn<ShiftSummary>[] = [
     {
-      id: 'terminal',
-      header: 'Terminal',
-      render: (row) => (
-        <span className="font-mono font-bold text-[#141b2b] bg-[#f1f3ff] px-2 py-0.5 rounded">
+      field: 'terminal',
+      headerName: 'Terminal',
+      width: 120,
+      renderCell: ({ row }) => (
+        <span className="font-mono font-bold text-[#141b2b] dark:text-[#f8fafc] bg-[#f1f3ff] dark:bg-[#1a233b] px-2 py-0.5 rounded">
           {row.terminal}
         </span>
       ),
     },
     {
-      id: 'cashier',
-      header: 'Cajera Asignada',
-      render: (row) => (
-        <span className="font-semibold text-xs text-[#141b2b]">{row.cashier}</span>
+      field: 'cashier',
+      headerName: 'Cajera Asignada',
+      minWidth: 180,
+      flex: 1.2,
+      renderCell: ({ row }) => (
+        <span className="font-semibold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.cashier}</span>
       ),
     },
     {
-      id: 'period',
-      header: 'Período',
-      render: (row) => (
-        <span className="font-mono text-xs font-bold text-[#b45309]">
+      field: 'period',
+      headerName: 'Período',
+      width: 120,
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs font-bold text-[#b45309] dark:text-[#fbbf24]">
           {row.period}
         </span>
       ),
     },
     {
-      id: 'openedAt',
-      header: 'Hora Apertura',
       field: 'openedAt',
-    },
-    {
-      id: 'fund',
-      header: 'Fondo Inicial',
-      align: 'right',
-      render: (row) => (
-        <span className="font-mono text-xs">Bs. {row.fund.toFixed(2)}</span>
+      headerName: 'Hora Apertura',
+      width: 130,
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs text-[#5b403d] dark:text-[#cbd5e1]">{row.openedAt}</span>
       ),
     },
     {
-      id: 'sales',
-      header: 'Ventas Registradas',
+      field: 'fund',
+      headerName: 'Fondo Inicial',
+      width: 130,
       align: 'right',
-      render: (row) => (
-        <span className="font-mono text-xs font-bold text-[#15803d]">
+      headerAlign: 'right',
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs text-[#141b2b] dark:text-[#f8fafc]">Bs. {row.fund.toFixed(2)}</span>
+      ),
+    },
+    {
+      field: 'sales',
+      headerName: 'Ventas Registradas',
+      width: 160,
+      align: 'right',
+      headerAlign: 'right',
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs font-bold text-[#15803d] dark:text-[#4ade80]">
           Bs. {row.sales.toFixed(2)}
         </span>
       ),
     },
     {
-      id: 'status',
-      header: 'Estado',
+      field: 'status',
+      headerName: 'Estado',
+      width: 130,
       align: 'center',
-      render: (row) => (
+      headerAlign: 'center',
+      renderCell: ({ row }) => (
         <span
-          className={`font-mono text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+          className={`font-mono text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${
             row.status === 'ABIERTO'
-              ? 'bg-emerald-100 text-emerald-800'
-              : 'bg-neutral-100 text-neutral-600'
+              ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400'
+              : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-slate-400'
           }`}
         >
           {row.status}
@@ -229,11 +242,18 @@ export const BranchAdminDashboard: React.FC<BranchAdminDashboardProps> = ({ onNa
         </div>
       </div>
 
-      {/* Shifts CommonTable */}
-      <CommonTable
+      {/* Shifts MuiDataGridTable */}
+      <MuiDataGridTable<ShiftSummary>
         title="Arqueo y Estado de Cajas en Sucursal"
         rows={DEMO_SHIFTS}
+        getRowId={(row) => `${row.terminal}-${row.cashier}`}
         columns={columns}
+        header={{
+          title: 'Arqueo y Estado de Cajas en Sucursal',
+          badgeText: `${DEMO_SHIFTS.length} cajas`,
+        }}
+        rowHeight={60}
+        minHeight={280}
       />
     </div>
   );

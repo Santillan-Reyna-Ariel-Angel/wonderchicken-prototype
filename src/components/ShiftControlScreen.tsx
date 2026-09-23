@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 
 interface ShiftControlScreenProps {
   onBackToPOS: () => void;
@@ -103,131 +104,216 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
         </div>
       </div>
 
-      {/* Cajas del Turno Actual Grid */}
-      <div className="bg-white rounded-xl border border-[#e1e8fd] shadow-xs overflow-hidden flex flex-col">
-        <div className="p-4 bg-[#f9f9ff] border-b border-[#e1e8fd] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#af101a] text-[20px]">view_timeline</span>
-            <h2 className="font-bold text-sm sm:text-base text-[#141b2b]">
-              Cajas del Turno Actual — Turno Mañana en Curso
-            </h2>
-          </div>
-          <span className="font-mono text-xs text-[#5b403d]">Sucursal Central (SCZ-001)</span>
-        </div>
-
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#f1f3ff] text-[#5b403d] font-mono uppercase tracking-wider border-b border-[#e1e8fd]">
-              <tr>
-                <th className="py-3 px-4">Caja</th>
-                <th className="py-3 px-4">Cajera Responsable</th>
-                <th className="py-3 px-4">Hora Apertura</th>
-                <th className="py-3 px-4 text-right">Fondo Base</th>
-                <th className="py-3 px-4 text-right">Venta Efectivo</th>
-                <th className="py-3 px-4 text-right">QR / Delivery</th>
-                <th className="py-3 px-4 text-right">Vales Personal</th>
-                <th className="py-3 px-4 text-right">Gastos Menores</th>
-                <th className="py-3 px-4 text-right">Total Esperado</th>
-                <th className="py-3 px-4 text-center">Estado</th>
-                <th className="py-3 px-4 text-right">Acción</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f1f3ff] text-[#141b2b]">
-              <tr className={`hover:bg-[#f9f9ff] transition-colors ${selectedCaja === '01' ? 'bg-[#ffdad6]/20' : ''}`}>
-                <td className="py-3 px-4 font-mono font-bold text-[#af101a]">Caja 01</td>
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[#af101a] text-white font-mono text-[10px] font-bold flex items-center justify-center">
-                      CC
-                    </div>
-                    <span className="font-bold">Carla Cajera (2222222)</span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 font-mono text-[#5b403d]">08:30 AM</td>
-                <td className="py-3 px-4 text-right font-mono">Bs. 150.00</td>
-                <td className="py-3 px-4 text-right font-mono font-bold text-[#15803d]">Bs. 1,980.00</td>
-                <td className="py-3 px-4 text-right font-mono text-[#005c8d]">Bs. 1,440.00</td>
-                <td className="py-3 px-4 text-right font-mono text-[#b45309]">
-                  <span className="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200 font-bold text-[11px]">
-                    -Bs. 23.00
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right font-mono text-[#ba1a1a]">
-                  <span className="inline-block px-2 py-0.5 rounded bg-rose-50 border border-rose-200 font-bold text-[11px]">
-                    -Bs. 35.00
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right font-mono font-bold text-base text-[#141b2b]">
-                  Bs. 2,095.00
-                </td>
-                <td className="py-3 px-4 text-center">
-                  <span className="bg-[#15803d]/15 text-[#15803d] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                    ABIERTA
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedCaja('01');
-                      showToast('Supervisando Caja 01 - Carla Cajera');
-                    }}
-                    className="px-2.5 py-1 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded shadow-xs cursor-pointer"
-                  >
-                    Supervisar Arqueo
-                  </button>
-                </td>
-              </tr>
-
-              <tr className={`hover:bg-[#f9f9ff] transition-colors ${selectedCaja === '02' ? 'bg-[#ffdad6]/20' : ''}`}>
-                <td className="py-3 px-4 font-mono font-bold text-[#af101a]">Caja 02</td>
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[#fec330] text-[#6f5100] font-mono text-[10px] font-bold flex items-center justify-center">
-                      EE
-                    </div>
-                    <span className="font-bold">Eva Empleada (7777777)</span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 font-mono text-[#5b403d]">08:45 AM</td>
-                <td className="py-3 px-4 text-right font-mono">Bs. 150.00</td>
-                <td className="py-3 px-4 text-right font-mono font-bold text-[#15803d]">Bs. 0.00</td>
-                <td className="py-3 px-4 text-right font-mono text-[#005c8d]">Bs. 850.00</td>
-                <td className="py-3 px-4 text-right font-mono text-[#b45309]">
-                  <span className="inline-block px-2 py-0.5 rounded bg-amber-50 border border-amber-200 font-bold text-[11px]">
-                    -Bs. 23.00
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right font-mono text-[#ba1a1a]">
-                  <span className="inline-block px-2 py-0.5 rounded bg-rose-50 border border-rose-200 font-bold text-[11px]">
-                    -Bs. 50.00
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right font-mono font-bold text-base text-[#141b2b]">
-                  Bs. 100.00
-                </td>
-                <td className="py-3 px-4 text-center">
-                  <span className="bg-[#15803d]/15 text-[#15803d] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                    ABIERTA
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-right">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedCaja('02');
-                      showToast('Supervisando Caja 02 - Eva Empleada');
-                    }}
-                    className="px-2.5 py-1 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded border border-[#e1e8fd] cursor-pointer"
-                  >
-                    Auditar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Cajas del Turno Actual Grid using MuiDataGridTable */}
+      <MuiDataGridTable<{
+        id: string;
+        name: string;
+        cashierName: string;
+        cashierCi: string;
+        cashierInitials: string;
+        avatarBg: string;
+        avatarColor: string;
+        openTime: string;
+        baseFund: number;
+        cashSales: number;
+        qrSales: number;
+        vales: number;
+        expenses: number;
+        expectedTotal: number;
+        status: string;
+      }>
+        rows={[
+          {
+            id: '01',
+            name: 'Caja 01',
+            cashierName: 'Carla Cajera',
+            cashierCi: '2222222',
+            cashierInitials: 'CC',
+            avatarBg: '#af101a',
+            avatarColor: '#ffffff',
+            openTime: '08:30 AM',
+            baseFund: 150.0,
+            cashSales: 1980.0,
+            qrSales: 1440.0,
+            vales: 23.0,
+            expenses: 35.0,
+            expectedTotal: 2095.0,
+            status: 'ABIERTA',
+          },
+          {
+            id: '02',
+            name: 'Caja 02',
+            cashierName: 'Eva Empleada',
+            cashierCi: '7777777',
+            cashierInitials: 'EE',
+            avatarBg: '#fec330',
+            avatarColor: '#6f5100',
+            openTime: '08:45 AM',
+            baseFund: 150.0,
+            cashSales: 0.0,
+            qrSales: 850.0,
+            vales: 23.0,
+            expenses: 50.0,
+            expectedTotal: 100.0,
+            status: 'ABIERTA',
+          },
+        ]}
+        getRowId={(row) => row.id}
+        columns={[
+          {
+            field: 'name',
+            headerName: 'Caja',
+            width: 100,
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-[#af101a] dark:text-[#ef5350]">
+                {row.name}
+              </span>
+            ),
+          },
+          {
+            field: 'cashierName',
+            headerName: 'Cajera Responsable',
+            minWidth: 200,
+            flex: 1.3,
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-6 h-6 rounded-full font-mono text-[10px] font-bold flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: row.avatarBg, color: row.avatarColor }}
+                >
+                  {row.cashierInitials}
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.cashierName}</span>
+                  <span className="font-mono text-[10px] text-[#5b403d] dark:text-[#94a3b8]">CI: {row.cashierCi}</span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            field: 'openTime',
+            headerName: 'Apertura',
+            width: 105,
+            renderCell: ({ row }) => (
+              <span className="font-mono text-xs text-[#5b403d] dark:text-[#cbd5e1]">{row.openTime}</span>
+            ),
+          },
+          {
+            field: 'baseFund',
+            headerName: 'Fondo Base',
+            width: 110,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="font-mono text-xs text-[#141b2b] dark:text-[#f8fafc]">
+                Bs. {row.baseFund.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'cashSales',
+            headerName: 'Venta Efectivo',
+            width: 120,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-xs text-[#15803d] dark:text-[#4ade80]">
+                Bs. {row.cashSales.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'qrSales',
+            headerName: 'QR / Delivery',
+            width: 120,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="font-mono text-xs text-[#005c8d] dark:text-[#38bdf8]">
+                Bs. {row.qrSales.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'vales',
+            headerName: 'Vales',
+            width: 110,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="inline-block px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 font-mono font-bold text-[11px] text-[#b45309] dark:text-[#fbbf24]">
+                -Bs. {row.vales.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'expenses',
+            headerName: 'Gastos',
+            width: 110,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="inline-block px-1.5 py-0.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 font-mono font-bold text-[11px] text-[#ba1a1a] dark:text-[#f87171]">
+                -Bs. {row.expenses.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'expectedTotal',
+            headerName: 'Total Esperado',
+            width: 130,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">
+                Bs. {row.expectedTotal.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'status',
+            headerName: 'Estado',
+            width: 100,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <span className="bg-[#15803d]/15 text-[#15803d] dark:text-[#4ade80] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                {row.status}
+              </span>
+            ),
+          },
+          {
+            field: 'actions',
+            headerName: 'Acción',
+            width: 140,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCaja(row.id as any);
+                  showToast(`Supervisando ${row.name} - ${row.cashierName}`);
+                }}
+                className={`px-2.5 py-1 font-mono text-xs font-bold rounded cursor-pointer transition-colors ${
+                  selectedCaja === row.id
+                    ? 'bg-[#d32f2f] text-white shadow-xs'
+                    : 'bg-[#f1f3ff] dark:bg-[#1a233b] hover:bg-[#e9edff] text-[#141b2b] dark:text-[#f8fafc] border border-[#e1e8fd] dark:border-[#263554]'
+                }`}
+              >
+                {selectedCaja === row.id ? 'Seleccionada' : 'Supervisar'}
+              </button>
+            ),
+          },
+        ]}
+        header={{
+          title: 'Cajas del Turno Actual — Turno Mañana',
+          badgeText: 'Sucursal Central (SCZ-001)',
+          showSearch: false,
+        }}
+        rowHeight={60}
+        minHeight={210}
+      />
 
       {/* Módulo de Auditoría Operativa / Cierre de Turno y Arqueo X / Z */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

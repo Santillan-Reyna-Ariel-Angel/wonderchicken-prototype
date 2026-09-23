@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { CompletedOrder } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDatePicker } from '../commonComponents/MuiDatePicker';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 
 interface HistoryScreenProps {
   orders: CompletedOrder[];
@@ -41,7 +43,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
   onBackToPOS,
   onMarkPaid,
 }) => {
-  const [search, setSearch] = useState('');
+  const [filterDate, setFilterDate] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<CompletedOrder | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -50,12 +52,155 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
     setTimeout(() => setToast(null), 3000);
   };
 
-  const filteredOrders = orders.filter(
-    (o) =>
-      o.ticketNumber.toLowerCase().includes(search.toLowerCase()) ||
-      o.customer.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      (o.tableNumber && o.tableNumber.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filteredOrders = useMemo(() => {
+    if (!filterDate) return orders;
+    return orders.filter((o) => {
+      const [year, month, day] = filterDate.split('-');
+      const formattedDate1 = `${day}/${month}/${year}`;
+      const formattedDate2 = filterDate;
+      const ts = o.timestamp || '04/05/2024';
+      return ts.includes(formattedDate1) || ts.includes(formattedDate2);
+    });
+  }, [orders, filterDate]);
+
+  const columns = useMemo<TableColumn<CompletedOrder>[]>(() => [
+    {
+      field: 'ticketNumber',
+      headerName: 'Ticket',
+      width: 110,
+      renderCell: ({ row }) => (
+        <span className="font-mono font-bold text-[#af101a] dark:text-[#ef5350]">
+          {row.ticketNumber}
+        </span>
+      ),
+    },
+    {
+      field: 'timestamp',
+      headerName: 'Hora',
+      width: 150,
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs text-[#5b403d] dark:text-[#94a3b8] whitespace-pre">
+          {formatComandaDate(row.timestamp)}
+        </span>
+      ),
+    },
+    {
+      field: 'orderType',
+      headerName: 'Servicio',
+      width: 110,
+      renderCell: ({ row }) => (
+        <span className="font-mono font-semibold text-xs text-[#141b2b] dark:text-[#f8fafc]">
+          {row.orderType === 'MESA' ? row.tableNumber || 'Mesa' : 'Llevar'}
+        </span>
+      ),
+    },
+    {
+      field: 'customer',
+      headerName: 'Cliente',
+      minWidth: 170,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <div className="flex flex-col leading-tight">
+          <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">
+            {row.customer.fullName}
+          </span>
+          <span className="font-mono text-[10px] text-[#5b403d] dark:text-[#94a3b8]">
+            CI: {row.customer.ci || row.customer.nit || 'S/N'}
+          </span>
+        </div>
+      ),
+    },
+    {
+      field: 'items',
+      headerName: 'Ítems',
+      minWidth: 200,
+      flex: 1.5,
+      renderCell: ({ row }) => (
+        <span className="text-xs text-[#5b403d] dark:text-[#cbd5e1] truncate">
+          {row.items.map((i) => `${i.quantity}x ${i.name}`).join(', ')}
+        </span>
+      ),
+    },
+    {
+      field: 'total',
+      headerName: 'Total',
+      width: 110,
+      align: 'right',
+      headerAlign: 'right',
+      renderCell: ({ row }) => (
+        <span className="font-mono font-bold text-xs text-[#af101a] dark:text-[#ef5350]">
+          Bs. {row.total.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      field: 'paymentMethod',
+      headerName: 'Pago',
+      width: 110,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: ({ row }) => (
+        <span
+          className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+            row.paymentMethod === 'EFECTIVO'
+              ? 'bg-[#dcfce7] dark:bg-emerald-950/40 text-[#15803d] dark:text-[#4ade80]'
+              : row.paymentMethod === 'QR'
+              ? 'bg-[#e0f2fe] dark:bg-sky-950/40 text-[#0369a1] dark:text-[#38bdf8]'
+              : 'bg-[#fee2e2] dark:bg-rose-950/40 text-[#ba1a1a] dark:text-[#f87171]'
+          }`}
+        >
+          {row.paymentMethod}
+        </span>
+      ),
+    },
+    {
+      field: 'status',
+      headerName: 'Estado',
+      width: 110,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: ({ row }) => (
+        <span
+          className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded ${
+            row.status === 'ENTREGADO'
+              ? 'bg-[#f1f3ff] dark:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8]'
+              : row.status === 'LISTO'
+              ? 'bg-[#dcfce7] dark:bg-emerald-950/40 text-[#15803d] dark:text-[#4ade80]'
+              : 'bg-[#ffdad6] dark:bg-rose-950/40 text-[#ba1a1a] dark:text-[#f87171]'
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
+    },
+    {
+      field: 'actions',
+      headerName: 'Acciones',
+      width: 140,
+      align: 'right',
+      headerAlign: 'right',
+      renderCell: ({ row }) => (
+        <div className="flex items-center justify-end gap-1">
+          <button
+            type="button"
+            onClick={() => setSelectedOrder(row)}
+            className="px-2.5 py-1 bg-[#f1f3ff] dark:bg-[#1a233b] hover:bg-[#e9edff] dark:hover:bg-[#263554] text-[#141b2b] dark:text-[#f8fafc] font-mono text-xs font-bold rounded cursor-pointer transition-colors"
+            title="Ver Comanda"
+          >
+            Comanda
+          </button>
+          <button
+            type="button"
+            onClick={() => showToast(`Reimprimiendo ticket ${row.ticketNumber}`)}
+            className="p-1 hover:bg-[#f1f3ff] dark:hover:bg-[#1f2c4a] text-[#5b403d] dark:text-[#94a3b8] rounded cursor-pointer transition-colors"
+            title="Reimprimir Comanda"
+          >
+            <span className="material-symbols-outlined text-[16px]">print</span>
+          </button>
+        </div>
+      ),
+    },
+  ], []);
 
   return (
     <div className="flex flex-col gap-5">
@@ -68,37 +213,45 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-xl border border-[#e1e8fd] shadow-xs">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-[#162036] p-4 sm:p-6 rounded-xl border border-[#e1e8fd] dark:border-[#263554] shadow-xs transition-colors">
         <div>
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#af101a] text-[26px]">receipt_long</span>
-            <h1 className="text-lg sm:text-xl font-bold text-[#141b2b]">
+            <span className="material-symbols-outlined text-[#af101a] dark:text-[#ef5350] text-[26px]">receipt_long</span>
+            <h1 className="text-lg sm:text-xl font-bold text-[#141b2b] dark:text-[#f8fafc]">
               Historial de Pedidos y Comandas
             </h1>
           </div>
-          <p className="text-xs text-[#5b403d] mt-1">
+          <p className="text-xs text-[#5b403d] dark:text-[#94a3b8] mt-1">
             Auditoría de tickets emitidos, comprobantes de pago y reimpresión de comandas.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="relative min-w-[220px]">
-            <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#5b403d] text-[16px]">
-              search
-            </span>
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por ticket o cliente..."
-              className="w-full pl-8 pr-3 py-1.5 bg-[#f1f3ff] rounded-lg text-xs border border-[#e1e8fd] outline-none"
+        <div className="flex flex-wrap items-center gap-3">
+          {/* MUI DatePicker Filter */}
+          <div className="flex items-center gap-1.5">
+            <MuiDatePicker
+              label="Filtrar por fecha"
+              value={filterDate}
+              onChange={setFilterDate}
+              maxWidth={180}
+              helperText=""
             />
+            {filterDate && (
+              <button
+                type="button"
+                onClick={() => setFilterDate('')}
+                title="Limpiar fecha"
+                className="p-1.5 rounded-lg text-[#64748b] dark:text-[#94a3b8] hover:bg-[#f1f5f9] dark:hover:bg-[#1f2c4a] border border-[#e1e8fd] dark:border-[#263554] transition-colors"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            )}
           </div>
 
           <button
             type="button"
             onClick={onBackToPOS}
-            className="px-3.5 py-2 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+            className="px-3.5 py-2 bg-[#f1f3ff] dark:bg-[#1a233b] hover:bg-[#e9edff] dark:hover:bg-[#243050] text-[#141b2b] dark:text-[#f8fafc] font-mono text-xs font-bold rounded-lg border border-[#e1e8fd] dark:border-[#263554] transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
           >
             <span className="material-symbols-outlined text-[16px]">point_of_sale</span>
             Volver a POS
@@ -106,101 +259,28 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-[#e1e8fd] shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-[#141b2b]">
-            <thead className="bg-[#f1f3ff] text-[#5b403d] font-mono uppercase tracking-wider border-b border-[#e1e8fd]">
-              <tr>
-                <th className="py-3 px-4">Ticket</th>
-                <th className="py-3 px-4">Hora</th>
-                <th className="py-3 px-4">Servicio</th>
-                <th className="py-3 px-4">Cliente</th>
-                <th className="py-3 px-4">Ítems</th>
-                <th className="py-3 px-4">Total (Bs.)</th>
-                <th className="py-3 px-4">Pago</th>
-                <th className="py-3 px-4">Estado</th>
-                <th className="py-3 px-4 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f1f3ff]">
-              {filteredOrders.map((ord) => (
-                <tr key={ord.ticketNumber} className="hover:bg-[#f9f9ff] transition-colors">
-                  <td className="py-3 px-4 font-mono font-bold text-[#af101a]">
-                    {ord.ticketNumber}
-                  </td>
-                  <td className="py-3 px-4 font-mono text-[#5b403d] whitespace-pre">
-                    {formatComandaDate(ord.timestamp)}
-                  </td>
-                  <td className="py-3 px-4 font-mono font-semibold">
-                    {ord.orderType === 'MESA' ? ord.tableNumber || 'Mesa' : 'Llevar'}
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[#141b2b]">{ord.customer.fullName}</span>
-                      <span className="font-mono text-[10px] text-[#5b403d]">
-                        CI: {ord.customer.ci || ord.customer.nit || 'S/N'}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-[#5b403d]">
-                    {ord.items.map((i) => `${i.quantity}x ${i.name}`).join(', ')}
-                  </td>
-                  <td className="py-3 px-4 font-mono font-bold text-sm text-[#af101a]">
-                    Bs. {ord.total.toFixed(2)}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                        ord.paymentMethod === 'EFECTIVO'
-                          ? 'bg-[#dcfce7] text-[#15803d]'
-                          : ord.paymentMethod === 'QR'
-                          ? 'bg-[#e0f2fe] text-[#0369a1]'
-                          : 'bg-[#fee2e2] text-[#ba1a1a]'
-                      }`}
-                    >
-                      {ord.paymentMethod}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded ${
-                        ord.status === 'ENTREGADO'
-                          ? 'bg-[#f1f3ff] text-[#5b403d]'
-                          : ord.status === 'LISTO'
-                          ? 'bg-[#dcfce7] text-[#15803d]'
-                          : 'bg-[#ffdad6] text-[#ba1a1a]'
-                      }`}
-                    >
-                      {ord.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedOrder(ord)}
-                        className="px-2.5 py-1 bg-[#f1f3ff] hover:bg-[#e9edff] text-[#141b2b] font-mono text-xs font-bold rounded cursor-pointer"
-                        title="Ver Comanda"
-                      >
-                        Comanda
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Reimprimiendo ticket ${ord.ticketNumber}`)}
-                        className="p-1 hover:bg-[#f1f3ff] text-[#5b403d] rounded cursor-pointer"
-                        title="Reimprimir Comanda"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">print</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Modern Reusable MuiDataGridTable */}
+      <MuiDataGridTable<CompletedOrder>
+        rows={filteredOrders}
+        columns={columns}
+        getRowId={(row) => row.ticketNumber}
+        header={{
+          title: 'Auditoría Central de Comandas',
+          badgeText: `${filteredOrders.length} tickets`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar ticket, cliente o mesa...',
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20, 50],
+        }}
+        emptyState={{
+          message: 'No se encontraron comandas',
+          subMessage: 'Intente ajustar la fecha o el filtro de búsqueda.',
+        }}
+        rowHeight={60}
+        minHeight={490}
+      />
 
       {/* Ticket Details / Receipt Modal */}
       {selectedOrder && (

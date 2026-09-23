@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Operator } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDatePicker } from '../commonComponents/MuiDatePicker';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 
 interface PersonnelScreenProps {
   onBackToPOS: () => void;
@@ -71,6 +73,7 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
   const [phone, setPhone] = useState('');
   const [emailUser, setEmailUser] = useState('');
   const [role, setRole] = useState<'CASHIER' | 'DISPATCHER' | 'COOK'>('CASHIER');
+  const [hireDate, setHireDate] = useState('');
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -203,135 +206,150 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
         </div>
       </div>
 
-      {/* Main Table Card */}
-      <div className="bg-white rounded-xl border border-[#e1e8fd] shadow-xs overflow-hidden flex flex-col">
-        {/* Table Controls */}
-        <div className="p-4 bg-[#f9f9ff] border-b border-[#e1e8fd] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <span className="font-bold text-sm text-[#141b2b]">Plantilla Activa de Operadores</span>
-            <span className="bg-[#e1e8fd] text-[#5b403d] font-mono text-xs px-2 py-0.5 rounded-full">
-              {filteredOperators.length} en pantalla
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-            <div className="relative">
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value as any)}
-                className="bg-white text-xs font-mono font-bold text-[#141b2b] px-3 py-1.5 rounded-lg border border-[#e1e8fd] outline-none cursor-pointer"
-              >
-                <option value="ALL">Todos los Roles ({operators.length})</option>
-                <option value="CASHIER">Cajera ({operators.filter((o) => o.role === 'CASHIER').length})</option>
-                <option value="DISPATCHER">Despachadora ({operators.filter((o) => o.role === 'DISPATCHER').length})</option>
-                <option value="COOK">Cocinero ({operators.filter((o) => o.role === 'COOK').length})</option>
-              </select>
-            </div>
-
-            <div className="relative w-48 sm:w-60">
-              <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#5b403d] text-[16px]">
-                search
+      {/* Main Table Card using MuiDataGridTable */}
+      <MuiDataGridTable<Operator>
+        rows={roleFilter === 'ALL' ? operators : operators.filter((o) => o.role === roleFilter)}
+        getRowId={(row) => row.id}
+        columns={[
+          {
+            field: 'fullName',
+            headerName: 'Nombre Completo',
+            minWidth: 220,
+            flex: 1.5,
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#ffdad6] dark:bg-rose-950/60 text-[#af101a] dark:text-[#ef5350] font-bold font-mono text-xs flex items-center justify-center shrink-0">
+                  {row.fullName.split(' ').map((n) => n[0]).join('')}
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.fullName}</span>
+                  <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">{row.email}</span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            field: 'ci',
+            headerName: 'CI',
+            width: 120,
+            renderCell: ({ row }) => (
+              <span className="font-mono font-semibold text-xs text-[#141b2b] dark:text-[#f8fafc]">
+                {row.ci}
               </span>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por CI o nombre..."
-                className="w-full pl-8 pr-3 py-1.5 bg-white text-xs text-[#141b2b] rounded-lg border border-[#e1e8fd] outline-none focus:border-[#af101a]"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs text-[#141b2b]">
-            <thead className="bg-[#f1f3ff] text-[#5b403d] font-mono uppercase tracking-wider border-b border-[#e1e8fd]">
-              <tr>
-                <th className="py-3 px-4">Nombre Completo</th>
-                <th className="py-3 px-4">CI</th>
-                <th className="py-3 px-4">Rol Operativo</th>
-                <th className="py-3 px-4">Turno Asignado</th>
-                <th className="py-3 px-4">Estado</th>
-                <th className="py-3 px-4">Último Acceso</th>
-                <th className="py-3 px-4 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f1f3ff]">
-              {filteredOperators.map((op) => (
-                <tr key={op.id} className="hover:bg-[#f9f9ff] transition-colors">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#ffdad6] text-[#af101a] font-bold font-mono text-xs flex items-center justify-center shrink-0">
-                        {op.fullName.split(' ').map((n) => n[0]).join('')}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-xs text-[#141b2b]">{op.fullName}</span>
-                        <span className="font-mono text-[11px] text-[#5b403d]">{op.email}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 font-mono font-semibold">{op.ci}</td>
-                  <td className="py-3 px-4">{getRoleBadge(op.role)}</td>
-                  <td className="py-3 px-4">
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-xs text-[#141b2b]">{op.shift}</span>
-                      <span className="font-mono text-[10px] text-[#5b403d]">{op.shiftHours}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleStatus(op.id)}
-                      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                        op.active ? 'bg-[#15803d]' : 'bg-[#e1e8fd]'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
-                          op.active ? 'translate-x-4' : 'translate-x-0.5'
-                        }`}
-                      />
-                    </button>
-                    <span className="ml-2 font-mono text-[11px] text-[#5b403d]">
-                      {op.active ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 font-mono text-[11px] text-[#5b403d]">
-                    {op.lastAccess}
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => showToast(`Editando datos de ${op.fullName}`)}
-                        className="p-1 rounded text-[#5b403d] hover:text-[#af101a] hover:bg-[#f1f3ff] cursor-pointer"
-                        title="Editar operador"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">edit</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showToast(`PIN de ${op.fullName} restablecido a su CI`)}
-                        className="p-1 rounded text-[#5b403d] hover:text-[#795900] hover:bg-[#f1f3ff] cursor-pointer"
-                        title="Restablecer PIN/Clave"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">key</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 bg-[#f1f3ff] flex items-center justify-between font-mono text-[11px] text-[#5b403d]">
-          <span>Mostrando {filteredOperators.length} de {operators.length} operadores registrados</span>
-          <span>Sucursal Central • Cajas 01 a 04</span>
-        </div>
-      </div>
+            ),
+          },
+          {
+            field: 'role',
+            headerName: 'Rol Operativo',
+            width: 140,
+            renderCell: ({ row }) => getRoleBadge(row.role),
+          },
+          {
+            field: 'shift',
+            headerName: 'Turno Asignado',
+            minWidth: 150,
+            flex: 1,
+            renderCell: ({ row }) => (
+              <div className="flex flex-col leading-tight">
+                <span className="font-semibold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.shift}</span>
+                <span className="font-mono text-[10px] text-[#5b403d] dark:text-[#94a3b8]">{row.shiftHours}</span>
+              </div>
+            ),
+          },
+          {
+            field: 'active',
+            headerName: 'Estado',
+            width: 130,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleToggleStatus(row.id)}
+                  className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
+                    row.active ? 'bg-[#15803d]' : 'bg-[#e1e8fd] dark:bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
+                      row.active ? 'translate-x-4' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
+                <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">
+                  {row.active ? 'Activo' : 'Inactivo'}
+                </span>
+              </div>
+            ),
+          },
+          {
+            field: 'lastAccess',
+            headerName: 'Último Acceso',
+            width: 170,
+            renderCell: ({ row }) => (
+              <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">
+                {row.lastAccess}
+              </span>
+            ),
+          },
+          {
+            field: 'actions',
+            headerName: 'Acciones',
+            width: 110,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <div className="flex items-center justify-end gap-1">
+                <button
+                  type="button"
+                  onClick={() => showToast(`Editando datos de ${row.fullName}`)}
+                  className="p-1.5 rounded text-[#5b403d] dark:text-[#94a3b8] hover:text-[#af101a] dark:hover:text-[#ef5350] hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] cursor-pointer transition-colors"
+                  title="Editar operador"
+                >
+                  <span className="material-symbols-outlined text-[16px]">edit</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showToast(`PIN de ${row.fullName} restablecido a su CI`)}
+                  className="p-1.5 rounded text-[#5b403d] dark:text-[#94a3b8] hover:text-[#795900] dark:hover:text-[#fbbf24] hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] cursor-pointer transition-colors"
+                  title="Restablecer PIN/Clave"
+                >
+                  <span className="material-symbols-outlined text-[16px]">key</span>
+                </button>
+              </div>
+            ),
+          },
+        ]}
+        header={{
+          title: 'Plantilla Activa de Operadores',
+          badgeText: `${operators.length} operadores`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar por CI, nombre o correo...',
+          toolbarActions: (
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value as any)}
+              className="bg-white dark:bg-[#162036] text-xs font-mono font-bold text-[#141b2b] dark:text-[#f8fafc] px-3 py-1.5 rounded-lg border border-[#e1e8fd] dark:border-[#263554] outline-none cursor-pointer"
+            >
+              <option value="ALL">Todos los Roles ({operators.length})</option>
+              <option value="CASHIER">Cajera ({operators.filter((o) => o.role === 'CASHIER').length})</option>
+              <option value="DISPATCHER">Despachadora ({operators.filter((o) => o.role === 'DISPATCHER').length})</option>
+              <option value="COOK">Cocinero ({operators.filter((o) => o.role === 'COOK').length})</option>
+            </select>
+          ),
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20],
+        }}
+        emptyState={{
+          message: 'No se encontraron operadores',
+          subMessage: 'Pruebe seleccionando otro rol o cambiando la búsqueda.',
+        }}
+        rowHeight={64}
+        minHeight={480}
+      />
 
       {/* Modal: Registrar Nuevo Operador (FR-018) */}
       <AppModal
@@ -423,11 +441,11 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#141b2b]">Rol Funcional *</label>
+              <label className="font-bold text-[#141b2b] dark:text-[#f8fafc]">Rol Funcional *</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as any)}
-                className="px-3 py-2 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] outline-none font-medium"
+                className="px-3 py-2 bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc] rounded-lg border border-[#e1e8fd] dark:border-[#263554] outline-none font-medium"
               >
                 <option value="CASHIER">Cajera / Punto de Venta</option>
                 <option value="DISPATCHER">Despachadora / KDS Expeditor</option>
@@ -436,13 +454,20 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#141b2b]">Sucursal Asignada</label>
-              <div className="bg-[#f1f3ff] px-3 py-2 rounded-lg border border-[#e1e8fd] flex items-center gap-1.5 text-[#141b2b] font-medium">
-                <span className="material-symbols-outlined text-[16px] text-[#af101a]">storefront</span>
+              <label className="font-bold text-[#141b2b] dark:text-[#f8fafc]">Sucursal Asignada</label>
+              <div className="bg-[#f1f3ff] dark:bg-[#1a233b] px-3 py-2 rounded-lg border border-[#e1e8fd] dark:border-[#263554] flex items-center gap-1.5 text-[#141b2b] dark:text-[#f8fafc] font-medium">
+                <span className="material-symbols-outlined text-[16px] text-[#af101a] dark:text-[#ef5350]">storefront</span>
                 <span>Sucursal Central (Fija)</span>
               </div>
             </div>
           </div>
+
+          {/* Fecha de Alta / Contratación */}
+          <MuiDatePicker
+            label="Fecha de Contratación / Ingreso (Opcional)"
+            value={hireDate}
+            onChange={setHireDate}
+          />
 
           {/* Security note */}
           <div className="p-3 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] flex items-start gap-2 text-[11px] text-[#5b403d]">

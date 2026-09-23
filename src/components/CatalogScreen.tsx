@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 
 interface CatalogScreenProps {
   products: Product[];
@@ -330,121 +331,177 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
         </div>
       </div>
 
-      {/* Products Table Card */}
-      <div className="bg-white rounded-xl border border-[#e1e8fd] shadow-xs overflow-hidden flex flex-col">
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs text-[#141b2b]">
-            <thead className="bg-[#f1f3ff] text-[#5b403d] font-mono uppercase tracking-wider border-b border-[#e1e8fd]">
-              <tr>
-                <th className="py-3 px-4">Código</th>
-                <th className="py-3 px-4">Producto &amp; Imagen</th>
-                <th className="py-3 px-4">Categoría</th>
-                <th className="py-3 px-4 text-right">Precio Base</th>
-                <th className="py-3 px-4 text-center">Variantes</th>
-                <th className="py-3 px-4">Reglas de Armado</th>
-                <th className="py-3 px-4 text-center">Control Presas</th>
-                <th className="py-3 px-4 text-center">POS Activo</th>
-                <th className="py-3 px-4 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f1f3ff]">
-              {filteredProducts.map((p) => (
-                <tr key={p.id} className="hover:bg-[#f9f9ff] transition-colors">
-                  <td className="py-3 px-4 font-mono font-bold text-[#af101a]">{p.code}</td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-[#e1e8fd]">
-                        <img
-                          src={p.imageUrl}
-                          alt={p.name}
-                          className="w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-xs text-[#141b2b]">{p.name}</span>
-                        <span className="text-[11px] text-[#5b403d] line-clamp-1">{p.description}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="bg-[#f1f3ff] text-[#141b2b] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                      {p.category}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right font-mono font-bold text-sm text-[#af101a]">
-                    Bs. {p.price.toFixed(2)}
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f3ff]">
-                      {p.variantsCount || (p.configurable ? 4 : 1)} Var.
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-xs text-[#5b403d]">
-                    {p.optionsPreview || (p.configurable ? 'Bebida / Papas / Ensalada' : 'Fórmula fija')}
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    {p.configurable ? (
-                      <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold text-[#15803d] bg-emerald-50 px-2 py-0.5 rounded">
-                        <span className="material-symbols-outlined text-[12px]">check</span>
-                        Sí Presas
-                      </span>
-                    ) : (
-                      <span className="font-mono text-[10px] text-[#5b403d] bg-gray-100 px-2 py-0.5 rounded">
-                        No Presas
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleActive(p.id)}
-                      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                        p.active ? 'bg-[#15803d]' : 'bg-[#e1e8fd]'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
-                          p.active ? 'translate-x-4' : 'translate-x-0.5'
-                        }`}
-                      />
-                    </button>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      {p.configurable ? (
-                        <button
-                          type="button"
-                          onClick={() => openRules(p)}
-                          className="px-2 py-1 bg-[#ffdad6] hover:bg-[#ffb4ab] text-[#af101a] font-mono text-[11px] font-bold rounded flex items-center gap-1 cursor-pointer"
-                          title="Gestionar Reglas de Armado"
-                        >
-                          <span className="material-symbols-outlined text-[14px]">schema</span>
-                          Reglas
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => showToast(`Editando producto ${p.name}`)}
-                          className="p-1.5 rounded hover:bg-[#f1f3ff] text-[#5b403d] hover:text-[#141b2b] cursor-pointer"
-                          title="Editar Producto"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">edit</span>
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="p-3 bg-[#f1f3ff] flex items-center justify-between font-mono text-[11px] text-[#5b403d]">
-          <span>Mostrando {filteredProducts.length} productos configurados para Sucursal Central</span>
-          <span>Actualización en caliente habilitada</span>
-        </div>
-      </div>
+      {/* Products Table Card using MuiDataGridTable */}
+      <MuiDataGridTable<Product>
+        rows={filteredProducts}
+        getRowId={(row) => row.id}
+        columns={[
+          {
+            field: 'code',
+            headerName: 'Código',
+            width: 110,
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-[#af101a] dark:text-[#ef5350]">
+                {row.code}
+              </span>
+            ),
+          },
+          {
+            field: 'name',
+            headerName: 'Producto & Imagen',
+            minWidth: 240,
+            flex: 1.5,
+            renderCell: ({ row }) => (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-[#e1e8fd] dark:border-[#263554]">
+                  <img
+                    src={row.imageUrl}
+                    alt={row.name}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.name}</span>
+                  <span className="text-[11px] text-[#5b403d] dark:text-[#94a3b8] line-clamp-1">{row.description}</span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            field: 'category',
+            headerName: 'Categoría',
+            width: 130,
+            renderCell: ({ row }) => (
+              <span className="bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                {row.category}
+              </span>
+            ),
+          },
+          {
+            field: 'price',
+            headerName: 'Precio Base',
+            width: 120,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <span className="font-mono font-bold text-sm text-[#af101a] dark:text-[#ef5350]">
+                Bs. {row.price.toFixed(2)}
+              </span>
+            ),
+          },
+          {
+            field: 'variantsCount',
+            headerName: 'Variantes',
+            width: 110,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc]">
+                {row.variantsCount || (row.configurable ? 4 : 1)} Var.
+              </span>
+            ),
+          },
+          {
+            field: 'optionsPreview',
+            headerName: 'Reglas de Armado',
+            minWidth: 170,
+            flex: 1.1,
+            renderCell: ({ row }) => (
+              <span className="text-xs text-[#5b403d] dark:text-[#cbd5e1] truncate">
+                {row.optionsPreview || (row.configurable ? 'Bebida / Papas / Ensalada' : 'Fórmula fija')}
+              </span>
+            ),
+          },
+          {
+            field: 'configurable',
+            headerName: 'Control Presas',
+            width: 130,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) =>
+              row.configurable ? (
+                <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold text-[#15803d] dark:text-[#4ade80] bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
+                  <span className="material-symbols-outlined text-[12px]">check</span>
+                  Sí Presas
+                </span>
+              ) : (
+                <span className="font-mono text-[10px] text-[#5b403d] dark:text-[#94a3b8] bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+                  No Presas
+                </span>
+              ),
+          },
+          {
+            field: 'active',
+            headerName: 'POS Activo',
+            width: 110,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: ({ row }) => (
+              <button
+                type="button"
+                onClick={() => handleToggleActive(row.id)}
+                className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
+                  row.active ? 'bg-[#15803d]' : 'bg-[#e1e8fd] dark:bg-slate-700'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-0.5 ${
+                    row.active ? 'translate-x-4' : 'translate-x-0.5'
+                  }`}
+                />
+              </button>
+            ),
+          },
+          {
+            field: 'actions',
+            headerName: 'Acciones',
+            width: 110,
+            align: 'right',
+            headerAlign: 'right',
+            renderCell: ({ row }) => (
+              <div className="flex items-center justify-end gap-1">
+                {row.configurable ? (
+                  <button
+                    type="button"
+                    onClick={() => openRules(row)}
+                    className="px-2 py-1 bg-[#ffdad6] dark:bg-rose-950/60 hover:bg-[#ffb4ab] dark:hover:bg-rose-900/60 text-[#af101a] dark:text-[#ef5350] font-mono text-[11px] font-bold rounded flex items-center gap-1 cursor-pointer transition-colors"
+                    title="Gestionar Reglas de Armado"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">schema</span>
+                    Reglas
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => showToast(`Editando producto ${row.name}`)}
+                    className="p-1.5 rounded hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8] hover:text-[#141b2b] dark:hover:text-white cursor-pointer transition-colors"
+                    title="Editar Producto"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                )}
+              </div>
+            ),
+          },
+        ]}
+        header={{
+          title: 'Catálogo de Menú y Variantes',
+          badgeText: `${filteredProducts.length} productos`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar producto o código...',
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20, 50],
+        }}
+        emptyState={{
+          message: 'No se encontraron productos',
+          subMessage: 'Pruebe seleccionando otra categoría o limpiando la búsqueda.',
+        }}
+        rowHeight={68}
+        minHeight={500}
+      />
 
       {/* MODAL: Definición de Variante y Reglas Operativas (Solo Lectura) */}
       {selectedProductRule && (

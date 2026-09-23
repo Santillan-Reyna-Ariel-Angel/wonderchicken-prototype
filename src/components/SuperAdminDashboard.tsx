@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CommonTable, ColumnDef } from '../commonComponents/CommonTable';
+import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 import { Branch } from '../types';
 import { BRAND_COLORS } from '../config/colors';
 
@@ -52,75 +52,87 @@ const INITIAL_BRANCHES: Branch[] = [
 export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavigate }) => {
   const [branches, setBranches] = useState<Branch[]>(INITIAL_BRANCHES);
 
-  const columns: ColumnDef<Branch>[] = [
+  const columns: TableColumn<Branch>[] = [
     {
-      id: 'code',
-      header: 'Código',
-      render: (row) => (
-        <span className="font-mono font-bold text-[#af101a] bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+      field: 'code',
+      headerName: 'Código',
+      width: 120,
+      renderCell: ({ row }) => (
+        <span className="font-mono font-bold text-[#af101a] dark:text-[#ef5350] bg-rose-50 dark:bg-rose-950/50 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-900">
           {row.code}
         </span>
       ),
     },
     {
-      id: 'name',
-      header: 'Sucursal / Ubicación',
-      render: (row) => (
-        <div>
-          <div className="font-bold text-[#141b2b]">{row.name}</div>
-          <div className="text-[11px] text-[#5b403d]">{row.address}</div>
+      field: 'name',
+      headerName: 'Sucursal / Ubicación',
+      minWidth: 240,
+      flex: 1.5,
+      renderCell: ({ row }) => (
+        <div className="flex flex-col leading-tight">
+          <div className="font-bold text-[#141b2b] dark:text-[#f8fafc] text-xs">{row.name}</div>
+          <div className="text-[11px] text-[#5b403d] dark:text-[#94a3b8]">{row.address}</div>
         </div>
       ),
     },
     {
-      id: 'city',
-      header: 'Ciudad',
-      render: (row) => (
-        <span className="font-mono text-xs font-semibold text-[#141b2b]">
+      field: 'city',
+      headerName: 'Ciudad',
+      width: 130,
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs font-semibold text-[#141b2b] dark:text-[#f8fafc]">
           {row.city}
         </span>
       ),
     },
     {
-      id: 'admin',
-      header: 'Administrador Responsable',
-      render: (row) => (
-        <div>
-          <div className="font-medium text-xs text-[#141b2b]">{row.adminName}</div>
-          <div className="text-[10px] font-mono text-[#5b403d]">{row.adminEmail}</div>
+      field: 'adminName',
+      headerName: 'Administrador Responsable',
+      minWidth: 200,
+      flex: 1.2,
+      renderCell: ({ row }) => (
+        <div className="flex flex-col leading-tight">
+          <div className="font-medium text-xs text-[#141b2b] dark:text-[#f8fafc]">{row.adminName}</div>
+          <div className="text-[10px] font-mono text-[#5b403d] dark:text-[#94a3b8]">{row.adminEmail}</div>
         </div>
       ),
     },
     {
-      id: 'terminals',
-      header: 'Terminales',
+      field: 'terminalsCount',
+      headerName: 'Terminales',
+      width: 110,
       align: 'center',
-      render: (row) => (
-        <span className="font-mono text-xs px-2 py-0.5 bg-[#f1f3ff] rounded font-bold">
+      headerAlign: 'center',
+      renderCell: ({ row }) => (
+        <span className="font-mono text-xs px-2 py-0.5 bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc] rounded font-bold">
           {row.terminalsCount} Cajas
         </span>
       ),
     },
     {
-      id: 'status',
-      header: 'Estado Nodo',
+      field: 'active',
+      headerName: 'Estado Nodo',
+      width: 190,
       align: 'center',
-      render: (row) => (
-        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+      headerAlign: 'center',
+      renderCell: () => (
+        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
           Activa &amp; Sincronizada
         </span>
       ),
     },
     {
-      id: 'actions',
-      header: 'Acciones',
+      field: 'actions',
+      headerName: 'Acciones',
+      width: 120,
       align: 'right',
-      render: (row) => (
+      headerAlign: 'right',
+      renderCell: () => (
         <button
           type="button"
           onClick={() => onNavigate('branch-admin')}
-          className="px-2.5 py-1 bg-[#f1f3ff] hover:bg-[#d32f2f] hover:text-white text-[#141b2b] font-mono text-xs font-bold rounded transition-colors cursor-pointer"
+          className="px-2.5 py-1 bg-[#f1f3ff] dark:bg-[#1a233b] hover:bg-[#d32f2f] hover:text-white dark:hover:bg-[#d32f2f] dark:hover:text-white text-[#141b2b] dark:text-[#f8fafc] font-mono text-xs font-bold rounded transition-colors cursor-pointer"
         >
           Gestionar
         </button>
@@ -198,13 +210,23 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
         </div>
       </div>
 
-      {/* Multibranch CommonTable */}
-      <CommonTable
-        title="Red de Sucursales Wonder Chicken"
+      {/* Multibranch MuiDataGridTable */}
+      <MuiDataGridTable<Branch>
         rows={branches}
+        getRowId={(row) => row.id}
         columns={columns}
-        showSearch={true}
-        searchPlaceholder="Buscar por código, sede, ciudad o administrador..."
+        header={{
+          title: 'Red de Sucursales Wonder Chicken',
+          badgeText: `${branches.length} activas`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar por código, sede, ciudad o administrador...',
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20],
+        }}
+        rowHeight={64}
+        minHeight={360}
       />
     </div>
   );

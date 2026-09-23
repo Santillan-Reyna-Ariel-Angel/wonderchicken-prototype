@@ -1,14 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import 'dayjs/locale/es';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useTheme } from '../context/ThemeContext';
 import { Customer, UserRole } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDataGridTable, TableColumn, TableAction } from '../commonComponents/MuiDataGridTable';
+import { MuiDatePicker } from '../commonComponents/MuiDatePicker';
 
 interface ClientsScreenProps {
   customers: Customer[];
@@ -25,32 +19,6 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
   onUpdateCustomer,
   onBackToPOS,
 }) => {
-  // Theme context for MUI components
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  const datePickerTheme = useMemo(() => {
-    return createTheme({
-      palette: {
-        mode: isDark ? 'dark' : 'light',
-        primary: {
-          main: isDark ? '#ef5350' : '#d32f2f',
-          light: isDark ? '#ff867c' : '#ef5350',
-          dark: isDark ? '#b71c1c' : '#af101a',
-        },
-        background: {
-          paper: isDark ? '#162036' : '#ffffff',
-          default: isDark ? '#131b2e' : '#ffffff',
-        },
-        text: {
-          primary: isDark ? '#f8fafc' : '#1e293b',
-          secondary: isDark ? '#94a3b8' : '#64748b',
-        },
-        divider: isDark ? '#263554' : '#e2e8f0',
-      },
-    });
-  }, [isDark]);
-
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
@@ -347,18 +315,26 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
       <MuiDataGridTable<Customer>
         rows={customers}
         columns={clientColumns}
-        actions={clientActions}
-        actionsColumnName="Acciones"
-        actionsColumnWidth={140}
+        header={{
+          title: 'Directorio Central de Clientes',
+          badgeText: `${customers.length} registrados`,
+          showSearch: true,
+          searchPlaceholder: 'Buscar por nombre, CI, NIT, teléfono...',
+        }}
+        actionsConfig={{
+          items: clientActions,
+          name: 'Acciones',
+          width: 140,
+        }}
+        pagination={{
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20, 50],
+        }}
+        emptyState={{
+          message: 'No se encontraron clientes',
+          subMessage: 'Intente ajustar los términos de búsqueda ingresados.',
+        }}
         rowHeight={64}
-        title="Directorio Central de Clientes"
-        badgeText={`${customers.length} registrados`}
-        showSearch={true}
-        searchPlaceholder="Buscar por nombre, CI, NIT, teléfono..."
-        emptyMessage="No se encontraron clientes"
-        emptySubMessage="Intente ajustar los términos de búsqueda ingresados."
-        pageSize={10}
-        pageSizeOptions={[5, 10, 20, 50]}
         minHeight={500}
       />
 
@@ -532,97 +508,12 @@ export const ClientsScreen: React.FC<ClientsScreenProps> = ({
           </div>
 
           {/* Birthdate with MUI X DatePicker */}
-          <div className="flex flex-col gap-1">
-            <ThemeProvider theme={datePickerTheme}>
-              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-                <DatePicker
-                  label="Fecha de Nacimiento (Opcional - Fidelización)"
-                  value={birthdate ? dayjs(birthdate) : null}
-                  onChange={(newValue: Dayjs | null) => {
-                    if (newValue && newValue.isValid()) {
-                      setBirthdate(newValue.format('YYYY-MM-DD'));
-                    } else {
-                      setBirthdate('');
-                    }
-                  }}
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                      helperText: 'DD/MM/AAAA',
-                      fullWidth: true,
-                      sx: {
-                        maxWidth: { sm: 300 },
-                        '& .MuiInputBase-root': {
-                          backgroundColor: isDark ? '#1a233b' : '#ffffff',
-                          color: isDark ? '#f8fafc' : '#1e293b',
-                          fontSize: '0.8125rem',
-                          borderRadius: '8px',
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: isDark ? '#263554' : '#cbd5e1',
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: isDark ? '#3b4d75' : '#94a3b8',
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: isDark ? '#ef5350' : '#d32f2f',
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: isDark ? '#94a3b8' : '#64748b',
-                          fontSize: '0.8125rem',
-                          '&.Mui-focused': {
-                            color: isDark ? '#ef5350' : '#d32f2f',
-                          },
-                        },
-                        '& .MuiFormHelperText-root': {
-                          color: isDark ? '#64748b' : '#94a3b8',
-                          fontSize: '0.7rem',
-                        },
-                        '& .MuiIconButton-root': {
-                          color: isDark ? '#94a3b8' : '#64748b',
-                        },
-                      },
-                    },
-                    popper: {
-                      sx: {
-                        zIndex: 99999,
-                        '& .MuiPaper-root': {
-                          backgroundColor: isDark ? '#162036' : '#ffffff',
-                          color: isDark ? '#f8fafc' : '#1e293b',
-                          border: '1px solid',
-                          borderColor: isDark ? '#263554' : '#e2e8f0',
-                          borderRadius: '12px',
-                          boxShadow: isDark
-                            ? '0 10px 30px rgba(0,0,0,0.6)'
-                            : '0 10px 25px rgba(0,0,0,0.1)',
-                        },
-                        '& .MuiPickersDay-root': {
-                          color: isDark ? '#f8fafc' : '#1e293b',
-                          '&:hover': {
-                            backgroundColor: isDark ? '#263554' : '#f1f5f9',
-                          },
-                          '&.Mui-selected': {
-                            backgroundColor: isDark ? '#ef5350 !important' : '#d32f2f !important',
-                            color: '#ffffff',
-                          },
-                        },
-                        '& .MuiDayCalendar-weekDayLabel': {
-                          color: isDark ? '#94a3b8' : '#64748b',
-                        },
-                        '& .MuiPickersCalendarHeader-label': {
-                          color: isDark ? '#f8fafc' : '#1e293b',
-                          fontWeight: 600,
-                        },
-                        '& .MuiPickersArrowSwitcher-button': {
-                          color: isDark ? '#94a3b8' : '#64748b',
-                        },
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </ThemeProvider>
-          </div>
+          <MuiDatePicker
+            label="Fecha de Nacimiento (Opcional - Fidelización)"
+            value={birthdate}
+            onChange={setBirthdate}
+            maxWidth={320}
+          />
 
           {/* Legal Notice SIN Bolivia */}
           <div className="p-3 bg-[#f8f9fc] dark:bg-[#162036] rounded-lg border border-[#e2e8f0] dark:border-[#263554] flex items-start gap-2">
