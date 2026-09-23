@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Chip from '@mui/material/Chip';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
@@ -273,13 +274,16 @@ export const ShiftControlScreen: React.FC<ShiftControlScreenProps> = ({ onBackTo
           {
             field: 'status',
             headerName: 'Estado',
-            width: 100,
+            width: 110,
             align: 'center',
             headerAlign: 'center',
             renderCell: ({ row }) => (
-              <span className="bg-[#15803d]/15 text-[#15803d] dark:text-[#4ade80] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                {row.status}
-              </span>
+              <Chip
+                label={row.status}
+                size="small"
+                color={row.status === 'ABIERTA' ? 'success' : 'default'}
+                sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+              />
             ),
           },
           {

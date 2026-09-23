@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Chip from '@mui/material/Chip';
 import { Product } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
@@ -497,11 +498,21 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({
           {
             field: 'category',
             headerName: 'Categoría',
-            width: 130,
+            width: 140,
+            align: 'center',
+            headerAlign: 'center',
             renderCell: ({ row }) => (
-              <span className="bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                {row.category}
-              </span>
+              <Chip
+                label={row.category}
+                size="small"
+                variant="outlined"
+                sx={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.6875rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                }}
+              />
             ),
           },
           {
@@ -523,9 +534,16 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({
             align: 'center',
             headerAlign: 'center',
             renderCell: ({ row }) => (
-              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc]">
-                {row.variantsCount || (row.configurable ? 4 : 1)} Var.
-              </span>
+              <Chip
+                label={`${row.variantsCount || (row.configurable ? 4 : 1)} Var.`}
+                size="small"
+                variant="filled"
+                sx={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                }}
+              />
             ),
           },
           {
@@ -545,17 +563,19 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({
             width: 130,
             align: 'center',
             headerAlign: 'center',
-            renderCell: ({ row }) =>
-              row.configurable ? (
-                <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold text-[#15803d] dark:text-[#4ade80] bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
-                  <span className="material-symbols-outlined text-[12px]">check</span>
-                  Sí Presas
-                </span>
-              ) : (
-                <span className="font-mono text-[10px] text-[#5b403d] dark:text-[#94a3b8] bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                  No Presas
-                </span>
-              ),
+            renderCell: ({ row }) => (
+              <Chip
+                label={row.configurable ? 'Sí Presas' : 'No Presas'}
+                size="small"
+                color={row.configurable ? 'success' : 'default'}
+                variant={row.configurable ? 'filled' : 'outlined'}
+                sx={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.6875rem',
+                  fontWeight: 700,
+                }}
+              />
+            ),
           },
           {
             field: 'active',

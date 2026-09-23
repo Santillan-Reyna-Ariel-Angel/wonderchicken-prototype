@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Chip from '@mui/material/Chip';
 import { Operator } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDatePicker } from '../commonComponents/MuiDatePicker';
@@ -133,24 +134,33 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
     switch (opRole) {
       case 'CASHIER':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ffdad6] text-[#af101a] font-mono text-[10px] font-bold uppercase">
-            <span className="material-symbols-outlined text-[12px]">point_of_sale</span>
-            Cajera
-          </span>
+          <Chip
+            label="Cajera"
+            size="small"
+            color="primary"
+            variant="filled"
+            sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+          />
         );
       case 'DISPATCHER':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#fec330]/30 text-[#795900] font-mono text-[10px] font-bold uppercase">
-            <span className="material-symbols-outlined text-[12px]">soup_kitchen</span>
-            Despachadora
-          </span>
+          <Chip
+            label="Despachadora"
+            size="small"
+            color="warning"
+            variant="filled"
+            sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+          />
         );
       case 'COOK':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#f1f3ff] text-[#141b2b] font-mono text-[10px] font-bold uppercase">
-            <span className="material-symbols-outlined text-[12px]">outdoor_grill</span>
-            Cocinero
-          </span>
+          <Chip
+            label="Cocinero"
+            size="small"
+            color="info"
+            variant="filled"
+            sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+          />
         );
       default:
         return null;
@@ -241,7 +251,9 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
           {
             field: 'role',
             headerName: 'Rol Operativo',
-            width: 140,
+            width: 150,
+            align: 'center',
+            headerAlign: 'center',
             renderCell: ({ row }) => getRoleBadge(row.role),
           },
           {
@@ -259,7 +271,7 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
           {
             field: 'active',
             headerName: 'Estado',
-            width: 130,
+            width: 150,
             align: 'center',
             headerAlign: 'center',
             renderCell: ({ row }) => (
@@ -277,9 +289,13 @@ export const PersonnelScreen: React.FC<PersonnelScreenProps> = ({ onBackToPOS })
                     }`}
                   />
                 </button>
-                <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">
-                  {row.active ? 'Activo' : 'Inactivo'}
-                </span>
+                <Chip
+                  label={row.active ? 'Activo' : 'Inactivo'}
+                  size="small"
+                  color={row.active ? 'success' : 'default'}
+                  variant={row.active ? 'filled' : 'outlined'}
+                  sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+                />
               </div>
             ),
           },

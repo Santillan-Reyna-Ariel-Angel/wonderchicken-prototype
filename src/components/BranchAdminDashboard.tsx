@@ -1,4 +1,5 @@
 import React from 'react';
+import Chip from '@mui/material/Chip';
 import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
 import { useShiftsStore } from '../features/shifts/stores/shifts.store';
 import { useOrdersStore } from '../features/orders/stores/orders.store';
@@ -78,10 +79,16 @@ export const BranchAdminDashboard: React.FC<BranchAdminDashboardProps> = ({ onNa
       field: 'period',
       headerName: 'Período',
       width: 120,
+      align: 'center',
+      headerAlign: 'center',
       renderCell: ({ row }) => (
-        <span className="font-mono text-xs font-bold text-[#b45309] dark:text-[#fbbf24]">
-          {row.period}
-        </span>
+        <Chip
+          label={row.period}
+          size="small"
+          variant="outlined"
+          color={row.period === 'MAÑANA' ? 'warning' : 'info'}
+          sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+        />
       ),
     },
     {
@@ -121,15 +128,12 @@ export const BranchAdminDashboard: React.FC<BranchAdminDashboardProps> = ({ onNa
       align: 'center',
       headerAlign: 'center',
       renderCell: ({ row }) => (
-        <span
-          className={`font-mono text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${
-            row.status === 'ABIERTO'
-              ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400'
-              : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-slate-400'
-          }`}
-        >
-          {row.status}
-        </span>
+        <Chip
+          label={row.status}
+          size="small"
+          color={row.status === 'ABIERTO' ? 'success' : 'default'}
+          sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+        />
       ),
     },
   ];

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Chip from '@mui/material/Chip';
 import { CompletedOrder } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDatePicker } from '../commonComponents/MuiDatePicker';
@@ -88,10 +89,16 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
       field: 'orderType',
       headerName: 'Servicio',
       width: 110,
+      align: 'center',
+      headerAlign: 'center',
       renderCell: ({ row }) => (
-        <span className="font-mono font-semibold text-xs text-[#141b2b] dark:text-[#f8fafc]">
-          {row.orderType === 'MESA' ? row.tableNumber || 'Mesa' : 'Llevar'}
-        </span>
+        <Chip
+          label={row.orderType === 'MESA' ? row.tableNumber || 'Mesa' : 'Llevar'}
+          size="small"
+          variant={row.orderType === 'MESA' ? 'filled' : 'outlined'}
+          color={row.orderType === 'MESA' ? 'primary' : 'default'}
+          sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+        />
       ),
     },
     {
@@ -136,42 +143,42 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
     {
       field: 'paymentMethod',
       headerName: 'Pago',
-      width: 110,
+      width: 120,
       align: 'center',
       headerAlign: 'center',
-      renderCell: ({ row }) => (
-        <span
-          className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-            row.paymentMethod === 'EFECTIVO'
-              ? 'bg-[#dcfce7] dark:bg-emerald-950/40 text-[#15803d] dark:text-[#4ade80]'
-              : row.paymentMethod === 'QR'
-              ? 'bg-[#e0f2fe] dark:bg-sky-950/40 text-[#0369a1] dark:text-[#38bdf8]'
-              : 'bg-[#fee2e2] dark:bg-rose-950/40 text-[#ba1a1a] dark:text-[#f87171]'
-          }`}
-        >
-          {row.paymentMethod}
-        </span>
-      ),
+      renderCell: ({ row }) => {
+        const isEfectivo = row.paymentMethod === 'EFECTIVO';
+        const isQR = row.paymentMethod === 'QR';
+        return (
+          <Chip
+            label={row.paymentMethod}
+            size="small"
+            color={isEfectivo ? 'success' : isQR ? 'info' : 'error'}
+            variant="filled"
+            sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+          />
+        );
+      },
     },
     {
       field: 'status',
       headerName: 'Estado',
-      width: 110,
+      width: 130,
       align: 'center',
       headerAlign: 'center',
-      renderCell: ({ row }) => (
-        <span
-          className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded ${
-            row.status === 'ENTREGADO'
-              ? 'bg-[#f1f3ff] dark:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8]'
-              : row.status === 'LISTO'
-              ? 'bg-[#dcfce7] dark:bg-emerald-950/40 text-[#15803d] dark:text-[#4ade80]'
-              : 'bg-[#ffdad6] dark:bg-rose-950/40 text-[#ba1a1a] dark:text-[#f87171]'
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
+      renderCell: ({ row }) => {
+        const isEntregado = row.status === 'ENTREGADO';
+        const isListo = row.status === 'LISTO';
+        return (
+          <Chip
+            label={row.status}
+            size="small"
+            color={isListo ? 'success' : isEntregado ? 'default' : 'warning'}
+            variant="filled"
+            sx={{ fontWeight: 700, fontSize: '0.6875rem' }}
+          />
+        );
+      },
     },
     {
       field: 'actions',

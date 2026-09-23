@@ -271,6 +271,36 @@ export function MuiDataGridTable<T extends Record<string, any>>({
             dark: isDark ? '#b71c1c' : '#af101a',
             contrastText: '#ffffff',
           },
+          secondary: {
+            main: isDark ? '#fec330' : '#d97706',
+            light: '#fef3c7',
+            dark: '#b45309',
+            contrastText: '#141b2b',
+          },
+          success: {
+            main: isDark ? '#4ade80' : '#16a34a',
+            light: isDark ? '#14532d' : '#dcfce7',
+            dark: '#15803d',
+            contrastText: '#ffffff',
+          },
+          info: {
+            main: isDark ? '#38bdf8' : '#0284c7',
+            light: isDark ? '#0c4a6e' : '#e0f2fe',
+            dark: '#0369a1',
+            contrastText: '#ffffff',
+          },
+          warning: {
+            main: isDark ? '#fbbf24' : '#d97706',
+            light: isDark ? '#78350f' : '#fef3c7',
+            dark: '#b45309',
+            contrastText: '#ffffff',
+          },
+          error: {
+            main: isDark ? '#f87171' : '#dc2626',
+            light: isDark ? '#7f1d1d' : '#fee2e2',
+            dark: '#b91c1c',
+            contrastText: '#ffffff',
+          },
           background: {
             default: isDark ? '#0b0f19' : '#f8fafc',
             paper: isDark ? '#131b2e' : '#ffffff',
@@ -301,6 +331,19 @@ export function MuiDataGridTable<T extends Record<string, any>>({
                 textTransform: 'none',
                 fontWeight: 600,
                 borderRadius: 8,
+              },
+            },
+          },
+          MuiChip: {
+            styleOverrides: {
+              root: {
+                fontWeight: 600,
+                borderRadius: '9999px',
+                height: 24,
+              },
+              sizeSmall: {
+                height: 22,
+                fontSize: '0.6875rem',
               },
             },
           },
@@ -567,8 +610,14 @@ export function MuiDataGridTable<T extends Record<string, any>>({
         ? (params: GridRenderCellParams) => (
             <Box
               sx={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent:
+                  col.align === 'center'
+                    ? 'center'
+                    : col.align === 'right'
+                    ? 'flex-end'
+                    : 'flex-start',
                 width: '100%',
                 height: '100%',
               }}

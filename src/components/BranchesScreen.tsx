@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Chip from '@mui/material/Chip';
 import { Branch } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
@@ -220,11 +221,14 @@ export const BranchesScreen: React.FC<BranchesScreenProps> = ({ onBackToPOS }) =
           {
             field: 'city',
             headerName: 'Ciudad / Zona',
-            width: 160,
+            width: 170,
             renderCell: ({ row }) => (
-              <span className="bg-[#f1f3ff] dark:bg-[#1a233b] px-2 py-0.5 rounded font-mono text-[11px] text-[#141b2b] dark:text-[#f8fafc]">
-                {row.city}
-              </span>
+              <Chip
+                label={row.city}
+                size="small"
+                variant="outlined"
+                sx={{ fontSize: '0.6875rem', fontWeight: 600 }}
+              />
             ),
           },
           {
@@ -263,9 +267,16 @@ export const BranchesScreen: React.FC<BranchesScreenProps> = ({ onBackToPOS }) =
             align: 'center',
             headerAlign: 'center',
             renderCell: ({ row }) => (
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#f1f3ff] dark:bg-[#1a233b] text-[#141b2b] dark:text-[#f8fafc]">
-                {row.terminalsCount} POS
-              </span>
+              <Chip
+                label={`${row.terminalsCount} POS`}
+                size="small"
+                variant="filled"
+                sx={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                }}
+              />
             ),
           },
           {
