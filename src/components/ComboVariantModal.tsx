@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { Product, ComboConfiguration, PresasCount } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
+import { useTheme } from '../context/ThemeContext';
+import { PresasSection } from './comboVariantModal/PresasSection';
+import { SideSelectionSection } from './comboVariantModal/SideSelectionSection';
+import { DrinkSelectionSection } from './comboVariantModal/DrinkSelectionSection';
+import { PresaTab } from './comboVariantModal/types';
 
-interface ComboVariantModalProps {
+export interface ComboVariantModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (config: ComboConfiguration) => void;
@@ -15,23 +23,36 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   onConfirm,
   product,
 }) => {
-  // Determine product specs & rules
-  const targetProduct = product || {
-    id: 'p-003',
-    code: 'P-003',
-    name: 'Combo Wonder',
-    price: 36.0,
-    category: 'principales',
-    variantRules: {
-      presCount: 2,
-      allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
-      defaultSide: 'mixto',
-      allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
-      hasIncludedDrink: true,
-      defaultDrink: 'Coca Cola 500ml',
-      allowedDrinks: ['Coca Cola 500ml', 'Coca Cola Zero 500ml', 'Fanta Naranja 500ml', 'Sprite 500ml', 'Mocochinchi Casero 500ml'],
-    },
-  };
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  // Determine product specs & rules with sensible defaults
+  const targetProduct = useMemo(
+    () =>
+      product || {
+        id: 'p-003',
+        code: 'P-003',
+        name: 'Combo Wonder',
+        price: 36.0,
+        category: 'principales',
+        variantRules: {
+          presCount: 2,
+          allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+          defaultSide: 'mixto',
+          allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
+          hasIncludedDrink: true,
+          defaultDrink: 'Coca Cola 500ml',
+          allowedDrinks: [
+            'Coca Cola 500ml',
+            'Coca Cola Zero 500ml',
+            'Fanta Naranja 500ml',
+            'Sprite 500ml',
+            'Mocochinchi Casero 500ml',
+          ],
+        },
+      },
+    [product]
+  );
 
   const rules = targetProduct.variantRules;
   const targetPresasRequired = rules?.presCount ?? 2;
@@ -41,13 +62,8 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   // Has drink included?
   const hasDrink = Boolean(rules?.hasIncludedDrink);
 
-  const [presaTab, setPresaTab] = useState<'rapido' | 'granular'>('rapido');
-
-  // Quick selection keys:
-  // For 2 presas: 'pecho-ala' | 'pierna-entrepierna'
-  // For 4 presas: 'completo' (1 Pecho, 1 Ala, 1 Pierna, 1 Entrepierna) | 'doble-pecho-ala' (2 Pecho, 2 Ala) | 'doble-pierna-entrepierna' (2 Pierna, 2 Entrepierna)
+  const [presaTab, setPresaTab] = useState<PresaTab>('rapido');
   const [selectedQuickPreset, setSelectedQuickPreset] = useState<string>('default');
-
   const [granularPresas, setGranularPresas] = useState<PresasCount>({
     ala: 1,
     pecho: 1,
@@ -87,9 +103,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
       setDrink(rules?.defaultDrink || 'Coca Cola 500ml');
       setTemperature('FRÍA');
     }
-  }, [isOpen, targetProduct.id, targetPresasRequired]);
-
-  if (!isOpen) return null;
+  }, [isOpen, targetProduct.id, targetPresasRequired, rules]);
 
   // Calculate current total presas
   const totalPresas =
@@ -186,6 +200,55 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
     onClose();
   };
 
+  // MUI Theme customized with Wonder Chicken palette
+  const modalTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: isDark ? 'dark' : 'light',
+          primary: {
+            main: '#d32f2f',
+            dark: '#af101a',
+            light: '#ef5350',
+            contrastText: '#ffffff',
+          },
+          secondary: {
+            main: '#f59e0b',
+            dark: '#b45309',
+            light: '#fcd34d',
+          },
+          info: {
+            main: '#005c8d',
+            dark: '#004368',
+            light: '#38bdf8',
+          },
+          success: {
+            main: '#15803d',
+            light: '#4ade80',
+          },
+          error: {
+            main: '#ba1a1a',
+            light: '#f87171',
+          },
+          background: {
+            default: isDark ? '#131b2e' : '#ffffff',
+            paper: isDark ? '#1a233b' : '#f8f9fc',
+          },
+          text: {
+            primary: isDark ? '#f8fafc' : '#141b2b',
+            secondary: isDark ? '#94a3b8' : '#5b403d',
+          },
+          divider: isDark ? '#263554' : '#e2e8f0',
+        },
+        typography: {
+          fontFamily: 'inherit',
+        },
+      }),
+    [isDark]
+  );
+
+  if (!isOpen) return null;
+
   // Human description for modal header
   const modalDescription = [
     `Selección de ${targetPresasRequired} presas`,
@@ -205,566 +268,74 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   ];
 
   return (
-    <AppModal
-      isOpen={isOpen}
-      onClose={onClose}
-      icon="tune"
-      title={`Configurar Variante: ${targetProduct.name}`}
-      description={modalDescription}
-      maxWidth="2xl"
-      footerExtra={
-        <div className="flex flex-col">
-          <span className="font-mono text-xs text-[#5b403d] dark:text-[#94a3b8]">Precio Final:</span>
-          <span className="font-mono text-lg font-bold text-[#af101a] dark:text-[#f87171]">
-            Bs. {targetProduct.price.toFixed(2)}
-          </span>
-        </div>
-      }
-      onConfirm={handleAdd}
-      confirmLabel={`Agregar a la Orden (Bs. ${targetProduct.price.toFixed(2)})`}
-      confirmIcon="add_shopping_cart"
-      confirmDisabled={!isValid}
-      showCancel={true}
-      cancelLabel="Cancelar"
-    >
-      <div className="flex flex-col gap-4">
-        {/* Step 1: Presas Requeridas */}
-        <div className="mui-container-subtle bg-[#f8f9fc] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e2e8f0] dark:border-[#263554] flex flex-col gap-3 transition-colors duration-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs sm:text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[18px]">kebab_dining</span>
-              1. Selección de Presas (Total requeridas: {targetPresasRequired})
-            </span>
-            <span
-              className={`font-mono text-xs px-2.5 py-0.5 rounded-full font-bold ${
-                isValid ? 'bg-[#d32f2f] text-white' : 'bg-[#ba1a1a] text-white animate-pulse'
-              }`}
+    <ThemeProvider theme={modalTheme}>
+      <AppModal
+        isOpen={isOpen}
+        onClose={onClose}
+        icon="tune"
+        title={`Configurar Variante: ${targetProduct.name}`}
+        description={modalDescription}
+        maxWidth="2xl"
+        footerExtra={
+          <Box sx={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+            <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary', fontSize: '0.75rem' }}>
+              Precio Final:
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                color: 'primary.main',
+                fontSize: '1.125rem',
+              }}
             >
-              {totalPresas} / {targetPresasRequired} Seleccionadas
-            </span>
-          </div>
-          <p className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-            {targetPresasRequired === 4
-              ? 'Seleccione una combinación estándar rápida o personalice individualmente las 4 presas exactas.'
-              : 'Seleccione un par tradicional rápido (1 clic) o personalice individualmente las 2 presas exactas.'}
-          </p>
+              Bs. {targetProduct.price.toFixed(2)}
+            </Typography>
+          </Box>
+        }
+        onConfirm={handleAdd}
+        confirmLabel={`Agregar a la Orden (Bs. ${targetProduct.price.toFixed(2)})`}
+        confirmIcon="add_shopping_cart"
+        confirmDisabled={!isValid}
+        showCancel={true}
+        cancelLabel="Cancelar"
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* Step 1: Chicken Presas Selection */}
+          <PresasSection
+            targetPresasRequired={targetPresasRequired}
+            totalPresas={totalPresas}
+            isValid={isValid}
+            presaTab={presaTab}
+            onPresaTabChange={setPresaTab}
+            selectedQuickPreset={selectedQuickPreset}
+            onSelectQuickPreset={handleSelectQuickPreset}
+            granularPresas={granularPresas}
+            onAdjustPresa={adjustPresa}
+          />
 
-          {/* Navigation Tabs Header */}
-          <div className="grid grid-cols-2 gap-1 p-1 bg-[#e9edf8] dark:bg-[#243050] rounded-lg">
-            <button
-              type="button"
-              onClick={() => setPresaTab('rapido')}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded text-xs font-mono font-bold transition-all cursor-pointer ${
-                presaTab === 'rapido'
-                  ? 'bg-white dark:bg-[#131b2e] text-[#af101a] dark:text-[#f87171] shadow-xs'
-                  : 'text-[#5b403d] dark:text-[#94a3b8] hover:text-[#141b2b] dark:hover:text-[#f8fafc]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">bolt</span>
-              {targetPresasRequired === 4 ? 'Combinación Rápida (4 presas)' : 'Pares Tradicionales (Rápido)'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setPresaTab('granular')}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded text-xs font-mono font-bold transition-all cursor-pointer ${
-                presaTab === 'granular'
-                  ? 'bg-white dark:bg-[#131b2e] text-[#af101a] dark:text-[#f87171] shadow-xs'
-                  : 'text-[#5b403d] dark:text-[#94a3b8] hover:text-[#141b2b] dark:hover:text-[#f8fafc]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">tune</span>
-              Selección Granular ({targetPresasRequired} exactas)
-            </button>
-          </div>
-
-          {/* Tab 1: Combinación Rápida */}
-          {presaTab === 'rapido' && (
-            <div className="flex flex-col gap-2">
-              {targetPresasRequired === 4 ? (
-                // 4 Presas Quick Presets: 3 columns on desktop/tablet, 1 column on mobile
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  {/* Preset 1: Completo Clásico (1 Pecho, 1 Ala, 1 Pierna, 1 Entrepierna) */}
-                  <label
-                    onClick={() => handleSelectQuickPreset('completo')}
-                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedQuickPreset === 'completo'
-                        ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
-                    }`}
-                  >
-                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="preset-selection"
-                            checked={selectedQuickPreset === 'completo'}
-                            onChange={() => handleSelectQuickPreset('completo')}
-                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
-                          />
-                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
-                            Medio Completo
-                          </span>
-                        </div>
-                        <span className="bg-[#fec330] text-[#6f5100] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
-                          Estándar
-                        </span>
-                      </div>
-                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
-                        1 Pecho + 1 Ala + 1 Pierna + 1 Entrepierna
-                      </span>
-                    </div>
-                  </label>
-
-                  {/* Preset 2: Doble Pecho - Ala */}
-                  <label
-                    onClick={() => handleSelectQuickPreset('doble-pecho-ala')}
-                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedQuickPreset === 'doble-pecho-ala'
-                        ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
-                    }`}
-                  >
-                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="preset-selection"
-                            checked={selectedQuickPreset === 'doble-pecho-ala'}
-                            onChange={() => handleSelectQuickPreset('doble-pecho-ala')}
-                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
-                          />
-                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
-                            Doble Pecho + Ala
-                          </span>
-                        </div>
-                        <span className="bg-[#f1f3ff] text-[#af101a] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
-                          Blanca
-                        </span>
-                      </div>
-                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
-                        2 Pechos + 2 Alas
-                      </span>
-                    </div>
-                  </label>
-
-                  {/* Preset 3: Doble Pierna - Entrepierna */}
-                  <label
-                    onClick={() => handleSelectQuickPreset('doble-pierna-entrepierna')}
-                    className={`relative flex sm:flex-col sm:items-start items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedQuickPreset === 'doble-pierna-entrepierna'
-                        ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
-                    }`}
-                  >
-                    <div className="flex sm:flex-col items-start gap-2.5 sm:gap-2 w-full">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="preset-selection"
-                            checked={selectedQuickPreset === 'doble-pierna-entrepierna'}
-                            onChange={() => handleSelectQuickPreset('doble-pierna-entrepierna')}
-                            className="accent-[#af101a] w-4 h-4 cursor-pointer shrink-0"
-                          />
-                          <span className="font-bold text-xs sm:text-sm text-[#141b2b] dark:text-[#f8fafc] leading-tight">
-                            Doble Pierna + Entrep.
-                          </span>
-                        </div>
-                        <span className="bg-[#fff5f5] text-[#af101a] font-mono text-[9px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">
-                          Jugosa
-                        </span>
-                      </div>
-                      <span className="text-[11px] sm:text-xs text-[#5b403d] dark:text-[#94a3b8] sm:pl-6">
-                        2 Piernas + 2 Entrepiernas
-                      </span>
-                    </div>
-                  </label>
-                </div>
-              ) : (
-                // 2 Presas Quick Presets (Cuarto de Pollo, Porción Media, Combo Wonder)
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {/* Option 1: Pecho - Ala */}
-                  <label
-                    onClick={() => handleSelectQuickPreset('pecho-ala')}
-                    className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      selectedQuickPreset === 'pecho-ala'
-                        ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="pair-selection"
-                        checked={selectedQuickPreset === 'pecho-ala'}
-                        onChange={() => handleSelectQuickPreset('pecho-ala')}
-                        className="accent-[#af101a] w-4 h-4 cursor-pointer"
-                      />
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">Pecho - Ala</span>
-                          <span className="bg-[#fec330] text-[#6f5100] font-mono text-[10px] px-1.5 py-0.2 rounded font-bold uppercase">
-                            Favorito
-                          </span>
-                        </div>
-                        <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-                          1 Pecho + 1 Ala (Tradicional dorada)
-                        </span>
-                      </div>
-                    </div>
-                  </label>
-
-                  {/* Option 2: Pierna - Entrepierna */}
-                  <label
-                    onClick={() => handleSelectQuickPreset('pierna-entrepierna')}
-                    className={`relative flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      selectedQuickPreset === 'pierna-entrepierna'
-                        ? 'border-[#af101a] dark:border-[#f87171] bg-white dark:bg-[#131b2e] shadow-xs'
-                        : 'border-[#e2e8f0] dark:border-[#263554] bg-white dark:bg-[#131b2e] hover:border-[#af101a]/40'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="pair-selection"
-                        checked={selectedQuickPreset === 'pierna-entrepierna'}
-                        onChange={() => handleSelectQuickPreset('pierna-entrepierna')}
-                        className="accent-[#af101a] w-4 h-4 cursor-pointer"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#141b2b] dark:text-[#f8fafc]">Pierna - Entrepierna</span>
-                        <span className="text-xs text-[#5b403d] dark:text-[#94a3b8]">
-                          1 Pierna + 1 Entrepierna (Jugosa)
-                        </span>
-                      </div>
-                    </div>
-                  </label>
-                </div>
-              )}
-
-              <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8] text-right italic">
-                * Selección en 1 clic para acelerar la atención en caja
-              </span>
-            </div>
+          {/* Step 2: Sides & Substitution (ONLY IF INCLUDED IN DISH) */}
+          {hasSide && (
+            <SideSelectionSection
+              allowedSides={allowedSidesList}
+              sideOption={sideOption}
+              onSideOptionChange={setSideOption}
+            />
           )}
 
-          {/* Tab 2: Granular */}
-          {presaTab === 'granular' && (
-            <div className="flex flex-col gap-2">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {/* Pecho */}
-                <div
-                  className={`p-3 rounded-lg flex flex-col items-center justify-between gap-2 shadow-xs border bg-white dark:bg-[#131b2e] ${
-                    granularPresas.pecho > 0
-                      ? 'border-[#af101a]/60 dark:border-[#f87171]/60 bg-[#fff2f0] dark:bg-[#231b2b]'
-                      : 'border-[#e1e8fd] dark:border-[#263554]'
-                  }`}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px]">lunch_dining</span>
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Pecho</span>
-                    <span className="text-[10px] text-[#5b403d] dark:text-[#94a3b8]">Tradicional</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#f1f3ff] dark:bg-[#243050] px-2 py-1 rounded">
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('pecho', -1)}
-                      className="w-7 h-7 bg-white dark:bg-[#131b2e] rounded font-bold text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] shadow-xs flex items-center justify-center cursor-pointer"
-                    >
-                      -
-                    </button>
-                    <span className="font-mono text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] w-4 text-center">
-                      {granularPresas.pecho}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('pecho', 1)}
-                      disabled={totalPresas >= targetPresasRequired}
-                      className={`w-7 h-7 rounded font-bold shadow-xs flex items-center justify-center ${
-                        totalPresas >= targetPresasRequired
-                          ? 'opacity-40 cursor-not-allowed bg-gray-200 dark:bg-gray-700 text-gray-500'
-                          : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] cursor-pointer'
-                      }`}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                {/* Ala */}
-                <div
-                  className={`p-3 rounded-lg flex flex-col items-center justify-between gap-2 shadow-xs border bg-white dark:bg-[#131b2e] ${
-                    granularPresas.ala > 0
-                      ? 'border-[#af101a]/60 dark:border-[#f87171]/60 bg-[#fff2f0] dark:bg-[#231b2b]'
-                      : 'border-[#e1e8fd] dark:border-[#263554]'
-                  }`}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px]">kebab_dining</span>
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Ala</span>
-                    <span className="text-[10px] text-[#5b403d] dark:text-[#94a3b8]">Crocante</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#f1f3ff] dark:bg-[#243050] px-2 py-1 rounded">
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('ala', -1)}
-                      className="w-7 h-7 bg-white dark:bg-[#131b2e] rounded font-bold text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] shadow-xs flex items-center justify-center cursor-pointer"
-                    >
-                      -
-                    </button>
-                    <span className="font-mono text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] w-4 text-center">
-                      {granularPresas.ala}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('ala', 1)}
-                      disabled={totalPresas >= targetPresasRequired}
-                      className={`w-7 h-7 rounded font-bold shadow-xs flex items-center justify-center ${
-                        totalPresas >= targetPresasRequired
-                          ? 'opacity-40 cursor-not-allowed bg-gray-200 dark:bg-gray-700 text-gray-500'
-                          : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] cursor-pointer'
-                      }`}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                {/* Pierna */}
-                <div
-                  className={`p-3 rounded-lg flex flex-col items-center justify-between gap-2 shadow-xs border bg-white dark:bg-[#131b2e] ${
-                    granularPresas.pierna > 0
-                      ? 'border-[#af101a]/60 dark:border-[#f87171]/60 bg-[#fff2f0] dark:bg-[#231b2b]'
-                      : 'border-[#e1e8fd] dark:border-[#263554]'
-                  }`}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px]">set_meal</span>
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Pierna</span>
-                    <span className="text-[10px] text-[#5b403d] dark:text-[#94a3b8]">Jugosa</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#f1f3ff] dark:bg-[#243050] px-2 py-1 rounded">
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('pierna', -1)}
-                      className="w-7 h-7 bg-white dark:bg-[#131b2e] rounded font-bold text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] shadow-xs flex items-center justify-center cursor-pointer"
-                    >
-                      -
-                    </button>
-                    <span className="font-mono text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] w-4 text-center">
-                      {granularPresas.pierna}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('pierna', 1)}
-                      disabled={totalPresas >= targetPresasRequired}
-                      className={`w-7 h-7 rounded font-bold shadow-xs flex items-center justify-center ${
-                        totalPresas >= targetPresasRequired
-                          ? 'opacity-40 cursor-not-allowed bg-gray-200 dark:bg-gray-700 text-gray-500'
-                          : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] cursor-pointer'
-                      }`}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                {/* Entrepierna */}
-                <div
-                  className={`p-3 rounded-lg flex flex-col items-center justify-between gap-2 shadow-xs border bg-white dark:bg-[#131b2e] ${
-                    granularPresas.entrepierna > 0
-                      ? 'border-[#af101a]/60 dark:border-[#f87171]/60 bg-[#fff2f0] dark:bg-[#231b2b]'
-                      : 'border-[#e1e8fd] dark:border-[#263554]'
-                  }`}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <span className="material-symbols-outlined text-[#af101a] dark:text-[#f87171] text-[20px]">dinner_dining</span>
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Entrepierna</span>
-                    <span className="text-[10px] text-[#5b403d] dark:text-[#94a3b8]">Con hueso</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#f1f3ff] dark:bg-[#243050] px-2 py-1 rounded">
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('entrepierna', -1)}
-                      className="w-7 h-7 bg-white dark:bg-[#131b2e] rounded font-bold text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] shadow-xs flex items-center justify-center cursor-pointer"
-                    >
-                      -
-                    </button>
-                    <span className="font-mono text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] w-4 text-center">
-                      {granularPresas.entrepierna}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => adjustPresa('entrepierna', 1)}
-                      disabled={totalPresas >= targetPresasRequired}
-                      className={`w-7 h-7 rounded font-bold shadow-xs flex items-center justify-center ${
-                        totalPresas >= targetPresasRequired
-                          ? 'opacity-40 cursor-not-allowed bg-gray-200 dark:bg-gray-700 text-gray-500'
-                          : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] cursor-pointer'
-                      }`}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8] text-right italic">
-                * Debe completar exactamente {targetPresasRequired} presas (actualmente {totalPresas}/{targetPresasRequired})
-              </span>
-            </div>
+          {/* Step 3: Drinks & Temperature (ONLY IF INCLUDED IN DISH) */}
+          {hasDrink && (
+            <DrinkSelectionSection
+              allowedDrinks={allowedDrinksList}
+              drink={drink}
+              onDrinkChange={setDrink}
+              temperature={temperature}
+              onTemperatureChange={setTemperature}
+            />
           )}
-        </div>
-
-        {/* Step 2: Acompañamiento y Sustitución (ONLY IF INCLUDED IN DISH) */}
-        {hasSide && (
-          <div className="mui-container-subtle bg-[#f8f9fc] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e2e8f0] dark:border-[#263554] flex flex-col gap-3 transition-colors duration-200">
-            <div className="flex items-center justify-between">
-              <span className="text-xs sm:text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[#795900] dark:text-[#facc15] text-[18px]">swap_horiz</span>
-                2. Acompañamiento Incluido (1 sustitución sin costo adicional)
-              </span>
-              <span className="font-mono text-xs text-[#5b403d] dark:text-[#94a3b8] font-bold">+0.00 Bs</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {allowedSidesList.includes('mixto') && (
-                <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'mixto' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
-                }`}>
-                  <input
-                    type="radio"
-                    name="side-option"
-                    value="mixto"
-                    checked={sideOption === 'mixto'}
-                    onChange={() => setSideOption('mixto')}
-                    className="accent-[#af101a]"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Mixto: Papa y Arroz</span>
-                    <span className="text-[11px] text-[#5b403d] dark:text-[#94a3b8]">Estándar equilibrado</span>
-                  </div>
-                </label>
-              )}
-
-              {allowedSidesList.includes('solo-papa') && (
-                <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'solo-papa' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
-                }`}>
-                  <input
-                    type="radio"
-                    name="side-option"
-                    value="solo-papa"
-                    checked={sideOption === 'solo-papa'}
-                    onChange={() => setSideOption('solo-papa')}
-                    className="accent-[#af101a]"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Solo Papa (Doble papa rústica)</span>
-                    <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">Cambio: +0.00 Bs</span>
-                  </div>
-                </label>
-              )}
-
-              {allowedSidesList.includes('solo-arroz') && (
-                <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'solo-arroz' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
-                }`}>
-                  <input
-                    type="radio"
-                    name="side-option"
-                    value="solo-arroz"
-                    checked={sideOption === 'solo-arroz'}
-                    onChange={() => setSideOption('solo-arroz')}
-                    className="accent-[#af101a]"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Solo Arroz (Doble arroz especiado)</span>
-                    <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">Cambio: +0.00 Bs</span>
-                  </div>
-                </label>
-              )}
-
-              {allowedSidesList.includes('smiles') && (
-                <label className={`flex items-center gap-2.5 p-2.5 bg-white dark:bg-[#131b2e] rounded-lg border cursor-pointer hover:bg-[#e9edff] dark:hover:bg-[#243050] transition-colors ${
-                  sideOption === 'smiles' ? 'border-[#af101a] dark:border-[#f87171]' : 'border-[#e2e8f0] dark:border-[#263554]'
-                }`}>
-                  <input
-                    type="radio"
-                    name="side-option"
-                    value="smiles"
-                    checked={sideOption === 'smiles'}
-                    onChange={() => setSideOption('smiles')}
-                    className="accent-[#af101a]"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-xs text-[#141b2b] dark:text-[#f8fafc]">Smiles McCain</span>
-                    <span className="font-mono text-[11px] text-[#5b403d] dark:text-[#94a3b8]">Sustitución: +0.00 Bs</span>
-                  </div>
-                </label>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Bebida 500ml Incluida & Temperatura (ONLY IF INCLUDED IN DISH) */}
-        {hasDrink && (
-          <div className="bg-[#f1f3ff] dark:bg-[#1a233b] p-4 rounded-xl border border-[#e1e8fd] dark:border-[#263554] flex flex-col gap-3">
-            <span className="text-xs sm:text-sm font-bold text-[#141b2b] dark:text-[#f8fafc] flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[#005c8d] dark:text-[#38bdf8] text-[18px]">local_drink</span>
-              3. Bebida 500ml Incluida &amp; Temperatura
-            </span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-mono text-[#5b403d] dark:text-[#94a3b8]">Bebida:</label>
-                <select
-                  value={drink}
-                  onChange={(e) => setDrink(e.target.value)}
-                  className="p-2.5 bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] rounded-lg border border-[#e1e8fd] dark:border-[#263554] text-xs font-semibold focus:outline-none focus:border-[#af101a]"
-                >
-                  {allowedDrinksList.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-mono text-[#5b403d] dark:text-[#94a3b8]">Temperatura:</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setTemperature('FRÍA')}
-                    className={`py-2 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-1 transition-colors cursor-pointer ${
-                      temperature === 'FRÍA'
-                        ? 'bg-[#005c8d] text-white shadow-xs'
-                        : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] dark:hover:bg-[#243050] border border-[#e1e8fd] dark:border-[#263554]'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">ac_unit</span>
-                    FRÍA
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setTemperature('NATURAL')}
-                    className={`py-2 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-1 transition-colors cursor-pointer ${
-                      temperature === 'NATURAL'
-                        ? 'bg-[#005c8d] text-white shadow-xs'
-                        : 'bg-white dark:bg-[#131b2e] text-[#141b2b] dark:text-[#f8fafc] hover:bg-[#e1e8fd] dark:hover:bg-[#243050] border border-[#e1e8fd] dark:border-[#263554]'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">thermostat</span>
-                    NATURAL
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </AppModal>
+        </Box>
+      </AppModal>
+    </ThemeProvider>
   );
 };
