@@ -48,6 +48,8 @@ export const POSScreen: React.FC<POSScreenProps> = ({
   // Modals
   const [showComboModal, setShowComboModal] = useState(false);
   const [selectedProductForConfig, setSelectedProductForConfig] = useState<Product | null>(null);
+  const [editingCartItemId, setEditingCartItemId] = useState<string | null>(null);
+  const [editingInitialConfig, setEditingInitialConfig] = useState<ComboConfiguration | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState<'CLEAR_CART' | 'PENDING_PAYMENT' | null>(null);
@@ -98,8 +100,41 @@ export const POSScreen: React.FC<POSScreenProps> = ({
     showToast(`Añadido: ${product.name}`);
   };
 
+  // Edit existing configured dish in cart
+  const handleEditCartItemConfig = (item: OrderItem) => {
+    const targetProd = products.find((p) => p.id === item.productId) || {
+      id: item.productId,
+      code: 'PROD',
+      name: item.name,
+      price: item.unitPrice,
+      isCombo: true,
+      configurable: true,
+      category: 'principales',
+    } as Product;
+
+    setSelectedProductForConfig(targetProd);
+    setEditingCartItemId(item.id);
+    setEditingInitialConfig(item.config || null);
+    setShowComboModal(true);
+  };
+
   // Confirm configured dish / combo
   const handleConfirmCombo = (config: ComboConfiguration) => {
+    if (editingCartItemId) {
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === editingCartItemId
+            ? { ...item, config }
+            : item
+        )
+      );
+      showToast('Configuración del ítem actualizada');
+      setEditingCartItemId(null);
+      setEditingInitialConfig(null);
+      setSelectedProductForConfig(null);
+      return;
+    }
+
     const currentProduct = selectedProductForConfig || products.find((p) => p.id === 'p-003') || {
       id: 'p-003',
       name: 'Combo Wonder',
@@ -569,8 +604,17 @@ export const POSScreen: React.FC<POSScreenProps> = ({
 
                 {/* Configuration Specs / Notes */}
                 {item.config?.notes && (
-                  <div className="bg-white p-2 rounded-lg border border-[#e1e8fd] text-[11px] font-mono text-[#5b403d] whitespace-pre-line leading-relaxed">
-                    {item.config.notes}
+                  <div className="bg-white p-2 rounded-lg border border-[#e1e8fd] text-[11px] font-mono text-[#5b403d] whitespace-pre-line leading-relaxed flex flex-col gap-1.5">
+                    <div>{item.config.notes}</div>
+                    <button
+                      type="button"
+                      onClick={() => handleEditCartItemConfig(item)}
+                      className="self-end text-[10px] font-mono font-bold text-[#af101a] hover:underline flex items-center gap-0.5 cursor-pointer pt-1 border-t border-[#f1f3ff]"
+                      title="Modificar presas, guarnición o bebida"
+                    >
+                      <span className="material-symbols-outlined text-[13px]">tune</span>
+                      Editar selección
+                    </button>
                   </div>
                 )}
 
@@ -681,9 +725,12 @@ export const POSScreen: React.FC<POSScreenProps> = ({
       <ComboVariantModal
         isOpen={showComboModal}
         product={selectedProductForConfig}
+        initialConfig={editingInitialConfig}
         onClose={() => {
           setShowComboModal(false);
           setSelectedProductForConfig(null);
+          setEditingCartItemId(null);
+          setEditingInitialConfig(null);
         }}
         onConfirm={handleConfirmCombo}
       />

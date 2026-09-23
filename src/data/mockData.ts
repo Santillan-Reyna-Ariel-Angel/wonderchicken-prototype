@@ -17,6 +17,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     variantRules: {
       presCount: 2,
       allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+      hasIncludedSide: false,
       hasIncludedDrink: false,
     },
   },
@@ -36,6 +37,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     variantRules: {
       presCount: 2,
       allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+      hasIncludedSide: true,
       defaultSide: 'mixto',
       allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
       hasIncludedDrink: false,
@@ -60,6 +62,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     variantRules: {
       presCount: 2,
       allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+      hasIncludedSide: true,
       defaultSide: 'mixto',
       allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
       hasIncludedDrink: true,
@@ -83,6 +86,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     variantRules: {
       presCount: 4,
       allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+      hasIncludedSide: false,
       hasIncludedDrink: false,
     },
   },
@@ -102,6 +106,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     variantRules: {
       presCount: 4,
       allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+      hasIncludedSide: true,
       defaultSide: 'mixto',
       allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
       hasIncludedDrink: false,

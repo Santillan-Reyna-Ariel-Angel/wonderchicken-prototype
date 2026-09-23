@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Product } from '../types';
 import { AppModal } from '../commonComponents/AppModal';
 import { MuiDataGridTable, TableColumn } from '../commonComponents/MuiDataGridTable';
+import { ProductRulesModal } from './ProductRulesModal';
 
 interface CatalogScreenProps {
   products: Product[];
@@ -9,7 +10,11 @@ interface CatalogScreenProps {
   onBackToPOS?: () => void;
 }
 
-export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackToPOS }) => {
+export const CatalogScreen: React.FC<CatalogScreenProps> = ({
+  products,
+  onUpdateProduct,
+  onBackToPOS,
+}) => {
   const [productList, setProductList] = useState<Product[]>(products);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
@@ -18,8 +23,8 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
   // Modals
   const [showRuleModal, setShowRuleModal] = useState(false);
   const [selectedProductRule, setSelectedProductRule] = useState<Product | null>(null);
-  const [ruleActiveTab, setRuleActiveTab] = useState<'presas' | 'sides' | 'drinks'>('presas');
   const [showNewProductModal, setShowNewProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // New product form state matching Prisma Model:
   // id, name, basePrice (Decimal 10,2), category (String libre), description (String?),
@@ -48,6 +53,7 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
   });
 
   // 2. Acompañamiento / Guarnición (por default y opciones con las que se puede intercambiar)
+  const [hasIncludedSide, setHasIncludedSide] = useState<boolean>(true);
   const [defaultSide, setDefaultSide] = useState<string>('mixto');
   const [allowedSides, setAllowedSides] = useState<string[]>([
     'mixto',
@@ -82,8 +88,100 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
 
   const openRules = (product: Product) => {
     setSelectedProductRule(product);
-    setRuleActiveTab('presas');
     setShowRuleModal(true);
+  };
+
+  const openCreateModal = () => {
+    setEditingProduct(null);
+    setNewCode('');
+    setNewName('');
+    setNewBasePrice('25.00');
+    setNewCategory('Plato principal');
+    setCustomCategory('');
+    setNewDesc('');
+    setNewActive(true);
+    setNewIsSellable(true);
+    setNewIsInventoryItem(true);
+    setHasVariants(true);
+    setPresCount(2);
+    setAllowedPresas({ pecho: true, ala: true, pierna: true, entrepierna: true });
+    setHasIncludedSide(true);
+    setDefaultSide('mixto');
+    setAllowedSides(['mixto', 'solo-arroz', 'solo-papa', 'smiles']);
+    setHasIncludedDrink(true);
+    setDefaultDrink('Coca Cola 500ml');
+    setAllowedDrinks(['Coca Cola 500ml', 'Fanta Naranja 500ml', 'Sprite 500ml', 'Mocochinchi Casero']);
+    setShowNewProductModal(true);
+  };
+
+  const openEditModal = (product: Product) => {
+    setEditingProduct(product);
+    setNewCode(product.code || '');
+    setNewName(product.name || '');
+    setNewBasePrice(String(product.basePrice ?? product.price ?? 25));
+
+    const standardCats = ['Plato principal', 'Bebida', 'Acompañamiento', 'Extra', 'Postre'];
+    if (standardCats.includes(product.category)) {
+      setNewCategory(product.category);
+      setCustomCategory('');
+    } else if (product.category) {
+      setNewCategory('custom');
+      setCustomCategory(product.category);
+    } else {
+      setNewCategory('Plato principal');
+      setCustomCategory('');
+    }
+
+    setNewDesc(product.description || '');
+    setNewActive(product.active !== false);
+    setNewIsSellable(product.isSellable !== false);
+    setNewIsInventoryItem(product.isInventoryItem !== false);
+
+    const isConfigurable = Boolean(product.configurable || product.variantRules);
+    setHasVariants(isConfigurable);
+
+    if (product.variantRules) {
+      setPresCount(product.variantRules.presCount || 2);
+      setAllowedPresas(
+        product.variantRules.allowedPresas || {
+          pecho: true,
+          ala: true,
+          pierna: true,
+          entrepierna: true,
+        }
+      );
+      const isSideInc = Boolean(
+        product.variantRules.hasIncludedSide !== undefined
+          ? product.variantRules.hasIncludedSide
+          : (product.variantRules.allowedSides && product.variantRules.allowedSides.length > 0) || product.variantRules.defaultSide
+      );
+      setHasIncludedSide(isSideInc);
+      setDefaultSide(product.variantRules.defaultSide || 'mixto');
+      setAllowedSides(
+        product.variantRules.allowedSides || ['mixto', 'solo-arroz', 'solo-papa', 'smiles']
+      );
+      setHasIncludedDrink(Boolean(product.variantRules.hasIncludedDrink));
+      setDefaultDrink(product.variantRules.defaultDrink || 'Coca Cola 500ml');
+      setAllowedDrinks(
+        product.variantRules.allowedDrinks || [
+          'Coca Cola 500ml',
+          'Fanta Naranja 500ml',
+          'Sprite 500ml',
+          'Mocochinchi Casero',
+        ]
+      );
+    } else {
+      setPresCount(2);
+      setAllowedPresas({ pecho: true, ala: true, pierna: true, entrepierna: true });
+      setHasIncludedSide(false);
+      setDefaultSide('mixto');
+      setAllowedSides(['mixto', 'solo-arroz', 'solo-papa', 'smiles']);
+      setHasIncludedDrink(false);
+      setDefaultDrink('Coca Cola 500ml');
+      setAllowedDrinks(['Coca Cola 500ml', 'Fanta Naranja 500ml', 'Sprite 500ml', 'Mocochinchi Casero']);
+    }
+
+    setShowNewProductModal(true);
   };
 
   const handleSaveNewProduct = (e?: React.FormEvent) => {
@@ -97,22 +195,21 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
     const parsedPrice = parseFloat(newBasePrice) || 0;
     const generatedCode = newCode.trim() ? newCode.trim().toUpperCase() : `PRD-${Date.now().toString().slice(-4)}`;
 
-    const isPlatoPrincipal = finalCategory.toLowerCase().includes('plato') || finalCategory.toLowerCase().includes('pollo') || finalCategory.toLowerCase().includes('principal');
-
     const variantRulesConfig = hasVariants ? {
       presCount,
       allowedPresas,
-      defaultSide,
-      allowedSides,
+      hasIncludedSide,
+      defaultSide: hasIncludedSide ? defaultSide : undefined,
+      allowedSides: hasIncludedSide ? allowedSides : [],
       hasIncludedDrink,
-      defaultDrink,
-      allowedDrinks,
+      defaultDrink: hasIncludedDrink ? defaultDrink : undefined,
+      allowedDrinks: hasIncludedDrink ? allowedDrinks : [],
     } : undefined;
 
     const effectiveVariants = hasVariants
       ? [
           {
-            id: `var-${Date.now()}-1`,
+            id: editingProduct?.variants?.[0]?.id || `var-${Date.now()}-1`,
             name: `${newName.trim()} (Estándar / ${presCount} Presas)`,
             priceDelta: 0,
             sku: `${generatedCode}-VAR1`,
@@ -123,9 +220,38 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
     let optionsPreviewText = 'Fórmula Base Simple';
     if (hasVariants) {
       const parts = [`${presCount} Presas`];
-      if (defaultSide) parts.push(`Acomp: ${defaultSide}`);
-      if (hasIncludedDrink) parts.push(`Bebida: ${defaultDrink}`);
+      if (hasIncludedSide && defaultSide) parts.push(`Acomp: ${defaultSide}`);
+      if (hasIncludedDrink && defaultDrink) parts.push(`Bebida: ${defaultDrink}`);
       optionsPreviewText = parts.join(' • ');
+    }
+
+    if (editingProduct) {
+      const updatedProd: Product = {
+        ...editingProduct,
+        code: generatedCode,
+        name: newName.trim(),
+        category: finalCategory,
+        price: parsedPrice,
+        basePrice: parsedPrice,
+        description: newDesc.trim(),
+        active: newActive,
+        isSellable: newIsSellable,
+        isInventoryItem: newIsInventoryItem,
+        variants: effectiveVariants,
+        variantRules: variantRulesConfig,
+        variantsCount: hasVariants ? 1 : 0,
+        optionsPreview: optionsPreviewText,
+        piecesBadge: hasVariants ? `${presCount} presas` : undefined,
+        configurable: hasVariants,
+        stockControl: newIsInventoryItem ? 'Control Stock' : 'Sin Inventario',
+      };
+
+      setProductList((prev) => prev.map((p) => (p.id === editingProduct.id ? updatedProd : p)));
+      if (onUpdateProduct) onUpdateProduct(updatedProd);
+      showToast(`Producto "${updatedProd.name}" actualizado con éxito.`);
+      setShowNewProductModal(false);
+      setEditingProduct(null);
+      return;
     }
 
     const newProd: Product = {
@@ -251,7 +377,7 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
           </button>
           <button
             type="button"
-            onClick={() => setShowNewProductModal(true)}
+            onClick={openCreateModal}
             className="px-3.5 py-2 bg-[#d32f2f] hover:bg-[#af101a] text-white font-mono text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">add_circle</span>
@@ -456,31 +582,30 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
           {
             field: 'actions',
             headerName: 'Acciones',
-            width: 110,
+            width: 140,
             align: 'right',
             headerAlign: 'right',
             renderCell: ({ row }) => (
-              <div className="flex items-center justify-end gap-1">
-                {row.configurable ? (
+              <div className="flex items-center justify-end gap-1.5">
+                {row.configurable && (
                   <button
                     type="button"
                     onClick={() => openRules(row)}
                     className="px-2 py-1 bg-[#ffdad6] dark:bg-rose-950/60 hover:bg-[#ffb4ab] dark:hover:bg-rose-900/60 text-[#af101a] dark:text-[#ef5350] font-mono text-[11px] font-bold rounded flex items-center gap-1 cursor-pointer transition-colors"
-                    title="Gestionar Reglas de Armado"
+                    title="Ver Ficha Técnica de Reglas de Armado"
                   >
                     <span className="material-symbols-outlined text-[14px]">schema</span>
                     Reglas
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => showToast(`Editando producto ${row.name}`)}
-                    className="p-1.5 rounded hover:bg-[#f1f3ff] dark:hover:bg-[#1a233b] text-[#5b403d] dark:text-[#94a3b8] hover:text-[#141b2b] dark:hover:text-white cursor-pointer transition-colors"
-                    title="Editar Producto"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">edit</span>
-                  </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => openEditModal(row)}
+                  className="p-1.5 rounded bg-[#f1f3ff] dark:bg-[#1a233b] hover:bg-[#e1e8fd] dark:hover:bg-[#263554] text-[#141b2b] dark:text-[#f8fafc] cursor-pointer transition-colors flex items-center justify-center"
+                  title={`Editar producto ${row.name}`}
+                >
+                  <span className="material-symbols-outlined text-[15px]">edit</span>
+                </button>
               </div>
             ),
           },
@@ -503,241 +628,35 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
         minHeight={500}
       />
 
-      {/* MODAL: Definición de Variante y Reglas Operativas (Solo Lectura) */}
+      {/* MODAL: Ficha Técnica de Reglas Operativas (Solo Lectura con Tabs Dinámicos) */}
       {selectedProductRule && (
-        <AppModal
+        <ProductRulesModal
           isOpen={showRuleModal}
           onClose={() => setShowRuleModal(false)}
-          icon="visibility"
-          title={`Reglas de Armado — ${selectedProductRule.name}`}
-          description="Solo Lectura • Configuración activa de componentes y variantes para cocina y POS"
-          maxWidth="2xl"
-          showCancel={true}
-          cancelLabel="Cerrar"
-          confirmLabel=""
-          onConfirm={undefined}
-          footerExtra={
-            <div className="flex items-center gap-1.5 text-xs text-[#5b403d] font-mono">
-              <span className="material-symbols-outlined text-[16px] text-[#15803d]">lock</span>
-              <span>Modo Solo Lectura (Solo visualización)</span>
-            </div>
-          }
-        >
-          <div className="flex flex-col gap-4 text-xs -mt-2">
-            {/* Read-Only Notice Banner */}
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-950 text-xs flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-blue-700 text-[18px]">info</span>
-                <span>
-                  <strong>Vista de Reglas Registradas:</strong> Refleja fielmente la configuración seleccionada en <em>"Configurar componentes y variantes"</em>.
-                </span>
-              </div>
-              <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-mono text-[10px] font-bold rounded uppercase">
-                Solo Lectura
-              </span>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex items-center border-b border-[#e1e8fd] bg-[#f9f9ff] -mx-4 -mt-2 px-4 rounded-t-lg">
-              <button
-                type="button"
-                onClick={() => setRuleActiveTab('presas')}
-                className={`py-3 px-4 font-mono text-xs font-bold border-b-2 flex items-center gap-1.5 cursor-pointer ${
-                  ruleActiveTab === 'presas'
-                    ? 'border-[#af101a] text-[#af101a]'
-                    : 'border-transparent text-[#5b403d] hover:text-[#141b2b]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[16px]">lunch_dining</span>
-                1. Presas Obligatorias
-              </button>
-              <button
-                type="button"
-                onClick={() => setRuleActiveTab('sides')}
-                className={`py-3 px-4 font-mono text-xs font-bold border-b-2 flex items-center gap-1.5 cursor-pointer ${
-                  ruleActiveTab === 'sides'
-                    ? 'border-[#af101a] text-[#af101a]'
-                    : 'border-transparent text-[#5b403d] hover:text-[#141b2b]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[16px]">ramen_dining</span>
-                2. Acompañamiento y Sustituciones
-              </button>
-              <button
-                type="button"
-                onClick={() => setRuleActiveTab('drinks')}
-                className={`py-3 px-4 font-mono text-xs font-bold border-b-2 flex items-center gap-1.5 cursor-pointer ${
-                  ruleActiveTab === 'drinks'
-                    ? 'border-[#af101a] text-[#af101a]'
-                    : 'border-transparent text-[#5b403d] hover:text-[#141b2b]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[16px]">local_drink</span>
-                3. Bebida y Extras Incluidos
-              </button>
-            </div>
-
-            {/* Tab content */}
-            <div className="overflow-y-auto max-h-[50vh] flex flex-col gap-4 text-xs pr-1">
-              {ruleActiveTab === 'presas' && (
-                <div className="flex flex-col gap-4">
-                  <div className="bg-[#f1f3ff] p-3 rounded-lg flex items-center justify-between">
-                    <div>
-                      <span className="font-bold text-xs text-[#141b2b]">Total de Presas por Ración:</span>
-                      <p className="text-[11px] text-[#5b403d]">
-                        El cajero debe completar exactamente esta cantidad antes de emitir comanda.
-                      </p>
-                    </div>
-                    <span className="font-mono text-base font-bold text-[#af101a] bg-white px-3 py-1 rounded border border-[#e1e8fd]">
-                      {selectedProductRule?.variantRules?.presCount || (selectedProductRule?.piecesBadge?.match(/\d+/)?.[0] || '2')} Presas
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedProductRule?.variantRules?.allowedPresas ? selectedProductRule.variantRules.allowedPresas.pecho : true}
-                          readOnly
-                          className="accent-[#af101a] w-4 h-4"
-                        />
-                        <span className="font-bold">Pecho</span>
-                      </div>
-                      <span className="font-mono text-[#5b403d]">Blanca / Magra</span>
-                    </div>
-                    <div className="p-3 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedProductRule?.variantRules?.allowedPresas ? selectedProductRule.variantRules.allowedPresas.ala : true}
-                          readOnly
-                          className="accent-[#af101a] w-4 h-4"
-                        />
-                        <span className="font-bold">Ala</span>
-                      </div>
-                      <span className="font-mono text-[#5b403d]">Crocante</span>
-                    </div>
-                    <div className="p-3 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedProductRule?.variantRules?.allowedPresas ? selectedProductRule.variantRules.allowedPresas.pierna : true}
-                          readOnly
-                          className="accent-[#af101a] w-4 h-4"
-                        />
-                        <span className="font-bold">Pierna</span>
-                      </div>
-                      <span className="font-mono text-[#5b403d]">Jugosa</span>
-                    </div>
-                    <div className="p-3 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedProductRule?.variantRules?.allowedPresas ? selectedProductRule.variantRules.allowedPresas.entrepierna : true}
-                          readOnly
-                          className="accent-[#af101a] w-4 h-4"
-                        />
-                        <span className="font-bold">Entrepierna</span>
-                      </div>
-                      <span className="font-mono text-[#5b403d]">Tradicional</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-950 text-[11px] flex items-start gap-2">
-                    <span className="material-symbols-outlined text-amber-700 text-[18px] shrink-0">verified</span>
-                    <span>
-                      <strong>FR-002: Selección Granular Activa.</strong> Se habilitará tanto el selector rápido de pares (Pecho-Ala / Pierna-Entrepierna) como la suma libre en caja.
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {ruleActiveTab === 'sides' && (
-                <div className="flex flex-col gap-3">
-                  <span className="font-bold text-[#141b2b]">Acompañamiento Base:</span>
-                  <div className="p-3 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold">
-                        {selectedProductRule?.variantRules?.defaultSide === 'solo-papa'
-                          ? 'Solo Papas Fritas (Doble ración de papa)'
-                          : selectedProductRule?.variantRules?.defaultSide === 'solo-arroz'
-                          ? 'Solo Arroz con Queso (Doble ración de arroz)'
-                          : selectedProductRule?.variantRules?.defaultSide === 'smiles'
-                          ? 'Caritas Smiles McCain'
-                          : 'Mixto (Papa Frita Rústica + Arroz con Queso)'}
-                      </div>
-                      <div className="text-[11px] text-[#5b403d]">Estándar por defecto sin costo adicional</div>
-                    </div>
-                    <span className="font-mono font-bold text-[#15803d]">Bs. 0.00</span>
-                  </div>
-
-                  <span className="font-bold text-[#141b2b] mt-2">Sustituciones Permitidas (PDR §2.1 — Sin cambio de precio):</span>
-                  <div className="flex flex-col gap-2">
-                    {(selectedProductRule?.variantRules?.allowedSides || ['solo-papa', 'solo-arroz', 'smiles']).map((s) => (
-                      <div key={s} className="p-2.5 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                        <span className="capitalize">
-                          {s === 'solo-papa' ? 'Solo Papas Fritas (Doble ración de papa)' :
-                           s === 'solo-arroz' ? 'Solo Arroz con Queso (Doble ración de arroz)' :
-                           s === 'smiles' ? 'Sustitución por Smiles McCain (Caritas de papa)' :
-                           s === 'platano' ? 'Plátano Frito / Guarnición extra' :
-                           s}
-                        </span>
-                        <span className="font-mono font-bold text-[#15803d]">Bs. 0.00</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {ruleActiveTab === 'drinks' && (
-                <div className="flex flex-col gap-3">
-                  <span className="font-bold text-[#141b2b]">Bebidas Disponibles en el Combo (500ml):</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(selectedProductRule?.variantRules?.allowedDrinks || ['Coca Cola 500ml', 'Fanta Naranja 500ml', 'Sprite 500ml', 'Mocochinchi Casero']).map((b) => (
-                      <div key={b} className="p-2.5 bg-[#f9f9ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between">
-                        <span>{b}</span>
-                        <span className="font-mono font-bold text-[#15803d]">
-                          {b === selectedProductRule?.variantRules?.defaultDrink ? 'Por Defecto' : 'Incluida'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="p-3 bg-[#f1f3ff] rounded-lg border border-[#e1e8fd] flex items-center justify-between mt-2">
-                    <div>
-                      <span className="font-bold">Opciones de Temperatura de Servicio</span>
-                      <span className="block text-[11px] text-[#5b403d]">Obligatorio en mostrador</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-white font-mono text-[10px] font-bold border border-[#e1e8fd]">
-                        FRÍA
-                      </span>
-                      <span className="px-2 py-0.5 rounded bg-white font-mono text-[10px] font-bold border border-[#e1e8fd]">
-                        NATURAL
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </AppModal>
+          product={selectedProductRule}
+        />
       )}
 
-      {/* MODAL: Registrar Nuevo Producto (Modelo Prisma Product + Variants) */}
+      {/* MODAL: Registrar / Editar Producto (Modelo Prisma Product + Variants) */}
       <AppModal
         isOpen={showNewProductModal}
-        onClose={() => setShowNewProductModal(false)}
-        icon="add_box"
-        title="Registrar Nuevo Producto"
-        description="Modelo de datos oficial • Soporte para categorías libres y gestión de variantes"
+        onClose={() => {
+          setShowNewProductModal(false);
+          setEditingProduct(null);
+        }}
+        icon={editingProduct ? 'edit' : 'add_box'}
+        title={editingProduct ? `Editar Producto: ${editingProduct.name}` : 'Registrar Nuevo Producto'}
+        description={
+          editingProduct
+            ? 'Actualización de datos maestros, precios y reglas de ensamble'
+            : 'Modelo de datos oficial • Soporte para categorías libres y gestión de variantes'
+        }
         maxWidth="2xl"
         onConfirm={() => {
           handleSaveNewProduct();
         }}
-        confirmLabel="Guardar Producto"
-        confirmIcon="save"
+        confirmLabel={editingProduct ? 'Guardar Cambios' : 'Guardar Producto'}
+        confirmIcon={editingProduct ? 'save' : 'add_circle'}
         showCancel={true}
         cancelLabel="Cancelar"
       >
@@ -1063,108 +982,143 @@ export const CatalogScreen: React.FC<CatalogScreenProps> = ({ products, onBackTo
                   {/* TAB 2: ACOMPAÑAMIENTO Y SUSTITUCIONES */}
                   {variantTab === 'sides' && (
                     <div className="flex flex-col gap-3 animate-fade-in">
-                      {/* Acompañamiento por defecto */}
-                      <div className="p-3 bg-[#f8f9fc] rounded-lg border border-[#e2e8f0] flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
+                      {/* Control similar al de Bebida */}
+                      <div className="p-3 bg-[#f8f9fc] rounded-lg border border-[#e2e8f0] flex items-center justify-between">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={hasIncludedSide}
+                            onChange={(e) => setHasIncludedSide(e.target.checked)}
+                            className="w-4 h-4 rounded text-[#d32f2f] accent-[#d32f2f] cursor-pointer"
+                          />
                           <div>
-                            <span className="font-bold text-[#141b2b] block">Acompañamiento por Defecto (Default):</span>
+                            <span className="font-bold text-xs text-[#1e293b] block">
+                              ¿Este plato/combo incluye acompañamiento en su composición?
+                            </span>
                             <span className="text-[10px] text-[#64748b]">
-                              Viene incluido inicialmente en la ración del plato sin costo adicional (PDR §2.1).
+                              Ejemplo: Porción Media y Combos incluyen papas y arroz sin costo adicional (PDR §2.1).
                             </span>
                           </div>
-                          <span className="font-mono text-xs font-bold text-[#15803d] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                            Bs. 0.00
-                          </span>
-                        </div>
+                        </label>
+                        <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold ${
+                          hasIncludedSide ? 'bg-emerald-50 text-[#15803d] border border-emerald-200' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {hasIncludedSide ? 'ACOMPAÑAMIENTO INCLUIDO' : 'SIN ACOMPAÑAMIENTO'}
+                        </span>
+                      </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                          {[
-                            { id: 'mixto', label: 'Mixto (Papas + Arroz)', desc: 'Estándar de la casa' },
-                            { id: 'solo-papa', label: 'Solo Papas Fritas', desc: 'Doble ración de papa' },
-                            { id: 'solo-arroz', label: 'Solo Arroz con Queso', desc: 'Doble ración de arroz' },
-                            { id: 'smiles', label: 'Caritas Smiles McCain', desc: 'Porción de caritas' },
-                          ].map((side) => (
-                            <label
-                              key={side.id}
-                              className={`p-2.5 rounded-lg border flex flex-col gap-1 cursor-pointer transition-all ${
-                                defaultSide === side.id
-                                  ? 'bg-[#fff5f5] border-[#d32f2f] shadow-xs'
-                                  : 'bg-white border-[#cbd5e1] hover:bg-[#f8f9fc]'
-                              }`}
-                            >
-                              <div className="flex items-center gap-1.5">
-                                <input
-                                  type="radio"
-                                  name="defaultSideGroup"
-                                  checked={defaultSide === side.id}
-                                  onChange={() => {
-                                    setDefaultSide(side.id);
-                                    if (!allowedSides.includes(side.id)) {
-                                      setAllowedSides([...allowedSides, side.id]);
-                                    }
-                                  }}
-                                  className="accent-[#d32f2f] cursor-pointer"
-                                />
-                                <span className="font-bold text-xs text-[#1e293b]">{side.label}</span>
+                      {hasIncludedSide ? (
+                        <>
+                          {/* Acompañamiento por defecto */}
+                          <div className="p-3 bg-[#f8f9fc] rounded-lg border border-[#e2e8f0] flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="font-bold text-[#141b2b] block">Acompañamiento por Defecto (Default):</span>
+                                <span className="text-[10px] text-[#64748b]">
+                                  Viene incluido inicialmente en la ración del plato sin costo adicional (PDR §2.1).
+                                </span>
                               </div>
-                              <span className="text-[10px] text-[#64748b]">{side.desc}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
+                              <span className="font-mono text-xs font-bold text-[#15803d] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                Bs. 0.00
+                              </span>
+                            </div>
 
-                      {/* Opciones con las que se puede intercambiar */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-bold text-[#141b2b]">
-                            Sustituciones Permitidas (Con cuáles se puede intercambiar):
-                          </span>
-                          <span className="text-[10px] text-[#64748b] italic">
-                            PDR §2.1: Máximo 1 sustitución por plato, <strong>NO altera el precio</strong> (Bs. 0.00)
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {[
-                            { id: 'mixto', label: 'Mixto (Papas Rústicas + Arroz con Queso)', tag: 'Base' },
-                            { id: 'solo-papa', label: 'Solo Papas Fritas (Doble ración)', tag: 'Sin costo' },
-                            { id: 'solo-arroz', label: 'Solo Arroz con Queso (Doble ración)', tag: 'Sin costo' },
-                            { id: 'smiles', label: 'Smiles McCain (Caritas de papa)', tag: 'Sin costo' },
-                            { id: 'platano', label: 'Plátano Frito / Guarnición extra', tag: 'Sin costo' },
-                          ].map((item) => {
-                            const isChecked = allowedSides.includes(item.id);
-                            return (
-                              <label
-                                key={item.id}
-                                className={`p-2 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
-                                  isChecked ? 'bg-white border-[#cbd5e1]' : 'bg-[#f8f9fc] border-[#e2e8f0] opacity-70'
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
-                                        setAllowedSides([...allowedSides, item.id]);
-                                      } else {
-                                        if (item.id === defaultSide) {
-                                          alert('No puede deshabilitar el acompañamiento que está configurado por defecto.');
-                                          return;
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                              {[
+                                { id: 'mixto', label: 'Mixto (Papas + Arroz)', desc: 'Estándar de la casa' },
+                                { id: 'solo-papa', label: 'Solo Papas Fritas', desc: 'Doble ración de papa' },
+                                { id: 'solo-arroz', label: 'Solo Arroz con Queso', desc: 'Doble ración de arroz' },
+                                { id: 'smiles', label: 'Caritas Smiles McCain', desc: 'Porción de caritas' },
+                              ].map((side) => (
+                                <label
+                                  key={side.id}
+                                  className={`p-2.5 rounded-lg border flex flex-col gap-1 cursor-pointer transition-all ${
+                                    defaultSide === side.id
+                                      ? 'bg-[#fff5f5] border-[#d32f2f] shadow-xs'
+                                      : 'bg-white border-[#cbd5e1] hover:bg-[#f8f9fc]'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-1.5">
+                                    <input
+                                      type="radio"
+                                      name="defaultSideGroup"
+                                      checked={defaultSide === side.id}
+                                      onChange={() => {
+                                        setDefaultSide(side.id);
+                                        if (!allowedSides.includes(side.id)) {
+                                          setAllowedSides([...allowedSides, side.id]);
                                         }
-                                        setAllowedSides(allowedSides.filter((id) => id !== item.id));
-                                      }
-                                    }}
-                                    className="accent-[#d32f2f] w-4 h-4 cursor-pointer"
-                                  />
-                                  <span className="font-medium text-xs text-[#1e293b]">{item.label}</span>
-                                </div>
-                                <span className="font-mono text-[10px] text-[#15803d] font-bold">Bs. 0.00</span>
-                              </label>
-                            );
-                          })}
+                                      }}
+                                      className="accent-[#d32f2f] cursor-pointer"
+                                    />
+                                    <span className="font-bold text-xs text-[#1e293b]">{side.label}</span>
+                                  </div>
+                                  <span className="text-[10px] text-[#64748b]">{side.desc}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Opciones con las que se puede intercambiar */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="font-bold text-[#141b2b]">
+                                Sustituciones Permitidas (Con cuáles se puede intercambiar):
+                              </span>
+                              <span className="text-[10px] text-[#64748b] italic">
+                                PDR §2.1: Máximo 1 sustitución por plato, <strong>NO altera el precio</strong> (Bs. 0.00)
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {[
+                                { id: 'mixto', label: 'Mixto (Papas Rústicas + Arroz con Queso)', tag: 'Base' },
+                                { id: 'solo-papa', label: 'Solo Papas Fritas (Doble ración)', tag: 'Sin costo' },
+                                { id: 'solo-arroz', label: 'Solo Arroz con Queso (Doble ración)', tag: 'Sin costo' },
+                                { id: 'smiles', label: 'Smiles McCain (Caritas de papa)', tag: 'Sin costo' },
+                                { id: 'platano', label: 'Plátano Frito / Guarnición extra', tag: 'Sin costo' },
+                              ].map((item) => {
+                                const isChecked = allowedSides.includes(item.id);
+                                return (
+                                  <label
+                                    key={item.id}
+                                    className={`p-2 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
+                                      isChecked ? 'bg-white border-[#cbd5e1]' : 'bg-[#f8f9fc] border-[#e2e8f0] opacity-70'
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            setAllowedSides([...allowedSides, item.id]);
+                                          } else {
+                                            if (item.id === defaultSide) {
+                                              alert('No puede deshabilitar el acompañamiento que está configurado por defecto.');
+                                              return;
+                                            }
+                                            setAllowedSides(allowedSides.filter((id) => id !== item.id));
+                                          }
+                                        }}
+                                        className="accent-[#d32f2f] w-4 h-4 cursor-pointer"
+                                      />
+                                      <span className="font-medium text-xs text-[#1e293b]">{item.label}</span>
+                                    </div>
+                                    <span className="font-mono text-[10px] text-[#15803d] font-bold">Bs. 0.00</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="p-4 rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8f9fc] text-center">
+                          <p className="text-xs text-[#64748b]">
+                            Este plato se despacha <strong>sin acompañamiento</strong> (por ejemplo: Cuarto de Pollo, Medio Pollo). En caja solo se despacharán las presas seleccionadas.
+                          </p>
                         </div>
-                      </div>
+                      )}
                     </div>
                   )}
 

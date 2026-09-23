@@ -15,6 +15,10 @@ export interface ComboVariantModalProps {
   onClose: () => void;
   onConfirm: (config: ComboConfiguration) => void;
   product?: Product | null;
+  readOnly?: boolean;
+  initialConfig?: ComboConfiguration | null;
+  title?: string;
+  confirmLabel?: string;
 }
 
 export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
@@ -22,22 +26,30 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   onClose,
   onConfirm,
   product,
+  readOnly = false,
+  initialConfig,
+  title,
+  confirmLabel,
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   // Determine product specs & rules with sensible defaults
-  const targetProduct = useMemo(
+  const targetProduct: Product = useMemo(
     () =>
       product || {
         id: 'p-003',
         code: 'P-003',
         name: 'Combo Wonder',
+        description: 'Combo Wonder',
+        imageUrl: '',
+        active: true,
         price: 36.0,
         category: 'principales',
         variantRules: {
           presCount: 2,
           allowedPresas: { pecho: true, ala: true, pierna: true, entrepierna: true },
+          hasIncludedSide: true,
           defaultSide: 'mixto',
           allowedSides: ['mixto', 'solo-papa', 'solo-arroz', 'smiles'],
           hasIncludedDrink: true,
@@ -57,8 +69,12 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   const rules = targetProduct.variantRules;
   const targetPresasRequired = rules?.presCount ?? 2;
 
-  // Has side included? ONLY if product explicitly defines allowedSides or defaultSide
-  const hasSide = Boolean(rules?.allowedSides && rules.allowedSides.length > 0) || Boolean(rules?.defaultSide);
+  // Has side included? ONLY if product explicitly defines allowedSides or defaultSide and hasIncludedSide is not false
+  const hasSide = Boolean(
+    rules?.hasIncludedSide !== undefined
+      ? rules.hasIncludedSide
+      : (rules?.allowedSides && rules.allowedSides.length > 0) || Boolean(rules?.defaultSide)
+  );
   // Has drink included?
   const hasDrink = Boolean(rules?.hasIncludedDrink);
 
@@ -81,29 +97,50 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   // Initialize and reset when modal opens or product changes
   useEffect(() => {
     if (isOpen) {
-      setPresaTab('rapido');
-      if (targetPresasRequired === 4) {
-        setSelectedQuickPreset('completo');
-        setGranularPresas({
-          pecho: 1,
-          ala: 1,
-          pierna: 1,
-          entrepierna: 1,
-        });
+      if (initialConfig) {
+        setPresaTab('granular');
+        setGranularPresas(
+          initialConfig.presas || {
+            ala: 1,
+            pecho: 1,
+            pierna: 0,
+            entrepierna: 0,
+          }
+        );
+        if (initialConfig.side) {
+          setSideOption(initialConfig.side);
+        }
+        if (initialConfig.drink) {
+          setDrink(initialConfig.drink);
+        }
+        if (initialConfig.temperature) {
+          setTemperature(initialConfig.temperature);
+        }
       } else {
-        setSelectedQuickPreset('pecho-ala');
-        setGranularPresas({
-          ala: 1,
-          pecho: 1,
-          pierna: 0,
-          entrepierna: 0,
-        });
+        setPresaTab('rapido');
+        if (targetPresasRequired === 4) {
+          setSelectedQuickPreset('completo');
+          setGranularPresas({
+            pecho: 1,
+            ala: 1,
+            pierna: 1,
+            entrepierna: 1,
+          });
+        } else {
+          setSelectedQuickPreset('pecho-ala');
+          setGranularPresas({
+            ala: 1,
+            pecho: 1,
+            pierna: 0,
+            entrepierna: 0,
+          });
+        }
+        setSideOption((rules?.defaultSide as any) || 'mixto');
+        setDrink(rules?.defaultDrink || 'Coca Cola 500ml');
+        setTemperature('FRÍA');
       }
-      setSideOption((rules?.defaultSide as any) || 'mixto');
-      setDrink(rules?.defaultDrink || 'Coca Cola 500ml');
-      setTemperature('FRÍA');
     }
-  }, [isOpen, targetProduct.id, targetPresasRequired, rules]);
+  }, [isOpen, targetProduct.id, targetPresasRequired, rules, initialConfig]);
 
   // Calculate current total presas
   const totalPresas =
@@ -114,6 +151,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   const isValid = totalPresas === targetPresasRequired;
 
   const adjustPresa = (kind: keyof PresasCount, delta: number) => {
+    if (readOnly) return;
     const currentVal = granularPresas[kind];
     if (delta < 0 && currentVal <= 0) return;
     if (delta > 0 && totalPresas >= targetPresasRequired) return;
@@ -125,6 +163,7 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
   };
 
   const handleSelectQuickPreset = (presetKey: string) => {
+    if (readOnly) return;
     setSelectedQuickPreset(presetKey);
 
     if (targetPresasRequired === 4) {
@@ -267,13 +306,16 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
     'Mocochinchi Casero 500ml',
   ];
 
+  const modalTitle = title || (readOnly ? `Reglas de Armado: ${targetProduct.name}` : `Configurar Variante: ${targetProduct.name}`);
+  const finalConfirmLabel = confirmLabel || (readOnly ? 'Aceptar y Cerrar' : `Agregar a la Orden (Bs. ${targetProduct.price.toFixed(2)})`);
+
   return (
     <ThemeProvider theme={modalTheme}>
       <AppModal
         isOpen={isOpen}
         onClose={onClose}
         icon="tune"
-        title={`Configurar Variante: ${targetProduct.name}`}
+        title={modalTitle}
         description={modalDescription}
         maxWidth="2xl"
         footerExtra={
@@ -295,8 +337,8 @@ export const ComboVariantModal: React.FC<ComboVariantModalProps> = ({
           </Box>
         }
         onConfirm={handleAdd}
-        confirmLabel={`Agregar a la Orden (Bs. ${targetProduct.price.toFixed(2)})`}
-        confirmIcon="add_shopping_cart"
+        confirmLabel={finalConfirmLabel}
+        confirmIcon={readOnly ? 'check' : 'add_shopping_cart'}
         confirmDisabled={!isValid}
         showCancel={true}
         cancelLabel="Cancelar"

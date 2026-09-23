@@ -120,6 +120,7 @@ export interface ProductVariantRules {
     pierna: boolean;
     entrepierna: boolean;
   };
+  hasIncludedSide?: boolean;
   defaultSide?: string;
   allowedSides?: string[];
   hasIncludedDrink?: boolean;
