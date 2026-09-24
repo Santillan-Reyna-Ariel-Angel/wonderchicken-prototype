@@ -1,0 +1,50 @@
+- generic [ref=e3121]:
+  - banner [ref=e3122]:
+    - generic [ref=e3123]:
+      - img "Wonder Chicken Logo" [ref=e3125]
+      - generic [ref=e3126]:
+        - generic [ref=e3127]: Wonder Chicken
+        - generic [ref=e3128]: Monitor de Estado de Comanda en Vivo
+    - button "Volver al Sistema" [ref=e3129] [cursor=pointer]
+  - main [ref=e3130]:
+    - generic [ref=e3131]:
+      - generic [ref=e3132]: confirmation_number
+      - textbox "Ingrese número de ticket (ej. 105, 103, 102)..." [ref=e3133]: "105"
+      - generic [ref=e3134]: Actualización automática
+    - generic [ref=e3135]:
+      - generic [ref=e3136]:
+        - generic [ref=e3137]:
+          - text: Ticket de Pedido
+          - generic [ref=e3138]: "#105"
+          - generic [ref=e3139]:
+            - text: "Cliente:"
+            - strong [ref=e3140]: Carlos Mendoza
+        - generic [ref=e3141]:
+          - generic [ref=e3142]: MESA • Mesa Salón 06
+          - generic [ref=e3143]: "Hora de Orden: 20:44 (Hace 2 min)"
+      - generic [ref=e3144]:
+        - generic [ref=e3145]:
+          - generic [ref=e3146]:
+            - generic [ref=e3147]: "1"
+            - generic [ref=e3148]: Confirmado
+          - generic [ref=e3149]:
+            - generic [ref=e3150]: "2"
+            - generic [ref=e3151]: En Preparación
+          - generic [ref=e3152]:
+            - generic [ref=e3153]: "3"
+            - generic [ref=e3154]: ¡Listo!
+          - generic [ref=e3155]:
+            - generic [ref=e3156]: "4"
+            - generic [ref=e3157]: Entregado
+        - generic [ref=e3159]:
+          - generic [ref=e3160]: outdoor_grill
+          - generic [ref=e3161]: Tu pollo crujiente está en fritura y preparación activa...
+      - generic [ref=e3162]:
+        - heading "Detalle de la Comanda" [level=3] [ref=e3163]
+        - generic [ref=e3165]:
+          - generic [ref=e3167]: 1x Combo Familiar 8 Presas
+          - generic [ref=e3168]:
+            - generic [ref=e3169]: • 4x Pierna, 4x Entrepierna
+            - generic [ref=e3170]: "• Acompañamiento: Doble porción de papas rústicas"
+            - generic [ref=e3171]: "• Bebida: 1x Gaseosa 2L Guaraná"
+  - contentinfo [ref=e3172]: Wonder Chicken Fast-Casual System • Consulta Pública de Turno

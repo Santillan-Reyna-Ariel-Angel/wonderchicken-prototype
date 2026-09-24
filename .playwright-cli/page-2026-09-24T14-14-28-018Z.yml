@@ -1,0 +1,175 @@
+- generic [ref=e119]:
+  - banner [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Colapsar menú lateral" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: menu
+        - button "Wonder Chicken Sucursal Central (Caja 01) WONDER CHICKEN • Online" [ref=e125] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e127]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Sucursal Central (Caja 01)
+            - generic [ref=e130]:
+              - generic [ref=e131]: WONDER CHICKEN
+              - generic [ref=e132]: •
+              - generic [ref=e133]: Online
+      - generic [ref=e134]:
+        - button "Alternar tema claro y oscuro" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: light_mode
+          - generic [ref=e137]: Claro
+        - generic [ref=e138]:
+          - button "R Roxana Rodríguez Cajera expand_less" [expanded] [active] [ref=e1106] [cursor=pointer]:
+            - generic [ref=e140]: R
+            - generic [ref=e141]:
+              - generic [ref=e142]: Roxana Rodríguez
+              - generic [ref=e143]: Cajera
+            - generic [ref=e144]: expand_less
+          - generic [ref=e1107]:
+            - generic [ref=e1108]:
+              - generic [ref=e1109]: R
+              - generic [ref=e1110]:
+                - generic [ref=e1111]: Roxana Rodríguez
+                - generic [ref=e1112]: roxana@wonderchicken.com
+                - generic [ref=e1113]:
+                  - generic [ref=e1114]: Cajera
+                  - generic [ref=e1115]: "Turno: MAÑANA"
+            - generic [ref=e1116]:
+              - generic [ref=e1117]: "Sucursal Activa:"
+              - generic [ref=e1118]: Sucursal Central (Caja 01)
+            - button "logout Cerrar Sesión" [ref=e1120] [cursor=pointer]:
+              - generic [ref=e1121]: logout
+              - generic [ref=e1122]: Cerrar Sesión
+  - complementary [ref=e145]:
+    - generic [ref=e147]:
+      - generic [ref=e148]: Operaciones de Caja & POS
+      - navigation [ref=e149]:
+        - button "assignment E Resumen de Apertura /cashier/shift/summary Lectura" [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: assignment
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: E
+                - generic [ref=e156]: Resumen de Apertura
+              - generic [ref=e157]: /cashier/shift/summary
+          - generic [ref=e158]: Lectura
+        - button "point_of_sale F POS Ventas /cashier/pos" [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: point_of_sale
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: F
+                - generic [ref=e165]: POS Ventas
+              - generic [ref=e166]: /cashier/pos
+        - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - generic [ref=e169]: receipt_long
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: J
+                - generic [ref=e173]: Historial de Pedidos
+              - generic [ref=e174]: /cashier/orders
+        - button "group P Clientes (FR-019) /cashier/customers" [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: group
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: P
+                - generic [ref=e181]: Clientes (FR-019)
+              - generic [ref=e182]: /cashier/customers
+        - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: pending_actions
+            - generic [ref=e188]: Pago Pendiente [FR-011]
+          - generic [ref=e189]: "3"
+  - main [ref=e190]:
+    - generic [ref=e998]:
+      - generic [ref=e999]:
+        - generic [ref=e1000]:
+          - generic [ref=e1001]:
+            - generic [ref=e1003]: pending_actions
+            - heading "Bandeja de Pedidos con Pago Pendiente (FR-011)" [level=1] [ref=e1004]
+          - paragraph [ref=e1005]: Despachados a fritura/cocina anticipada • Pendientes de liquidación fiscal y cobro en ventanilla.
+        - generic [ref=e1006]:
+          - button "tv Pantalla Turnos (Fichas)" [ref=e1007] [cursor=pointer]:
+            - generic [ref=e1008]: tv
+            - text: Pantalla Turnos (Fichas)
+          - button "point_of_sale Volver a POS" [ref=e1009] [cursor=pointer]:
+            - generic [ref=e1010]: point_of_sale
+            - text: Volver a POS
+      - generic [ref=e1011]:
+        - generic [ref=e1013]: Pedidos para Llevar (3)
+        - generic [ref=e1014]:
+          - generic [ref=e1015]:
+            - generic [ref=e1016]: search
+            - textbox "Buscar por ticket o cliente..." [ref=e1017]
+          - generic [ref=e1018]:
+            - generic [ref=e1019]: "Por cobrar:"
+            - generic [ref=e1020]: Bs. 180.50
+      - generic [ref=e1021]:
+        - generic [ref=e1022]:
+          - generic [ref=e1024]:
+            - generic [ref=e1025]:
+              - generic [ref=e1026]:
+                - generic [ref=e1028]: "#103"
+                - generic [ref=e1029]: Marco Ortega
+              - generic [ref=e1030]:
+                - generic [ref=e1031]: Bs. 90.00
+                - generic [ref=e1034]: Hace 6 min
+            - generic [ref=e1035]:
+              - generic [ref=e1036]:
+                - generic [ref=e1037]: 3x Porción Media Broaster
+                - generic [ref=e1038]: Bs. 90.00
+              - generic [ref=e1039]:
+                - generic [ref=e1040]: • 1x Pecho - Ala
+                - generic [ref=e1041]: • 2x Pierna - Entrepierna
+                - generic [ref=e1042]: "• Sustitución: Arroz con queso en vez de papas"
+            - generic [ref=e1044]: "ESTADO: PAGO PENDIENTE"
+          - generic [ref=e1045]:
+            - button "point_of_sale Cobrar Pedido (F4)" [ref=e1046] [cursor=pointer]:
+              - generic [ref=e1047]: point_of_sale
+              - generic [ref=e1048]: Cobrar Pedido (F4)
+            - button "delete_sweep" [ref=e1049] [cursor=pointer]:
+              - generic [ref=e1050]: delete_sweep
+        - generic [ref=e1051]:
+          - generic [ref=e1053]:
+            - generic [ref=e1054]:
+              - generic [ref=e1055]:
+                - generic [ref=e1057]: "#106"
+                - generic [ref=e1058]: s/n
+              - generic [ref=e1059]:
+                - generic [ref=e1060]: Bs. 58.00
+                - generic [ref=e1063]: Hace 2 min
+            - generic [ref=e1064]:
+              - generic [ref=e1065]:
+                - generic [ref=e1066]: 1x Combo Familiar 8 Presas
+                - generic [ref=e1067]: Bs. 58.00
+              - generic [ref=e1068]:
+                - generic [ref=e1069]: • + Papas familiares rústicas
+                - generic [ref=e1070]: • + Gaseosa 2L Guaraná
+            - generic [ref=e1072]: "ESTADO: PAGO PENDIENTE"
+          - generic [ref=e1073]:
+            - button "point_of_sale Cobrar Pedido (F4)" [ref=e1074] [cursor=pointer]:
+              - generic [ref=e1075]: point_of_sale
+              - generic [ref=e1076]: Cobrar Pedido (F4)
+            - button "delete_sweep" [ref=e1077] [cursor=pointer]:
+              - generic [ref=e1078]: delete_sweep
+        - generic [ref=e1079]:
+          - generic [ref=e1081]:
+            - generic [ref=e1082]:
+              - generic [ref=e1083]:
+                - generic [ref=e1085]: "#108"
+                - generic [ref=e1086]: Sra. Carmen Salazar
+              - generic [ref=e1087]:
+                - generic [ref=e1088]: Bs. 32.50
+                - generic [ref=e1091]: Hace 1 min
+            - generic [ref=e1092]:
+              - generic [ref=e1093]:
+                - generic [ref=e1094]: 1x Cuarto Pecho Broaster + Tártara
+                - generic [ref=e1095]: Bs. 32.50
+              - generic [ref=e1097]: • + 1x Porción Extra Plátanos Fritos (Bs. 7.50)
+            - generic [ref=e1099]: "ESTADO: PAGO PENDIENTE"
+          - generic [ref=e1100]:
+            - button "point_of_sale Cobrar Pedido (F4)" [ref=e1101] [cursor=pointer]:
+              - generic [ref=e1102]: point_of_sale
+              - generic [ref=e1103]: Cobrar Pedido (F4)
+            - button "delete_sweep" [ref=e1104] [cursor=pointer]:
+              - generic [ref=e1105]: delete_sweep

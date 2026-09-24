@@ -1,0 +1,134 @@
+- generic [ref=e119]:
+  - banner [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Colapsar menú lateral" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: menu
+        - button "Wonder Chicken Sucursal Central (Caja 01) WONDER CHICKEN • Online" [ref=e125] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e127]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Sucursal Central (Caja 01)
+            - generic [ref=e130]:
+              - generic [ref=e131]: WONDER CHICKEN
+              - generic [ref=e132]: •
+              - generic [ref=e133]: Online
+      - generic [ref=e134]:
+        - button "Alternar tema claro y oscuro" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: light_mode
+          - generic [ref=e137]: Claro
+        - button "R Roxana Rodríguez Cajera expand_more" [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: R
+          - generic [ref=e141]:
+            - generic [ref=e142]: Roxana Rodríguez
+            - generic [ref=e143]: Cajera
+          - generic [ref=e144]: expand_more
+  - complementary [ref=e145]:
+    - generic [ref=e147]:
+      - generic [ref=e148]: Operaciones de Caja & POS
+      - navigation [ref=e149]:
+        - button "assignment E Resumen de Apertura /cashier/shift/summary Lectura" [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: assignment
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: E
+                - generic [ref=e156]: Resumen de Apertura
+              - generic [ref=e157]: /cashier/shift/summary
+          - generic [ref=e158]: Lectura
+        - button "point_of_sale F POS Ventas /cashier/pos" [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: point_of_sale
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: F
+                - generic [ref=e165]: POS Ventas
+              - generic [ref=e166]: /cashier/pos
+        - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - generic [ref=e169]: receipt_long
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: J
+                - generic [ref=e173]: Historial de Pedidos
+              - generic [ref=e174]: /cashier/orders
+        - button "group P Clientes (FR-019) /cashier/customers" [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: group
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: P
+                - generic [ref=e181]: Clientes (FR-019)
+              - generic [ref=e182]: /cashier/customers
+        - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: pending_actions
+            - generic [ref=e188]: Pago Pendiente [FR-011]
+          - generic [ref=e189]: "3"
+  - main [ref=e190]:
+    - generic [ref=e191]:
+      - generic [ref=e192]:
+        - generic [ref=e193]:
+          - generic [ref=e195]: lock_open
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e198]: Turno Activo en Operación
+              - generic [ref=e199]: ABIERTO
+            - generic [ref=e200]: "Operador: Roxana Rodríguez • Caja 01 • Hoy 10:12 a. m."
+        - button "point_of_sale Ir a Terminal POS" [ref=e201] [cursor=pointer]:
+          - generic [ref=e202]: point_of_sale
+          - text: Ir a Terminal POS
+      - generic [ref=e203]:
+        - generic [ref=e204]:
+          - generic [ref=e205]:
+            - generic [ref=e207]: assignment
+            - generic [ref=e208]:
+              - heading "Resumen de Apertura de Turno" [level=3] [ref=e209]
+              - paragraph [ref=e210]: Registro fiscal oficial emitido al inicio de la jornada operativa
+          - generic [ref=e211]: SHF-1790259173824-M01
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - generic [ref=e214]:
+              - generic [ref=e215]: person
+              - text: Datos del Operador
+            - generic [ref=e216]:
+              - generic [ref=e217]: "Operador Responsable:"
+              - generic [ref=e218]: Roxana Rodríguez
+            - generic [ref=e219]:
+              - generic [ref=e220]: "Cédula Identidad:"
+              - generic [ref=e221]: "2222222"
+            - generic [ref=e222]:
+              - generic [ref=e223]: "Rol de Acceso:"
+              - generic [ref=e224]: CAJERA
+          - generic [ref=e225]:
+            - generic [ref=e226]:
+              - generic [ref=e227]: storefront
+              - text: Terminal y Horario
+            - generic [ref=e228]:
+              - generic [ref=e229]: "Sucursal:"
+              - generic [ref=e230]: Sucursal Central (SCZ-001)
+            - generic [ref=e231]:
+              - generic [ref=e232]: "Turno Asignado:"
+              - generic [ref=e233]: MAÑANA
+            - generic [ref=e234]:
+              - generic [ref=e235]: "Caja Asignada:"
+              - generic [ref=e236]: Caja 01
+        - generic [ref=e237]:
+          - generic [ref=e238]:
+            - text: Fondo Inicial Declarado en Gaveta
+            - generic [ref=e239]: Bs. 150.00
+          - generic [ref=e240]:
+            - generic [ref=e241]: "Apertura registrada:"
+            - generic [ref=e242]: Hoy 10:12 a. m.
+        - generic [ref=e243]:
+          - generic [ref=e244]: verified
+          - paragraph [ref=e245]:
+            - text: El turno se encuentra actualmente activo. Para realizar el arqueo final, arqueo ciego o cierre fiscal Z al terminar su jornada, diríjase al módulo de
+            - strong [ref=e246]: Control Turnos y Cajas
+            - text: .
+        - generic [ref=e247]:
+          - button "print Reimprimir Comprobante" [ref=e248] [cursor=pointer]:
+            - generic [ref=e249]: print
+            - text: Reimprimir Comprobante
+          - button "point_of_sale Ir a Terminal POS" [ref=e250] [cursor=pointer]:
+            - generic [ref=e251]: point_of_sale
+            - text: Ir a Terminal POS

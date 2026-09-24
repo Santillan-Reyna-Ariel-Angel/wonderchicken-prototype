@@ -1,0 +1,334 @@
+- generic [ref=e1219]:
+  - banner [ref=e1220]:
+    - generic [ref=e1221]:
+      - generic [ref=e1222]:
+        - button "Colapsar menú lateral" [ref=e1223] [cursor=pointer]:
+          - generic [ref=e1224]: menu
+        - button "Wonder Chicken Sucursal Central WONDER CHICKEN • Online" [ref=e1225] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e1227]
+          - generic [ref=e1228]:
+            - generic [ref=e1229]: Sucursal Central
+            - generic [ref=e1230]:
+              - generic [ref=e1231]: WONDER CHICKEN
+              - generic [ref=e1232]: •
+              - generic [ref=e1233]: Online
+      - generic [ref=e1234]:
+        - button "Alternar tema claro y oscuro" [ref=e1235] [cursor=pointer]:
+          - generic [ref=e1236]: light_mode
+          - generic [ref=e1237]: Claro
+        - button "C Carlos Mendoza Administrador expand_more" [ref=e1239] [cursor=pointer]:
+          - generic [ref=e1240]: C
+          - generic [ref=e1241]:
+            - generic [ref=e1242]: Carlos Mendoza
+            - generic [ref=e1243]: Administrador
+          - generic [ref=e1244]: expand_more
+  - complementary [ref=e1245]:
+    - generic [ref=e1246]:
+      - generic [ref=e1247]:
+        - generic [ref=e1248]: Administración de Sede
+        - navigation [ref=e1249]:
+          - button "dashboard D Dashboard Sucursal /branch-admin" [ref=e1250] [cursor=pointer]:
+            - generic [ref=e1251]:
+              - generic [ref=e1252]: dashboard
+              - generic [ref=e1253]:
+                - generic [ref=e1254]:
+                  - generic [ref=e1255]: D
+                  - generic [ref=e1256]: Dashboard Sucursal
+                - generic [ref=e1257]: /branch-admin
+          - button "inventory_2 N1 Catálogo y Variantes /branch-admin/products" [ref=e1258] [cursor=pointer]:
+            - generic [ref=e1259]:
+              - generic [ref=e1260]: inventory_2
+              - generic [ref=e1261]:
+                - generic [ref=e1262]:
+                  - generic [ref=e1263]: N1
+                  - generic [ref=e1264]: Catálogo y Variantes
+                - generic [ref=e1265]: /branch-admin/products
+          - button "badge N2 Personal de Sucursal /branch-admin/users" [ref=e1266] [cursor=pointer]:
+            - generic [ref=e1267]:
+              - generic [ref=e1268]: badge
+              - generic [ref=e1269]:
+                - generic [ref=e1270]:
+                  - generic [ref=e1271]: N2
+                  - generic [ref=e1272]: Personal de Sucursal
+                - generic [ref=e1273]: /branch-admin/users
+          - button "tune O Reportes Operativos /branch-admin/reports" [active] [ref=e1274] [cursor=pointer]:
+            - generic [ref=e1275]:
+              - generic [ref=e1276]: tune
+              - generic [ref=e1277]:
+                - generic [ref=e1278]:
+                  - generic [ref=e1279]: O
+                  - generic [ref=e1280]: Reportes Operativos
+                - generic [ref=e1281]: /branch-admin/reports
+          - button "group Q Clientes (Admin FR-019) /branch-admin/customers" [ref=e1282] [cursor=pointer]:
+            - generic [ref=e1283]:
+              - generic [ref=e1284]: group
+              - generic [ref=e1285]:
+                - generic [ref=e1286]:
+                  - generic [ref=e1287]: Q
+                  - generic [ref=e1288]: Clientes (Admin FR-019)
+                - generic [ref=e1289]: /branch-admin/customers
+      - generic [ref=e1290]:
+        - generic [ref=e1291]: Supervisión Operativa
+        - navigation [ref=e1292]:
+          - button "point_of_sale F Terminal POS /cashier/pos" [ref=e1293] [cursor=pointer]:
+            - generic [ref=e1294]:
+              - generic [ref=e1295]: point_of_sale
+              - generic [ref=e1296]:
+                - generic [ref=e1297]:
+                  - generic [ref=e1298]: F
+                  - generic [ref=e1299]: Terminal POS
+                - generic [ref=e1300]: /cashier/pos
+          - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e1301] [cursor=pointer]:
+            - generic [ref=e1302]:
+              - generic [ref=e1303]: receipt_long
+              - generic [ref=e1304]:
+                - generic [ref=e1305]:
+                  - generic [ref=e1306]: J
+                  - generic [ref=e1307]: Historial de Pedidos
+                - generic [ref=e1308]: /cashier/orders
+          - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e1309] [cursor=pointer]:
+            - generic [ref=e1310]:
+              - generic [ref=e1311]: pending_actions
+              - generic [ref=e1314]: Pago Pendiente [FR-011]
+            - generic [ref=e1315]: "3"
+  - main [ref=e1316]:
+    - generic [ref=e2214]:
+      - generic [ref=e2215]:
+        - generic [ref=e2216]:
+          - generic [ref=e2217]:
+            - generic [ref=e2218]: FR-004 · PDR §2.6 & §13.3
+            - generic [ref=e2219]: Auditoría en Vivo
+          - heading "Control de Turnos y Arqueo de Cajas" [level=1] [ref=e2221]
+          - paragraph [ref=e2222]: Supervisión de cajas activas, conciliación ciega de efectivo, liquidación de vales y generación de actas fiscales Z.
+        - generic [ref=e2223]:
+          - button "point_of_sale Volver a POS" [ref=e2224] [cursor=pointer]:
+            - generic [ref=e2225]: point_of_sale
+            - text: Volver a POS
+          - button "file_download Exportar Arqueo (CSV)" [ref=e2226] [cursor=pointer]:
+            - generic [ref=e2227]: file_download
+            - text: Exportar Arqueo (CSV)
+      - generic [ref=e2230]:
+        - toolbar [ref=e2231]:
+          - generic [ref=e2235]:
+            - heading "Cajas del Turno Actual — Turno Mañana" [level=6] [ref=e2236]
+            - generic [ref=e2238]: Sucursal Central (SCZ-001)
+        - grid [ref=e2239]:
+          - rowgroup [ref=e2240]:
+            - row "Caja Cajera Responsable Apertura Fondo Base Venta Efectivo QR / Delivery Vales Gastos Total Esperado Estado Acción" [ref=e2241]:
+              - columnheader "Caja" [ref=e2242] [cursor=pointer]:
+                - generic [ref=e2244]: Caja
+                - generic [ref=e2245]:
+                  - img
+              - columnheader "Cajera Responsable" [ref=e2246] [cursor=pointer]:
+                - generic [ref=e2248]: Cajera Responsable
+                - generic [ref=e2249]:
+                  - img
+              - columnheader "Apertura" [ref=e2250] [cursor=pointer]:
+                - generic [ref=e2252]: Apertura
+                - generic [ref=e2253]:
+                  - img
+              - columnheader "Fondo Base" [ref=e2254] [cursor=pointer]:
+                - generic [ref=e2256]: Fondo Base
+                - generic [ref=e2257]:
+                  - img
+              - columnheader "Venta Efectivo" [ref=e2258] [cursor=pointer]:
+                - generic [ref=e2260]: Venta Efectivo
+                - generic [ref=e2261]:
+                  - img
+              - columnheader "QR / Delivery" [ref=e2262] [cursor=pointer]:
+                - generic [ref=e2264]: QR / Delivery
+                - generic [ref=e2265]:
+                  - img
+              - columnheader "Vales" [ref=e2266] [cursor=pointer]:
+                - generic [ref=e2268]: Vales
+                - generic [ref=e2269]:
+                  - img
+              - columnheader "Gastos" [ref=e2270] [cursor=pointer]:
+                - generic [ref=e2272]: Gastos
+                - generic [ref=e2273]:
+                  - img
+              - columnheader "Total Esperado" [ref=e2274] [cursor=pointer]:
+                - generic [ref=e2276]: Total Esperado
+                - generic [ref=e2277]:
+                  - img
+              - columnheader "Estado" [ref=e2278] [cursor=pointer]:
+                - generic [ref=e2280]: Estado
+                - generic [ref=e2281]:
+                  - img
+              - columnheader "Acción" [ref=e2282] [cursor=pointer]:
+                - generic [ref=e2284]: Acción
+                - generic [ref=e2285]:
+                  - img
+          - rowgroup [ref=e2286]:
+            - 'row "Caja 01 CC Carla Cajera CI: 2222222 08:30 AM Bs. 150.00 Bs. 1980.00 Bs. 1440.00 -Bs. 23.00 -Bs. 35.00 Bs. 2095.00 ABIERTA Seleccionada" [ref=e2287]':
+              - gridcell "Caja 01" [ref=e2288]:
+                - generic [ref=e2290]: Caja 01
+              - 'gridcell "CC Carla Cajera CI: 2222222" [ref=e2291]':
+                - generic [ref=e2293]:
+                  - generic [ref=e2294]: CC
+                  - generic [ref=e2295]:
+                    - generic [ref=e2296]: Carla Cajera
+                    - generic [ref=e2297]: "CI: 2222222"
+              - gridcell "08:30 AM" [ref=e2298]:
+                - generic [ref=e2300]: 08:30 AM
+              - gridcell "Bs. 150.00" [ref=e2301]:
+                - generic [ref=e2303]: Bs. 150.00
+              - gridcell "Bs. 1980.00" [ref=e2304]:
+                - generic [ref=e2306]: Bs. 1980.00
+              - gridcell "Bs. 1440.00" [ref=e2307]:
+                - generic [ref=e2309]: Bs. 1440.00
+              - gridcell "-Bs. 23.00" [ref=e2310]:
+                - generic [ref=e2312]: "-Bs. 23.00"
+              - gridcell "-Bs. 35.00" [ref=e2313]:
+                - generic [ref=e2315]: "-Bs. 35.00"
+              - gridcell "Bs. 2095.00" [ref=e2316]:
+                - generic [ref=e2318]: Bs. 2095.00
+              - gridcell "ABIERTA" [ref=e2319]:
+                - generic [ref=e2322]: ABIERTA
+              - gridcell "Seleccionada" [ref=e2323]:
+                - button "Seleccionada" [ref=e2325] [cursor=pointer]
+            - 'row "Caja 02 EE Eva Empleada CI: 7777777 08:45 AM Bs. 150.00 Bs. 0.00 Bs. 850.00 -Bs. 23.00 -Bs. 50.00 Bs. 100.00 ABIERTA Supervisar" [ref=e2326]':
+              - gridcell "Caja 02" [ref=e2327]:
+                - generic [ref=e2329]: Caja 02
+              - 'gridcell "EE Eva Empleada CI: 7777777" [ref=e2330]':
+                - generic [ref=e2332]:
+                  - generic [ref=e2333]: EE
+                  - generic [ref=e2334]:
+                    - generic [ref=e2335]: Eva Empleada
+                    - generic [ref=e2336]: "CI: 7777777"
+              - gridcell "08:45 AM" [ref=e2337]:
+                - generic [ref=e2339]: 08:45 AM
+              - gridcell "Bs. 150.00" [ref=e2340]:
+                - generic [ref=e2342]: Bs. 150.00
+              - gridcell "Bs. 0.00" [ref=e2343]:
+                - generic [ref=e2345]: Bs. 0.00
+              - gridcell "Bs. 850.00" [ref=e2346]:
+                - generic [ref=e2348]: Bs. 850.00
+              - gridcell "-Bs. 23.00" [ref=e2349]:
+                - generic [ref=e2351]: "-Bs. 23.00"
+              - gridcell "-Bs. 50.00" [ref=e2352]:
+                - generic [ref=e2354]: "-Bs. 50.00"
+              - gridcell "Bs. 100.00" [ref=e2355]:
+                - generic [ref=e2357]: Bs. 100.00
+              - gridcell "ABIERTA" [ref=e2358]:
+                - generic [ref=e2361]: ABIERTA
+              - gridcell "Supervisar" [ref=e2362]:
+                - button "Supervisar" [ref=e2364] [cursor=pointer]
+        - generic [ref=e2370]:
+          - paragraph [ref=e2371]: "Filas por página:"
+          - generic [ref=e2372]:
+            - combobox "Filas por página:" [ref=e2373] [cursor=pointer]: "10"
+            - textbox: "10"
+            - img
+          - paragraph [ref=e2374]: 1–2 de 2
+          - generic [ref=e2375]:
+            - button "Ir a la página anterior" [disabled]:
+              - img
+            - button "Ir a la página siguiente" [disabled]:
+              - img
+      - generic [ref=e2376]:
+        - generic [ref=e2377]:
+          - generic [ref=e2378]:
+            - generic [ref=e2379]:
+              - generic [ref=e2380]:
+                - generic [ref=e2381]: payments
+                - generic [ref=e2382]:
+                  - heading "Conteo Físico Ciego de Efectivo Declarado" [level=3] [ref=e2383]
+                  - generic [ref=e2384]: Caja 01 • Operador en Turno
+              - generic [ref=e2385]: FR-004 AUDIT
+            - generic [ref=e2386]:
+              - generic [ref=e2387]:
+                - generic [ref=e2388]: Billetes de Bs. 200
+                - generic [ref=e2389]:
+                  - generic [ref=e2390]:
+                    - button "-" [ref=e2391] [cursor=pointer]
+                    - spinbutton [ref=e2392]: "7"
+                    - button "+" [ref=e2393] [cursor=pointer]
+                  - generic [ref=e2394]: Bs. 1400.00
+              - generic [ref=e2395]:
+                - generic [ref=e2396]: Billetes de Bs. 100
+                - generic [ref=e2397]:
+                  - generic [ref=e2398]:
+                    - button "-" [ref=e2399] [cursor=pointer]
+                    - spinbutton [ref=e2400]: "5"
+                    - button "+" [ref=e2401] [cursor=pointer]
+                  - generic [ref=e2402]: Bs. 500.00
+              - generic [ref=e2403]:
+                - generic [ref=e2404]: Billetes de Bs. 50
+                - generic [ref=e2405]:
+                  - generic [ref=e2406]:
+                    - button "-" [ref=e2407] [cursor=pointer]
+                    - spinbutton [ref=e2408]: "2"
+                    - button "+" [ref=e2409] [cursor=pointer]
+                  - generic [ref=e2410]: Bs. 100.00
+              - generic [ref=e2411]:
+                - generic [ref=e2412]: Billetes de Bs. 20
+                - generic [ref=e2413]:
+                  - generic [ref=e2414]:
+                    - button "-" [ref=e2415] [cursor=pointer]
+                    - spinbutton [ref=e2416]: "3"
+                    - button "+" [ref=e2417] [cursor=pointer]
+                  - generic [ref=e2418]: Bs. 60.00
+              - generic [ref=e2419]:
+                - generic [ref=e2420]: Billetes de Bs. 10
+                - generic [ref=e2421]:
+                  - generic [ref=e2422]:
+                    - button "-" [ref=e2423] [cursor=pointer]
+                    - spinbutton [ref=e2424]: "2"
+                    - button "+" [ref=e2425] [cursor=pointer]
+                  - generic [ref=e2426]: Bs. 20.00
+              - generic [ref=e2427]:
+                - generic [ref=e2428]: Monedas y Fracciones (Total)
+                - generic [ref=e2429]:
+                  - generic [ref=e2430]:
+                    - generic [ref=e2431]: Bs.
+                    - spinbutton [ref=e2432]: "15"
+                  - generic [ref=e2433]: Bs. 15.00
+          - generic [ref=e2434]:
+            - generic [ref=e2435]: "Total Contado Físico:"
+            - generic [ref=e2436]: Bs. 2095.00
+        - generic [ref=e2437]:
+          - generic [ref=e2438]:
+            - generic [ref=e2440]:
+              - generic [ref=e2441]: balance
+              - generic [ref=e2442]:
+                - heading "Cuadre Operativo y Desglose de Liquidación" [level=3] [ref=e2443]
+                - text: Conciliación Automática del Turno
+            - generic [ref=e2444]:
+              - generic [ref=e2445]:
+                - generic [ref=e2446]: "(+) Fondo Inicial Asignado:"
+                - generic [ref=e2447]: Bs. 150.00
+              - generic [ref=e2448]:
+                - generic [ref=e2449]: "(+) Ventas Brutas en Efectivo:"
+                - generic [ref=e2450]: + Bs. 1980.00
+              - generic [ref=e2451]:
+                - generic [ref=e2452]: "(-) Gastos Menores Operativos:"
+                - generic [ref=e2453]: "- Bs. 35.00"
+              - generic [ref=e2454]:
+                - generic [ref=e2455]: "(-) Vales de Consumo Personal:"
+                - generic [ref=e2456]: Bs. 0.00
+              - generic [ref=e2457]:
+                - generic [ref=e2458]: "Efectivo Esperado en Gaveta:"
+                - generic [ref=e2459]: Bs. 2095.00
+              - generic [ref=e2460]:
+                - generic [ref=e2461]: "Efectivo Físico Contado:"
+                - generic [ref=e2462]: Bs. 2095.00
+            - generic [ref=e2463]:
+              - generic [ref=e2464]: check_circle
+              - generic [ref=e2465]:
+                - generic [ref=e2466]: Cuadre Perfecto ± 0.00 (TOLERANCIA OK PDR §13.3)
+                - generic [ref=e2467]: La gaveta coincide exactamente con el flujo del sistema. No se reportan faltantes ni sobrantes.
+            - generic [ref=e2468]:
+              - generic [ref=e2469]:
+                - generic [ref=e2470]: qr_code_2
+                - generic [ref=e2471]:
+                  - text: "QR Simple:"
+                  - strong [ref=e2472]: Bs. 1,440.00
+              - generic [ref=e2473]:
+                - generic [ref=e2474]: badge
+                - generic [ref=e2475]:
+                  - text: "Vales Personal:"
+                  - strong [ref=e2476]: Bs. 23.00
+          - button "receipt_long Cerrar Turno y Generar Acta Z" [ref=e2478] [cursor=pointer]:
+            - generic [ref=e2479]: receipt_long
+            - text: Cerrar Turno y Generar Acta Z

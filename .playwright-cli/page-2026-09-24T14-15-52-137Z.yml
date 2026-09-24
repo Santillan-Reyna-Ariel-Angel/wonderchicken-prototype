@@ -1,0 +1,456 @@
+- generic [ref=e1219]:
+  - banner [ref=e1220]:
+    - generic [ref=e1221]:
+      - generic [ref=e1222]:
+        - button "Colapsar menú lateral" [ref=e1223] [cursor=pointer]:
+          - generic [ref=e1224]: menu
+        - button "Wonder Chicken Sucursal Central WONDER CHICKEN • Online" [ref=e1225] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e1227]
+          - generic [ref=e1228]:
+            - generic [ref=e1229]: Sucursal Central
+            - generic [ref=e1230]:
+              - generic [ref=e1231]: WONDER CHICKEN
+              - generic [ref=e1232]: •
+              - generic [ref=e1233]: Online
+      - generic [ref=e1234]:
+        - button "Alternar tema claro y oscuro" [ref=e1235] [cursor=pointer]:
+          - generic [ref=e1236]: light_mode
+          - generic [ref=e1237]: Claro
+        - button "C Carlos Mendoza Administrador expand_more" [ref=e1239] [cursor=pointer]:
+          - generic [ref=e1240]: C
+          - generic [ref=e1241]:
+            - generic [ref=e1242]: Carlos Mendoza
+            - generic [ref=e1243]: Administrador
+          - generic [ref=e1244]: expand_more
+  - complementary [ref=e1245]:
+    - generic [ref=e1246]:
+      - generic [ref=e1247]:
+        - generic [ref=e1248]: Administración de Sede
+        - navigation [ref=e1249]:
+          - button "dashboard D Dashboard Sucursal /branch-admin" [ref=e1250] [cursor=pointer]:
+            - generic [ref=e1251]:
+              - generic [ref=e1252]: dashboard
+              - generic [ref=e1253]:
+                - generic [ref=e1254]:
+                  - generic [ref=e1255]: D
+                  - generic [ref=e1256]: Dashboard Sucursal
+                - generic [ref=e1257]: /branch-admin
+          - button "inventory_2 N1 Catálogo y Variantes /branch-admin/products" [active] [ref=e1258] [cursor=pointer]:
+            - generic [ref=e1259]:
+              - generic [ref=e1260]: inventory_2
+              - generic [ref=e1261]:
+                - generic [ref=e1262]:
+                  - generic [ref=e1263]: N1
+                  - generic [ref=e1264]: Catálogo y Variantes
+                - generic [ref=e1265]: /branch-admin/products
+          - button "badge N2 Personal de Sucursal /branch-admin/users" [ref=e1266] [cursor=pointer]:
+            - generic [ref=e1267]:
+              - generic [ref=e1268]: badge
+              - generic [ref=e1269]:
+                - generic [ref=e1270]:
+                  - generic [ref=e1271]: N2
+                  - generic [ref=e1272]: Personal de Sucursal
+                - generic [ref=e1273]: /branch-admin/users
+          - button "tune O Reportes Operativos /branch-admin/reports" [ref=e1274] [cursor=pointer]:
+            - generic [ref=e1275]:
+              - generic [ref=e1276]: tune
+              - generic [ref=e1277]:
+                - generic [ref=e1278]:
+                  - generic [ref=e1279]: O
+                  - generic [ref=e1280]: Reportes Operativos
+                - generic [ref=e1281]: /branch-admin/reports
+          - button "group Q Clientes (Admin FR-019) /branch-admin/customers" [ref=e1282] [cursor=pointer]:
+            - generic [ref=e1283]:
+              - generic [ref=e1284]: group
+              - generic [ref=e1285]:
+                - generic [ref=e1286]:
+                  - generic [ref=e1287]: Q
+                  - generic [ref=e1288]: Clientes (Admin FR-019)
+                - generic [ref=e1289]: /branch-admin/customers
+      - generic [ref=e1290]:
+        - generic [ref=e1291]: Supervisión Operativa
+        - navigation [ref=e1292]:
+          - button "point_of_sale F Terminal POS /cashier/pos" [ref=e1293] [cursor=pointer]:
+            - generic [ref=e1294]:
+              - generic [ref=e1295]: point_of_sale
+              - generic [ref=e1296]:
+                - generic [ref=e1297]:
+                  - generic [ref=e1298]: F
+                  - generic [ref=e1299]: Terminal POS
+                - generic [ref=e1300]: /cashier/pos
+          - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e1301] [cursor=pointer]:
+            - generic [ref=e1302]:
+              - generic [ref=e1303]: receipt_long
+              - generic [ref=e1304]:
+                - generic [ref=e1305]:
+                  - generic [ref=e1306]: J
+                  - generic [ref=e1307]: Historial de Pedidos
+                - generic [ref=e1308]: /cashier/orders
+          - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e1309] [cursor=pointer]:
+            - generic [ref=e1310]:
+              - generic [ref=e1311]: pending_actions
+              - generic [ref=e1314]: Pago Pendiente [FR-011]
+            - generic [ref=e1315]: "3"
+  - main [ref=e1316]:
+    - generic [ref=e1497]:
+      - generic [ref=e1498]:
+        - generic [ref=e1499]:
+          - generic [ref=e1500]:
+            - generic [ref=e1501]: inventory_2
+            - heading "Catálogo y Variantes — Menú Oficial 2026" [level=1] [ref=e1502]
+            - generic [ref=e1503]: FR-001 POS
+          - paragraph [ref=e1504]: Matriz de productos de pollo broaster, reglas de sustitución, combos y sincronización directa con terminales.
+        - generic [ref=e1505]:
+          - button "point_of_sale Volver a POS" [ref=e1506] [cursor=pointer]:
+            - generic [ref=e1507]: point_of_sale
+            - text: Volver a POS
+          - button "sync Sincronizar POS" [ref=e1508] [cursor=pointer]:
+            - generic [ref=e1509]: sync
+            - text: Sincronizar POS
+          - button "add_circle + Nuevo Producto" [ref=e1510] [cursor=pointer]:
+            - generic [ref=e1511]: add_circle
+            - text: + Nuevo Producto
+      - generic [ref=e1512]:
+        - generic [ref=e1513]:
+          - button "Todos (12)" [ref=e1514] [cursor=pointer]
+          - button "Pollo / Platos (7)" [ref=e1515] [cursor=pointer]
+          - button "Bebidas (2)" [ref=e1516] [cursor=pointer]
+          - button "Guarniciones / Extras (3)" [ref=e1517] [cursor=pointer]
+        - generic [ref=e1518]:
+          - combobox [ref=e1520] [cursor=pointer]:
+            - 'option "Estado: Todos" [selected]'
+            - option "Solo Activos"
+            - option "Inactivos"
+          - generic [ref=e1521]:
+            - generic [ref=e1522]: search
+            - textbox "Buscar producto o código..." [ref=e1523]
+      - generic [ref=e1526]:
+        - toolbar [ref=e1527]:
+          - generic [ref=e1528]:
+            - generic [ref=e1531]:
+              - heading "Catálogo de Menú y Variantes" [level=6] [ref=e1532]
+              - generic [ref=e1534]: 12 productos
+            - generic [ref=e1536]:
+              - button "Buscar en la tabla" [ref=e1537] [cursor=pointer]:
+                - img [ref=e1538]
+              - generic "Buscar" [ref=e1540]:
+                - generic [ref=e1541]:
+                  - img [ref=e1543]
+                  - searchbox "Buscar producto o código..." [ref=e1545]
+                  - group
+        - grid [ref=e1546]:
+          - rowgroup [ref=e1547]:
+            - row "Código Producto & Imagen Categoría Precio Base Variantes Reglas de Armado Control Presas POS Activo Acciones" [ref=e1548]:
+              - columnheader "Código" [ref=e1549] [cursor=pointer]:
+                - generic [ref=e1551]: Código
+                - generic [ref=e1552]:
+                  - img
+              - columnheader "Producto & Imagen" [ref=e1553] [cursor=pointer]:
+                - generic [ref=e1555]: Producto & Imagen
+                - generic [ref=e1556]:
+                  - img
+              - columnheader "Categoría" [ref=e1557] [cursor=pointer]:
+                - generic [ref=e1559]: Categoría
+                - generic [ref=e1560]:
+                  - img
+              - columnheader "Precio Base" [ref=e1561] [cursor=pointer]:
+                - generic [ref=e1563]: Precio Base
+                - generic [ref=e1564]:
+                  - img
+              - columnheader "Variantes" [ref=e1565] [cursor=pointer]:
+                - generic [ref=e1567]: Variantes
+                - generic [ref=e1568]:
+                  - img
+              - columnheader "Reglas de Armado" [ref=e1569] [cursor=pointer]:
+                - generic [ref=e1571]: Reglas de Armado
+                - generic [ref=e1572]:
+                  - img
+              - columnheader "Control Presas" [ref=e1573] [cursor=pointer]:
+                - generic [ref=e1575]: Control Presas
+                - generic [ref=e1576]:
+                  - img
+              - columnheader "POS Activo" [ref=e1577] [cursor=pointer]:
+                - generic [ref=e1579]: POS Activo
+                - generic [ref=e1580]:
+                  - img
+              - columnheader "Acciones" [ref=e1581] [cursor=pointer]:
+                - generic [ref=e1583]: Acciones
+                - generic [ref=e1584]:
+                  - img
+          - rowgroup [ref=e1585]:
+            - row "P-001 Cuarto de Pollo Cuarto de Pollo 2 presas clásicas doradas a la brasa sin acompañante ni bebida. principales Bs. 23.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1586]:
+              - gridcell "P-001" [ref=e1587]:
+                - generic [ref=e1589]: P-001
+              - gridcell "Cuarto de Pollo Cuarto de Pollo 2 presas clásicas doradas a la brasa sin acompañante ni bebida." [ref=e1590]:
+                - generic [ref=e1592]:
+                  - img "Cuarto de Pollo" [ref=e1594]
+                  - generic [ref=e1595]:
+                    - generic [ref=e1596]: Cuarto de Pollo
+                    - generic [ref=e1597]: 2 presas clásicas doradas a la brasa sin acompañante ni bebida.
+              - gridcell "principales" [ref=e1598]:
+                - generic [ref=e1601]: principales
+              - gridcell "Bs. 23.00" [ref=e1602]:
+                - generic [ref=e1604]: Bs. 23.00
+              - gridcell "4 Var." [ref=e1605]:
+                - generic [ref=e1608]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1609]:
+                - generic [ref=e1611]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1612]:
+                - generic [ref=e1615]: Sí Presas
+              - gridcell [ref=e1616]:
+                - button [ref=e1618] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1619]:
+                - generic [ref=e1621]:
+                  - button "schema Reglas" [ref=e1622] [cursor=pointer]:
+                    - generic [ref=e1623]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1624] [cursor=pointer]:
+                    - generic [ref=e1625]: edit
+            - row "P-002 Porción Media Porción Media 2 presas con guarnición mixta completa (papas crocantes y arroz). principales Bs. 30.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1626]:
+              - gridcell "P-002" [ref=e1627]:
+                - generic [ref=e1629]: P-002
+              - gridcell "Porción Media Porción Media 2 presas con guarnición mixta completa (papas crocantes y arroz)." [ref=e1630]:
+                - generic [ref=e1632]:
+                  - img "Porción Media" [ref=e1634]
+                  - generic [ref=e1635]:
+                    - generic [ref=e1636]: Porción Media
+                    - generic [ref=e1637]: 2 presas con guarnición mixta completa (papas crocantes y arroz).
+              - gridcell "principales" [ref=e1638]:
+                - generic [ref=e1641]: principales
+              - gridcell "Bs. 30.00" [ref=e1642]:
+                - generic [ref=e1644]: Bs. 30.00
+              - gridcell "4 Var." [ref=e1645]:
+                - generic [ref=e1648]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1649]:
+                - generic [ref=e1651]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1652]:
+                - generic [ref=e1655]: Sí Presas
+              - gridcell [ref=e1656]:
+                - button [ref=e1658] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1659]:
+                - generic [ref=e1661]:
+                  - button "schema Reglas" [ref=e1662] [cursor=pointer]:
+                    - generic [ref=e1663]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1664] [cursor=pointer]:
+                    - generic [ref=e1665]: edit
+            - row "P-003 Combo Wonder Combo Wonder 2 presas seleccionadas + guarnición mixta + Bebida 500ml fría/natural. principales Bs. 36.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1666]:
+              - gridcell "P-003" [ref=e1667]:
+                - generic [ref=e1669]: P-003
+              - gridcell "Combo Wonder Combo Wonder 2 presas seleccionadas + guarnición mixta + Bebida 500ml fría/natural." [ref=e1670]:
+                - generic [ref=e1672]:
+                  - img "Combo Wonder" [ref=e1674]
+                  - generic [ref=e1675]:
+                    - generic [ref=e1676]: Combo Wonder
+                    - generic [ref=e1677]: 2 presas seleccionadas + guarnición mixta + Bebida 500ml fría/natural.
+              - gridcell "principales" [ref=e1678]:
+                - generic [ref=e1681]: principales
+              - gridcell "Bs. 36.00" [ref=e1682]:
+                - generic [ref=e1684]: Bs. 36.00
+              - gridcell "4 Var." [ref=e1685]:
+                - generic [ref=e1688]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1689]:
+                - generic [ref=e1691]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1692]:
+                - generic [ref=e1695]: Sí Presas
+              - gridcell [ref=e1696]:
+                - button [ref=e1698] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1699]:
+                - generic [ref=e1701]:
+                  - button "schema Reglas" [ref=e1702] [cursor=pointer]:
+                    - generic [ref=e1703]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1704] [cursor=pointer]:
+                    - generic [ref=e1705]: edit
+            - row "P-004 Medio Pollo Medio Pollo 4 presas recién horneadas al punto exacto sin acompañante ni bebida. principales Bs. 46.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1706]:
+              - gridcell "P-004" [ref=e1707]:
+                - generic [ref=e1709]: P-004
+              - gridcell "Medio Pollo Medio Pollo 4 presas recién horneadas al punto exacto sin acompañante ni bebida." [ref=e1710]:
+                - generic [ref=e1712]:
+                  - img "Medio Pollo" [ref=e1714]
+                  - generic [ref=e1715]:
+                    - generic [ref=e1716]: Medio Pollo
+                    - generic [ref=e1717]: 4 presas recién horneadas al punto exacto sin acompañante ni bebida.
+              - gridcell "principales" [ref=e1718]:
+                - generic [ref=e1721]: principales
+              - gridcell "Bs. 46.00" [ref=e1722]:
+                - generic [ref=e1724]: Bs. 46.00
+              - gridcell "4 Var." [ref=e1725]:
+                - generic [ref=e1728]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1729]:
+                - generic [ref=e1731]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1732]:
+                - generic [ref=e1735]: Sí Presas
+              - gridcell [ref=e1736]:
+                - button [ref=e1738] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1739]:
+                - generic [ref=e1741]:
+                  - button "schema Reglas" [ref=e1742] [cursor=pointer]:
+                    - generic [ref=e1743]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1744] [cursor=pointer]:
+                    - generic [ref=e1745]: edit
+            - row "P-005 Porción Completa Porción Completa 4 presas jugosas con doble porción de acompañamiento (papas fritas rústicas y/o arroz). principales Bs. 54.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1746]:
+              - gridcell "P-005" [ref=e1747]:
+                - generic [ref=e1749]: P-005
+              - gridcell "Porción Completa Porción Completa 4 presas jugosas con doble porción de acompañamiento (papas fritas rústicas y/o arroz)." [ref=e1750]:
+                - generic [ref=e1752]:
+                  - img "Porción Completa" [ref=e1754]
+                  - generic [ref=e1755]:
+                    - generic [ref=e1756]: Porción Completa
+                    - generic [ref=e1757]: 4 presas jugosas con doble porción de acompañamiento (papas fritas rústicas y/o arroz).
+              - gridcell "principales" [ref=e1758]:
+                - generic [ref=e1761]: principales
+              - gridcell "Bs. 54.00" [ref=e1762]:
+                - generic [ref=e1764]: Bs. 54.00
+              - gridcell "4 Var." [ref=e1765]:
+                - generic [ref=e1768]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1769]:
+                - generic [ref=e1771]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1772]:
+                - generic [ref=e1775]: Sí Presas
+              - gridcell [ref=e1776]:
+                - button [ref=e1778] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1779]:
+                - generic [ref=e1781]:
+                  - button "schema Reglas" [ref=e1782] [cursor=pointer]:
+                    - generic [ref=e1783]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1784] [cursor=pointer]:
+                    - generic [ref=e1785]: edit
+            - row "P-006 Super Wonder Super Wonder 4 presas de pollo, mixto papa/arroz y gaseosa 500ml a elección. principales Bs. 58.00 4 Var. Bebida / Papas / Ensalada Sí Presas schema Reglas edit" [ref=e1786]:
+              - gridcell "P-006" [ref=e1787]:
+                - generic [ref=e1789]: P-006
+              - gridcell "Super Wonder Super Wonder 4 presas de pollo, mixto papa/arroz y gaseosa 500ml a elección." [ref=e1790]:
+                - generic [ref=e1792]:
+                  - img "Super Wonder" [ref=e1794]
+                  - generic [ref=e1795]:
+                    - generic [ref=e1796]: Super Wonder
+                    - generic [ref=e1797]: 4 presas de pollo, mixto papa/arroz y gaseosa 500ml a elección.
+              - gridcell "principales" [ref=e1798]:
+                - generic [ref=e1801]: principales
+              - gridcell "Bs. 58.00" [ref=e1802]:
+                - generic [ref=e1804]: Bs. 58.00
+              - gridcell "4 Var." [ref=e1805]:
+                - generic [ref=e1808]: 4 Var.
+              - gridcell "Bebida / Papas / Ensalada" [ref=e1809]:
+                - generic [ref=e1811]: Bebida / Papas / Ensalada
+              - gridcell "Sí Presas" [ref=e1812]:
+                - generic [ref=e1815]: Sí Presas
+              - gridcell [ref=e1816]:
+                - button [ref=e1818] [cursor=pointer]
+              - gridcell "schema Reglas edit" [ref=e1819]:
+                - generic [ref=e1821]:
+                  - button "schema Reglas" [ref=e1822] [cursor=pointer]:
+                    - generic [ref=e1823]: schema
+                    - text: Reglas
+                  - button "edit" [ref=e1824] [cursor=pointer]:
+                    - generic [ref=e1825]: edit
+            - row "P-007 Wonder Pop Wonder Pop 300g filete pechuga crispy trozado con guarnición a elección. principales Bs. 33.00 1 Var. Fórmula fija No Presas edit" [ref=e1826]:
+              - gridcell "P-007" [ref=e1827]:
+                - generic [ref=e1829]: P-007
+              - gridcell "Wonder Pop Wonder Pop 300g filete pechuga crispy trozado con guarnición a elección." [ref=e1830]:
+                - generic [ref=e1832]:
+                  - img "Wonder Pop" [ref=e1834]
+                  - generic [ref=e1835]:
+                    - generic [ref=e1836]: Wonder Pop
+                    - generic [ref=e1837]: 300g filete pechuga crispy trozado con guarnición a elección.
+              - gridcell "principales" [ref=e1838]:
+                - generic [ref=e1841]: principales
+              - gridcell "Bs. 33.00" [ref=e1842]:
+                - generic [ref=e1844]: Bs. 33.00
+              - gridcell "1 Var." [ref=e1845]:
+                - generic [ref=e1848]: 1 Var.
+              - gridcell "Fórmula fija" [ref=e1849]:
+                - generic [ref=e1851]: Fórmula fija
+              - gridcell "No Presas" [ref=e1852]:
+                - generic [ref=e1855]: No Presas
+              - gridcell [ref=e1856]:
+                - button [ref=e1858] [cursor=pointer]
+              - gridcell "edit" [ref=e1859]:
+                - button "edit" [ref=e1862] [cursor=pointer]:
+                  - generic [ref=e1863]: edit
+            - row "B-001 Coca Cola 500ml Coca Cola 500ml Fría o Natural según preferencia de caja. bebidas Bs. 8.00 1 Var. Fórmula fija No Presas edit" [ref=e1864]:
+              - gridcell "B-001" [ref=e1865]:
+                - generic [ref=e1867]: B-001
+              - gridcell "Coca Cola 500ml Coca Cola 500ml Fría o Natural según preferencia de caja." [ref=e1868]:
+                - generic [ref=e1870]:
+                  - img "Coca Cola 500ml" [ref=e1872]
+                  - generic [ref=e1873]:
+                    - generic [ref=e1874]: Coca Cola 500ml
+                    - generic [ref=e1875]: Fría o Natural según preferencia de caja.
+              - gridcell "bebidas" [ref=e1876]:
+                - generic [ref=e1879]: bebidas
+              - gridcell "Bs. 8.00" [ref=e1880]:
+                - generic [ref=e1882]: Bs. 8.00
+              - gridcell "1 Var." [ref=e1883]:
+                - generic [ref=e1886]: 1 Var.
+              - gridcell "Fórmula fija" [ref=e1887]:
+                - generic [ref=e1889]: Fórmula fija
+              - gridcell "No Presas" [ref=e1890]:
+                - generic [ref=e1893]: No Presas
+              - gridcell [ref=e1894]:
+                - button [ref=e1896] [cursor=pointer]
+              - gridcell "edit" [ref=e1897]:
+                - button "edit" [ref=e1900] [cursor=pointer]:
+                  - generic [ref=e1901]: edit
+            - row "E-001 Smiles McCain Smiles McCain Porción de caritas de papa horneadas/crocantes. extras Bs. 12.00 1 Var. Fórmula fija No Presas edit" [ref=e1902]:
+              - gridcell "E-001" [ref=e1903]:
+                - generic [ref=e1905]: E-001
+              - gridcell "Smiles McCain Smiles McCain Porción de caritas de papa horneadas/crocantes." [ref=e1906]:
+                - generic [ref=e1908]:
+                  - img "Smiles McCain" [ref=e1910]
+                  - generic [ref=e1911]:
+                    - generic [ref=e1912]: Smiles McCain
+                    - generic [ref=e1913]: Porción de caritas de papa horneadas/crocantes.
+              - gridcell "extras" [ref=e1914]:
+                - generic [ref=e1917]: extras
+              - gridcell "Bs. 12.00" [ref=e1918]:
+                - generic [ref=e1920]: Bs. 12.00
+              - gridcell "1 Var." [ref=e1921]:
+                - generic [ref=e1924]: 1 Var.
+              - gridcell "Fórmula fija" [ref=e1925]:
+                - generic [ref=e1927]: Fórmula fija
+              - gridcell "No Presas" [ref=e1928]:
+                - generic [ref=e1931]: No Presas
+              - gridcell [ref=e1932]:
+                - button [ref=e1934] [cursor=pointer]
+              - gridcell "edit" [ref=e1935]:
+                - button "edit" [ref=e1938] [cursor=pointer]:
+                  - generic [ref=e1939]: edit
+            - row "B-002 Mocochinchi 500ml Mocochinchi 500ml Artesanal hervido con canela y clavo de olor. bebidas Bs. 6.00 1 Var. Fórmula fija No Presas edit" [ref=e1940]:
+              - gridcell "B-002" [ref=e1941]:
+                - generic [ref=e1943]: B-002
+              - gridcell "Mocochinchi 500ml Mocochinchi 500ml Artesanal hervido con canela y clavo de olor." [ref=e1944]:
+                - generic [ref=e1946]:
+                  - img "Mocochinchi 500ml" [ref=e1948]
+                  - generic [ref=e1949]:
+                    - generic [ref=e1950]: Mocochinchi 500ml
+                    - generic [ref=e1951]: Artesanal hervido con canela y clavo de olor.
+              - gridcell "bebidas" [ref=e1952]:
+                - generic [ref=e1955]: bebidas
+              - gridcell "Bs. 6.00" [ref=e1956]:
+                - generic [ref=e1958]: Bs. 6.00
+              - gridcell "1 Var." [ref=e1959]:
+                - generic [ref=e1962]: 1 Var.
+              - gridcell "Fórmula fija" [ref=e1963]:
+                - generic [ref=e1965]: Fórmula fija
+              - gridcell "No Presas" [ref=e1966]:
+                - generic [ref=e1969]: No Presas
+              - gridcell [ref=e1970]:
+                - button [ref=e1972] [cursor=pointer]
+              - gridcell "edit" [ref=e1973]:
+                - button "edit" [ref=e1976] [cursor=pointer]:
+                  - generic [ref=e1977]: edit
+        - generic [ref=e1983]:
+          - paragraph [ref=e1984]: "Filas por página:"
+          - generic [ref=e1985]:
+            - combobox "Filas por página:" [ref=e1986] [cursor=pointer]: "10"
+            - textbox: "10"
+            - img
+          - paragraph [ref=e1987]: 1–10 de 12
+          - generic [ref=e1988]:
+            - button "Ir a la página anterior" [disabled]:
+              - img
+            - button "Ir a la página siguiente" [ref=e1989] [cursor=pointer]:
+              - img [ref=e1990]

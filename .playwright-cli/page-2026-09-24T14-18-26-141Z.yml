@@ -1,0 +1,88 @@
+- generic [ref=e2845]:
+  - button "light_mode Modo Claro" [ref=e2847] [cursor=pointer]:
+    - generic [ref=e2848]: light_mode
+    - generic [ref=e2849]: Modo Claro
+  - main [ref=e2850]:
+    - generic [ref=e2852]:
+      - generic [ref=e2853]:
+        - img "Wonder Chicken Logo Oficial" [ref=e2855]
+        - generic [ref=e2856]:
+          - heading "Acceso al Sistema POS" [level=1] [ref=e2857]
+          - paragraph [ref=e2858]: Sistema Integrado de Ventas, Despacho y Operaciones
+      - generic [ref=e2859]:
+        - generic [ref=e2860]:
+          - generic [ref=e2861]:
+            - generic [ref=e2862]: Correo Electrónico
+            - generic [ref=e2863]: Credencial de operador
+          - generic [ref=e2864]:
+            - generic: alternate_email
+            - textbox "Correo Electrónico Credencial de operador" [ref=e2865]:
+              - /placeholder: ej. roxana@wonderchicken.com
+              - text: diana.kds@wonderchicken.com
+        - generic [ref=e2866]:
+          - generic [ref=e2867]:
+            - generic [ref=e2868]: Contraseña (CI)
+            - generic [ref=e2869]: Documento de Identidad
+          - generic [ref=e2870]:
+            - generic: badge
+            - textbox "Contraseña (CI) Documento de Identidad" [ref=e2871]:
+              - /placeholder: Ingresa tu número de CI registrado
+              - text: "7721902"
+            - button "Alternar visibilidad" [ref=e2872]:
+              - generic [ref=e2873]: visibility
+        - button "¿Problemas de acceso?" [ref=e2875] [cursor=pointer]
+        - button "Iniciar Sesión login" [ref=e2876] [cursor=pointer]:
+          - generic [ref=e2877]: Iniciar Sesión
+          - generic [ref=e2878]: login
+      - generic [ref=e2879]:
+        - generic [ref=e2880]:
+          - generic [ref=e2881]:
+            - generic [ref=e2882]: badge
+            - generic [ref=e2883]: Cuentas de Acceso por Rol
+            - generic [ref=e2884]: Temporal
+          - generic [ref=e2885]: Haz clic en una fila para autocompletar
+        - generic [ref=e2886]:
+          - 'button "Cajera roxana@wonderchicken.com Roxana Rodríguez • Punto de venta, cobros y arqueos de turno Contraseña (CI): 8492019 login" [ref=e2887] [cursor=pointer]':
+            - generic [ref=e2888]:
+              - generic [ref=e2889]: Cajera
+              - generic [ref=e2890]:
+                - generic [ref=e2891]: roxana@wonderchicken.com
+                - generic [ref=e2892]: Roxana Rodríguez • Punto de venta, cobros y arqueos de turno
+            - generic [ref=e2893]:
+              - generic [ref=e2894]:
+                - generic [ref=e2895]: "Contraseña (CI):"
+                - generic [ref=e2896]: "8492019"
+              - generic [ref=e2898]: login
+          - 'button "Despacho (KDS) diana.kds@wonderchicken.com Diana Despacho • Pantalla de cocina y despacho de comandas Contraseña (CI): 7721902 login" [active] [ref=e2899] [cursor=pointer]':
+            - generic [ref=e2900]:
+              - generic [ref=e2901]: Despacho (KDS)
+              - generic [ref=e2902]:
+                - generic [ref=e2903]: diana.kds@wonderchicken.com
+                - generic [ref=e2904]: Diana Despacho • Pantalla de cocina y despacho de comandas
+            - generic [ref=e2905]:
+              - generic [ref=e2906]:
+                - generic [ref=e2907]: "Contraseña (CI):"
+                - generic [ref=e2908]: "7721902"
+              - generic [ref=e2910]: login
+          - 'button "Administrador carlos.mendoza@wonderchicken.com Carlos Mendoza • Control de turnos, arqueos y reportes de sucursal Contraseña (CI): 5543210 login" [ref=e2911] [cursor=pointer]':
+            - generic [ref=e2912]:
+              - generic [ref=e2913]: Administrador
+              - generic [ref=e2914]:
+                - generic [ref=e2915]: carlos.mendoza@wonderchicken.com
+                - generic [ref=e2916]: Carlos Mendoza • Control de turnos, arqueos y reportes de sucursal
+            - generic [ref=e2917]:
+              - generic [ref=e2918]:
+                - generic [ref=e2919]: "Contraseña (CI):"
+                - generic [ref=e2920]: "5543210"
+              - generic [ref=e2922]: login
+          - 'button "Super Admin fernando.vaca@wonderchicken.com Ing. Fernando Vaca • Red global de sucursales, auditorías y catálogo Contraseña (CI): 1098234 login" [ref=e2923] [cursor=pointer]':
+            - generic [ref=e2924]:
+              - generic [ref=e2925]: Super Admin
+              - generic [ref=e2926]:
+                - generic [ref=e2927]: fernando.vaca@wonderchicken.com
+                - generic [ref=e2928]: Ing. Fernando Vaca • Red global de sucursales, auditorías y catálogo
+            - generic [ref=e2929]:
+              - generic [ref=e2930]:
+                - generic [ref=e2931]: "Contraseña (CI):"
+                - generic [ref=e2932]: "1098234"
+              - generic [ref=e2934]: login

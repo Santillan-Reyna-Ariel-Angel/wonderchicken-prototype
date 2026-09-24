@@ -1,0 +1,309 @@
+- generic [ref=e119]:
+  - banner [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Colapsar menú lateral" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: menu
+        - button "Wonder Chicken Sucursal Central (Caja 01) WONDER CHICKEN • Online" [ref=e125] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e127]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Sucursal Central (Caja 01)
+            - generic [ref=e130]:
+              - generic [ref=e131]: WONDER CHICKEN
+              - generic [ref=e132]: •
+              - generic [ref=e133]: Online
+      - generic [ref=e134]:
+        - button "Alternar tema claro y oscuro" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: light_mode
+          - generic [ref=e137]: Claro
+        - button "R Roxana Rodríguez Cajera expand_more" [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: R
+          - generic [ref=e141]:
+            - generic [ref=e142]: Roxana Rodríguez
+            - generic [ref=e143]: Cajera
+          - generic [ref=e144]: expand_more
+  - complementary [ref=e145]:
+    - generic [ref=e147]:
+      - generic [ref=e148]: Operaciones de Caja & POS
+      - navigation [ref=e149]:
+        - button "assignment E Resumen de Apertura /cashier/shift/summary Lectura" [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: assignment
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: E
+                - generic [ref=e156]: Resumen de Apertura
+              - generic [ref=e157]: /cashier/shift/summary
+          - generic [ref=e158]: Lectura
+        - button "point_of_sale F POS Ventas /cashier/pos" [active] [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: point_of_sale
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: F
+                - generic [ref=e165]: POS Ventas
+              - generic [ref=e166]: /cashier/pos
+        - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - generic [ref=e169]: receipt_long
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: J
+                - generic [ref=e173]: Historial de Pedidos
+              - generic [ref=e174]: /cashier/orders
+        - button "group P Clientes (FR-019) /cashier/customers" [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: group
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: P
+                - generic [ref=e181]: Clientes (FR-019)
+              - generic [ref=e182]: /cashier/customers
+        - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: pending_actions
+            - generic [ref=e188]: Pago Pendiente [FR-011]
+          - generic [ref=e189]: "3"
+  - main [ref=e190]:
+    - generic [ref=e252]:
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - generic [ref=e255]:
+            - button "Todos (12)" [ref=e256] [cursor=pointer]
+            - button "🍗 Platos Principales" [ref=e257] [cursor=pointer]:
+              - generic [ref=e258]: 🍗
+              - generic [ref=e259]: Platos Principales
+            - button "🥤 Bebidas" [ref=e260] [cursor=pointer]:
+              - generic [ref=e261]: 🥤
+              - generic [ref=e262]: Bebidas
+            - button "🍟 Extras & Guarniciones" [ref=e263] [cursor=pointer]:
+              - generic [ref=e264]: 🍟
+              - generic [ref=e265]: Extras & Guarniciones
+            - button "tune Venta Custom" [ref=e266] [cursor=pointer]:
+              - generic [ref=e267]: tune
+              - generic [ref=e268]: Venta Custom
+          - generic [ref=e269]:
+            - generic [ref=e270]: search
+            - textbox "Buscar producto..." [ref=e271]
+        - generic [ref=e273]:
+          - generic [ref=e274]:
+            - button "Cuarto de Pollo 2 presas add_circle Añadir" [ref=e275] [cursor=pointer]:
+              - img "Cuarto de Pollo" [ref=e276]
+              - generic: 2 presas
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e277]:
+              - generic [ref=e278]:
+                - generic [ref=e279]:
+                  - heading "Cuarto de Pollo" [level=3] [ref=e280]
+                  - generic [ref=e281]: Plato principal
+                - paragraph [ref=e282]: 2 presas clásicas doradas a la brasa sin acompañante ni bebida.
+              - generic [ref=e284]: Bs. 23.00
+          - generic [ref=e285]:
+            - button "Porción Media 2 presas + Mixto add_circle Añadir" [ref=e286] [cursor=pointer]:
+              - img "Porción Media" [ref=e287]
+              - generic: 2 presas + Mixto
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e288]:
+              - generic [ref=e289]:
+                - generic [ref=e290]:
+                  - heading "Porción Media" [level=3] [ref=e291]
+                  - generic [ref=e292]: Plato principal
+                - paragraph [ref=e293]: 2 presas con guarnición mixta completa (papas crocantes y arroz).
+              - generic [ref=e295]: Bs. 30.00
+          - generic [ref=e296]:
+            - button "Combo Wonder 2 Presas + Bebida COMBO add_circle Añadir" [ref=e297] [cursor=pointer]:
+              - img "Combo Wonder" [ref=e298]
+              - generic: 2 Presas + Bebida
+              - generic: COMBO
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e299]:
+              - generic [ref=e300]:
+                - generic [ref=e301]:
+                  - heading "Combo Wonder" [level=3] [ref=e302]
+                  - generic [ref=e303]: Plato principal
+                - paragraph [ref=e304]: 2 presas seleccionadas + guarnición mixta + Bebida 500ml fría/natural.
+              - generic [ref=e306]: Bs. 36.00
+          - generic [ref=e307]:
+            - button "Medio Pollo 4 presas add_circle Añadir" [ref=e308] [cursor=pointer]:
+              - img "Medio Pollo" [ref=e309]
+              - generic: 4 presas
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e310]:
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - heading "Medio Pollo" [level=3] [ref=e313]
+                  - generic [ref=e314]: Plato principal
+                - paragraph [ref=e315]: 4 presas recién horneadas al punto exacto sin acompañante ni bebida.
+              - generic [ref=e317]: Bs. 46.00
+          - generic [ref=e318]:
+            - button "Porción Completa 4 presas + Mixto add_circle Añadir" [ref=e319] [cursor=pointer]:
+              - img "Porción Completa" [ref=e320]
+              - generic: 4 presas + Mixto
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e321]:
+              - generic [ref=e322]:
+                - generic [ref=e323]:
+                  - heading "Porción Completa" [level=3] [ref=e324]
+                  - generic [ref=e325]: Plato principal
+                - paragraph [ref=e326]: 4 presas jugosas con doble porción de acompañamiento (papas fritas rústicas y/o arroz).
+              - generic [ref=e328]: Bs. 54.00
+          - generic [ref=e329]:
+            - button "Super Wonder 4P + Mix + Bebida SUPER add_circle Añadir" [ref=e330] [cursor=pointer]:
+              - img "Super Wonder" [ref=e331]
+              - generic: 4P + Mix + Bebida
+              - generic: SUPER
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e332]:
+              - generic [ref=e333]:
+                - generic [ref=e334]:
+                  - heading "Super Wonder" [level=3] [ref=e335]
+                  - generic [ref=e336]: Plato principal
+                - paragraph [ref=e337]: 4 presas de pollo, mixto papa/arroz y gaseosa 500ml a elección.
+              - generic [ref=e339]: Bs. 58.00
+          - generic [ref=e340]:
+            - button "Wonder Pop 300g Pechuga add_circle Añadir" [ref=e341] [cursor=pointer]:
+              - img "Wonder Pop" [ref=e342]
+              - generic: 300g Pechuga
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e343]:
+              - generic [ref=e344]:
+                - generic [ref=e345]:
+                  - heading "Wonder Pop" [level=3] [ref=e346]
+                  - generic [ref=e347]: Plato principal
+                - paragraph [ref=e348]: 300g filete pechuga crispy trozado con guarnición a elección.
+              - generic [ref=e350]: Bs. 33.00
+          - generic [ref=e351]:
+            - button "Coca Cola 500ml 500 ml add_circle Añadir" [ref=e352] [cursor=pointer]:
+              - img "Coca Cola 500ml" [ref=e353]
+              - generic: 500 ml
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e354]:
+              - generic [ref=e355]:
+                - generic [ref=e356]:
+                  - heading "Coca Cola 500ml" [level=3] [ref=e357]
+                  - generic [ref=e358]: Bebida
+                - paragraph [ref=e359]: Fría o Natural según preferencia de caja.
+              - generic [ref=e361]: Bs. 8.00
+          - generic [ref=e362]:
+            - button "Smiles McCain Favorito add_circle Añadir" [ref=e363] [cursor=pointer]:
+              - img "Smiles McCain" [ref=e364]
+              - generic: Favorito
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e365]:
+              - generic [ref=e366]:
+                - generic [ref=e367]:
+                  - heading "Smiles McCain" [level=3] [ref=e368]
+                  - generic [ref=e369]: Extra
+                - paragraph [ref=e370]: Porción de caritas de papa horneadas/crocantes.
+              - generic [ref=e372]: Bs. 12.00
+          - generic [ref=e373]:
+            - button "Mocochinchi 500ml 500 ml add_circle Añadir" [ref=e374] [cursor=pointer]:
+              - img "Mocochinchi 500ml" [ref=e375]
+              - generic: 500 ml
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e376]:
+              - generic [ref=e377]:
+                - generic [ref=e378]:
+                  - heading "Mocochinchi 500ml" [level=3] [ref=e379]
+                  - generic [ref=e380]: Bebida
+                - paragraph [ref=e381]: Artesanal hervido con canela y clavo de olor.
+              - generic [ref=e383]: Bs. 6.00
+          - generic [ref=e384]:
+            - button "Porción Papas Porción add_circle Añadir" [ref=e385] [cursor=pointer]:
+              - img "Porción Papas" [ref=e386]
+              - generic: Porción
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e387]:
+              - generic [ref=e388]:
+                - generic [ref=e389]:
+                  - heading "Porción Papas" [level=3] [ref=e390]
+                  - generic [ref=e391]: Extra
+                - paragraph [ref=e392]: Papas fritas clásicas corte rústico sazonadas.
+              - generic [ref=e394]: Bs. 12.00
+          - generic [ref=e395]:
+            - button "Porción Arroz Porción add_circle Añadir" [ref=e396] [cursor=pointer]:
+              - img "Porción Arroz" [ref=e397]
+              - generic: Porción
+              - generic:
+                - generic:
+                  - generic: add_circle
+                  - generic: Añadir
+            - generic [ref=e398]:
+              - generic [ref=e399]:
+                - generic [ref=e400]:
+                  - heading "Porción Arroz" [level=3] [ref=e401]
+                  - generic [ref=e402]: Extra
+                - paragraph [ref=e403]: Arroz especiado Wonder receta de la casa.
+              - generic [ref=e405]: Bs. 8.00
+      - generic [ref=e406]:
+        - generic [ref=e408]:
+          - button "table_restaurant MESA" [ref=e409] [cursor=pointer]:
+            - generic [ref=e410]: table_restaurant
+            - text: MESA
+          - button "takeout_dining LLEVAR" [ref=e411] [cursor=pointer]:
+            - generic [ref=e412]: takeout_dining
+            - text: LLEVAR
+        - generic [ref=e414]:
+          - generic [ref=e415]:
+            - generic [ref=e416]: person
+            - button "Cliente S/N (Sin Nombre) (S/N) arrow_drop_down" [ref=e417] [cursor=pointer]:
+              - generic [ref=e418]: Cliente S/N (Sin Nombre)
+              - generic [ref=e419]: (S/N)
+              - generic [ref=e420]: arrow_drop_down
+          - button "person_add + Nuevo" [ref=e421] [cursor=pointer]:
+            - generic [ref=e422]: person_add
+            - text: + Nuevo
+        - generic [ref=e424]:
+          - generic [ref=e425]: shopping_cart
+          - generic [ref=e426]: La orden está vacía
+          - generic [ref=e427]: Selecciona productos del menú o añade un ítem personalizado.
+        - generic [ref=e428]:
+          - generic [ref=e429]:
+            - generic [ref=e430]: "Subtotal:"
+            - generic [ref=e431]: Bs. 0.00
+          - generic [ref=e432]:
+            - generic [ref=e433]: "Descuentos:"
+            - generic [ref=e434]: Bs. 0.00
+          - generic [ref=e435]:
+            - generic [ref=e436]: "TOTAL A COBRAR:"
+            - generic [ref=e437]: Bs. 0.00
+          - generic [ref=e438]:
+            - button "payments [F1] Registrar Pago (Efectivo / QR)" [disabled] [ref=e439]:
+              - generic [ref=e440]: payments
+              - text: "[F1] Registrar Pago (Efectivo / QR)"
+            - button "pending_actions Pago Pendiente [FR-011]" [disabled] [ref=e442]:
+              - generic [ref=e443]: pending_actions
+              - generic [ref=e444]: Pago Pendiente [FR-011]

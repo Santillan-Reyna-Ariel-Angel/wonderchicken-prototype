@@ -1,0 +1,347 @@
+- generic [ref=e119]:
+  - banner [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Colapsar menú lateral" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: menu
+        - button "Wonder Chicken Sucursal Central (Caja 01) WONDER CHICKEN • Online" [ref=e125] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e127]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Sucursal Central (Caja 01)
+            - generic [ref=e130]:
+              - generic [ref=e131]: WONDER CHICKEN
+              - generic [ref=e132]: •
+              - generic [ref=e133]: Online
+      - generic [ref=e134]:
+        - button "Alternar tema claro y oscuro" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: light_mode
+          - generic [ref=e137]: Claro
+        - button "R Roxana Rodríguez Cajera expand_more" [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: R
+          - generic [ref=e141]:
+            - generic [ref=e142]: Roxana Rodríguez
+            - generic [ref=e143]: Cajera
+          - generic [ref=e144]: expand_more
+  - complementary [ref=e145]:
+    - generic [ref=e147]:
+      - generic [ref=e148]: Operaciones de Caja & POS
+      - navigation [ref=e149]:
+        - button "assignment E Resumen de Apertura /cashier/shift/summary Lectura" [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: assignment
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: E
+                - generic [ref=e156]: Resumen de Apertura
+              - generic [ref=e157]: /cashier/shift/summary
+          - generic [ref=e158]: Lectura
+        - button "point_of_sale F POS Ventas /cashier/pos" [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: point_of_sale
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: F
+                - generic [ref=e165]: POS Ventas
+              - generic [ref=e166]: /cashier/pos
+        - button "receipt_long J Historial de Pedidos /cashier/orders" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - generic [ref=e169]: receipt_long
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: J
+                - generic [ref=e173]: Historial de Pedidos
+              - generic [ref=e174]: /cashier/orders
+        - button "group P Clientes (FR-019) /cashier/customers" [active] [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: group
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: P
+                - generic [ref=e181]: Clientes (FR-019)
+              - generic [ref=e182]: /cashier/customers
+        - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: pending_actions
+            - generic [ref=e188]: Pago Pendiente [FR-011]
+          - generic [ref=e189]: "3"
+  - main [ref=e190]:
+    - generic [ref=e445]:
+      - generic [ref=e446]:
+        - generic [ref=e448]:
+          - generic [ref=e450]: group
+          - generic [ref=e451]:
+            - heading "Directorio Global de Clientes" [level=1] [ref=e452]
+            - paragraph [ref=e453]: Base de datos centralizada e independiente de sucursal • Accesible desde cualquier terminal POS
+        - generic [ref=e454]:
+          - button "point_of_sale Volver a Ventas POS (F1)" [ref=e455] [cursor=pointer]:
+            - generic [ref=e456]: point_of_sale
+            - text: Volver a Ventas POS (F1)
+          - button "person_add + Nuevo Cliente" [ref=e457] [cursor=pointer]:
+            - generic [ref=e458]: person_add
+            - text: + Nuevo Cliente
+      - generic [ref=e461]:
+        - toolbar [ref=e462]:
+          - generic [ref=e463]:
+            - generic [ref=e466]:
+              - heading "Directorio Central de Clientes" [level=6] [ref=e467]
+              - generic [ref=e469]: 9 registrados
+            - generic [ref=e471]:
+              - button "Buscar en la tabla" [ref=e472] [cursor=pointer]:
+                - img [ref=e473]
+              - generic "Buscar" [ref=e475]:
+                - generic [ref=e476]:
+                  - img [ref=e478]
+                  - searchbox "Buscar por nombre, CI, NIT, teléfono..." [ref=e480]
+                  - group
+        - grid [ref=e481]:
+          - rowgroup [ref=e482]:
+            - row "Cliente / Razón Social Documento (CI / NIT) Contacto Datos Demográficos Acciones" [ref=e483]:
+              - columnheader "Cliente / Razón Social" [ref=e484] [cursor=pointer]:
+                - generic [ref=e486]: Cliente / Razón Social
+                - generic [ref=e487]:
+                  - img
+              - columnheader "Documento (CI / NIT)" [ref=e488] [cursor=pointer]:
+                - generic [ref=e490]: Documento (CI / NIT)
+                - generic [ref=e491]:
+                  - img
+              - columnheader "Contacto" [ref=e492] [cursor=pointer]:
+                - generic [ref=e494]: Contacto
+                - generic [ref=e495]:
+                  - img
+              - columnheader "Datos Demográficos" [ref=e496] [cursor=pointer]:
+                - generic [ref=e498]: Datos Demográficos
+                - generic [ref=e499]:
+                  - img
+              - columnheader "Acciones" [ref=e500]:
+                - generic [ref=e502]: Acciones
+                - generic [ref=e503]:
+                  - img
+          - rowgroup [ref=e504]:
+            - row "Cliente S/N (Sin Nombre) NATURAL Sin correo registrado CI 0 call - Hombre Sin fecha registrada Editar datos del cliente" [ref=e505]:
+              - gridcell "Cliente S/N (Sin Nombre) NATURAL Sin correo registrado" [ref=e506]:
+                - generic [ref=e508]:
+                  - generic [ref=e509]:
+                    - generic [ref=e510]: Cliente S/N (Sin Nombre)
+                    - generic [ref=e511]: NATURAL
+                  - generic [ref=e512]: Sin correo registrado
+              - gridcell "CI 0" [ref=e513]:
+                - generic [ref=e516]:
+                  - generic [ref=e517]: CI
+                  - generic [ref=e518]: "0"
+              - gridcell "call -" [ref=e519]:
+                - generic [ref=e521]:
+                  - generic [ref=e522]: call
+                  - generic [ref=e523]: "-"
+              - gridcell "Hombre Sin fecha registrada" [ref=e524]:
+                - generic [ref=e526]:
+                  - generic [ref=e527]: Hombre
+                  - generic [ref=e528]: Sin fecha registrada
+              - gridcell "Editar datos del cliente" [ref=e529]:
+                - generic "Editar datos del cliente" [ref=e531]:
+                  - button "Editar" [ref=e532] [cursor=pointer]:
+                    - img [ref=e534]
+                    - text: Editar
+            - 'row "Luis Iglesias NATURAL luis.iglesias@gmail.com NIT 1234567 call +591 71234567 Hombre Nac: 1988-04-12 Editar datos del cliente" [ref=e536]':
+              - gridcell "Luis Iglesias NATURAL luis.iglesias@gmail.com" [ref=e537]:
+                - generic [ref=e539]:
+                  - generic [ref=e540]:
+                    - generic [ref=e541]: Luis Iglesias
+                    - generic [ref=e542]: NATURAL
+                  - generic [ref=e543]: luis.iglesias@gmail.com
+              - gridcell "NIT 1234567" [ref=e544]:
+                - generic [ref=e547]:
+                  - generic [ref=e548]: NIT
+                  - generic [ref=e549]: "1234567"
+              - gridcell "call +591 71234567" [ref=e550]:
+                - generic [ref=e552]:
+                  - generic [ref=e553]: call
+                  - generic [ref=e554]: +591 71234567
+              - 'gridcell "Hombre Nac: 1988-04-12" [ref=e555]':
+                - generic [ref=e557]:
+                  - generic [ref=e558]: Hombre
+                  - generic [ref=e559]: "Nac: 1988-04-12"
+              - gridcell "Editar datos del cliente" [ref=e560]:
+                - generic "Editar datos del cliente" [ref=e562]:
+                  - button "Editar" [ref=e563] [cursor=pointer]:
+                    - img [ref=e565]
+                    - text: Editar
+            - 'row "Mauricio Esteban Villarroel Ramos NATURAL mvillarroel@gmail.com CI 8493021 call +591 71234567 Hombre Nac: 1992-06-15 Editar datos del cliente" [ref=e567]':
+              - gridcell "Mauricio Esteban Villarroel Ramos NATURAL mvillarroel@gmail.com" [ref=e568]:
+                - generic [ref=e570]:
+                  - generic [ref=e571]:
+                    - generic [ref=e572]: Mauricio Esteban Villarroel Ramos
+                    - generic [ref=e573]: NATURAL
+                  - generic [ref=e574]: mvillarroel@gmail.com
+              - gridcell "CI 8493021" [ref=e575]:
+                - generic [ref=e578]:
+                  - generic [ref=e579]: CI
+                  - generic [ref=e580]: "8493021"
+              - gridcell "call +591 71234567" [ref=e581]:
+                - generic [ref=e583]:
+                  - generic [ref=e584]: call
+                  - generic [ref=e585]: +591 71234567
+              - 'gridcell "Hombre Nac: 1992-06-15" [ref=e586]':
+                - generic [ref=e588]:
+                  - generic [ref=e589]: Hombre
+                  - generic [ref=e590]: "Nac: 1992-06-15"
+              - gridcell "Editar datos del cliente" [ref=e591]:
+                - generic "Editar datos del cliente" [ref=e593]:
+                  - button "Editar" [ref=e594] [cursor=pointer]:
+                    - img [ref=e596]
+                    - text: Editar
+            - 'row "Roxana Mendez Gutierrez NATURAL roxana.m@empresa.bo CI 4938210 call +591 77890123 Mujer Nac: 1995-11-20 Editar datos del cliente" [ref=e598]':
+              - gridcell "Roxana Mendez Gutierrez NATURAL roxana.m@empresa.bo" [ref=e599]:
+                - generic [ref=e601]:
+                  - generic [ref=e602]:
+                    - generic [ref=e603]: Roxana Mendez Gutierrez
+                    - generic [ref=e604]: NATURAL
+                  - generic [ref=e605]: roxana.m@empresa.bo
+              - gridcell "CI 4938210" [ref=e606]:
+                - generic [ref=e609]:
+                  - generic [ref=e610]: CI
+                  - generic [ref=e611]: "4938210"
+              - gridcell "call +591 77890123" [ref=e612]:
+                - generic [ref=e614]:
+                  - generic [ref=e615]: call
+                  - generic [ref=e616]: +591 77890123
+              - 'gridcell "Mujer Nac: 1995-11-20" [ref=e617]':
+                - generic [ref=e619]:
+                  - generic [ref=e620]: Mujer
+                  - generic [ref=e621]: "Nac: 1995-11-20"
+              - gridcell "Editar datos del cliente" [ref=e622]:
+                - generic "Editar datos del cliente" [ref=e624]:
+                  - button "Editar" [ref=e625] [cursor=pointer]:
+                    - img [ref=e627]
+                    - text: Editar
+            - 'row "Valeria Quiroga Teran CORP contacto@quirogacatering.bo NIT 1029384019 call +591 69123490 Mujer Nac: 1985-08-30 Editar datos del cliente" [ref=e629]':
+              - gridcell "Valeria Quiroga Teran CORP contacto@quirogacatering.bo" [ref=e630]:
+                - generic [ref=e632]:
+                  - generic [ref=e633]:
+                    - generic [ref=e634]: Valeria Quiroga Teran
+                    - generic [ref=e635]: CORP
+                  - generic [ref=e636]: contacto@quirogacatering.bo
+              - gridcell "NIT 1029384019" [ref=e637]:
+                - generic [ref=e640]:
+                  - generic [ref=e641]: NIT
+                  - generic [ref=e642]: "1029384019"
+              - gridcell "call +591 69123490" [ref=e643]:
+                - generic [ref=e645]:
+                  - generic [ref=e646]: call
+                  - generic [ref=e647]: +591 69123490
+              - 'gridcell "Mujer Nac: 1985-08-30" [ref=e648]':
+                - generic [ref=e650]:
+                  - generic [ref=e651]: Mujer
+                  - generic [ref=e652]: "Nac: 1985-08-30"
+              - gridcell "Editar datos del cliente" [ref=e653]:
+                - generic "Editar datos del cliente" [ref=e655]:
+                  - button "Editar" [ref=e656] [cursor=pointer]:
+                    - img [ref=e658]
+                    - text: Editar
+            - 'row "Marco Ortega Fernandez NATURAL marco.ortega@live.com CI 6712903 call +591 70654321 Hombre Nac: 1990-01-25 Editar datos del cliente" [ref=e660]':
+              - gridcell "Marco Ortega Fernandez NATURAL marco.ortega@live.com" [ref=e661]:
+                - generic [ref=e663]:
+                  - generic [ref=e664]:
+                    - generic [ref=e665]: Marco Ortega Fernandez
+                    - generic [ref=e666]: NATURAL
+                  - generic [ref=e667]: marco.ortega@live.com
+              - gridcell "CI 6712903" [ref=e668]:
+                - generic [ref=e671]:
+                  - generic [ref=e672]: CI
+                  - generic [ref=e673]: "6712903"
+              - gridcell "call +591 70654321" [ref=e674]:
+                - generic [ref=e676]:
+                  - generic [ref=e677]: call
+                  - generic [ref=e678]: +591 70654321
+              - 'gridcell "Hombre Nac: 1990-01-25" [ref=e679]':
+                - generic [ref=e681]:
+                  - generic [ref=e682]: Hombre
+                  - generic [ref=e683]: "Nac: 1990-01-25"
+              - gridcell "Editar datos del cliente" [ref=e684]:
+                - generic "Editar datos del cliente" [ref=e686]:
+                  - button "Editar" [ref=e687] [cursor=pointer]:
+                    - img [ref=e689]
+                    - text: Editar
+            - 'row "Carlos Mendoza CORP carlos.mendoza@valles.com NIT 554321018 call +591 72001122 Hombre Nac: 1979-05-18 Editar datos del cliente" [ref=e691]':
+              - gridcell "Carlos Mendoza CORP carlos.mendoza@valles.com" [ref=e692]:
+                - generic [ref=e694]:
+                  - generic [ref=e695]:
+                    - generic [ref=e696]: Carlos Mendoza
+                    - generic [ref=e697]: CORP
+                  - generic [ref=e698]: carlos.mendoza@valles.com
+              - gridcell "NIT 554321018" [ref=e699]:
+                - generic [ref=e702]:
+                  - generic [ref=e703]: NIT
+                  - generic [ref=e704]: "554321018"
+              - gridcell "call +591 72001122" [ref=e705]:
+                - generic [ref=e707]:
+                  - generic [ref=e708]: call
+                  - generic [ref=e709]: +591 72001122
+              - 'gridcell "Hombre Nac: 1979-05-18" [ref=e710]':
+                - generic [ref=e712]:
+                  - generic [ref=e713]: Hombre
+                  - generic [ref=e714]: "Nac: 1979-05-18"
+              - gridcell "Editar datos del cliente" [ref=e715]:
+                - generic "Editar datos del cliente" [ref=e717]:
+                  - button "Editar" [ref=e718] [cursor=pointer]:
+                    - img [ref=e720]
+                    - text: Editar
+            - 'row "Fredy Arévalo NATURAL fredy.arevalo@hotmail.com NIT 765432 call +591 76543210 Hombre Nac: 1994-09-04 Editar datos del cliente" [ref=e722]':
+              - gridcell "Fredy Arévalo NATURAL fredy.arevalo@hotmail.com" [ref=e723]:
+                - generic [ref=e725]:
+                  - generic [ref=e726]:
+                    - generic [ref=e727]: Fredy Arévalo
+                    - generic [ref=e728]: NATURAL
+                  - generic [ref=e729]: fredy.arevalo@hotmail.com
+              - gridcell "NIT 765432" [ref=e730]:
+                - generic [ref=e733]:
+                  - generic [ref=e734]: NIT
+                  - generic [ref=e735]: "765432"
+              - gridcell "call +591 76543210" [ref=e736]:
+                - generic [ref=e738]:
+                  - generic [ref=e739]: call
+                  - generic [ref=e740]: +591 76543210
+              - 'gridcell "Hombre Nac: 1994-09-04" [ref=e741]':
+                - generic [ref=e743]:
+                  - generic [ref=e744]: Hombre
+                  - generic [ref=e745]: "Nac: 1994-09-04"
+              - gridcell "Editar datos del cliente" [ref=e746]:
+                - generic "Editar datos del cliente" [ref=e748]:
+                  - button "Editar" [ref=e749] [cursor=pointer]:
+                    - img [ref=e751]
+                    - text: Editar
+            - 'row "Silvia Choque Huanca NATURAL silvia.choque@gmail.com CI 9120485 call +591 78912345 Mujer Nac: 1998-03-14 Editar datos del cliente" [ref=e753]':
+              - gridcell "Silvia Choque Huanca NATURAL silvia.choque@gmail.com" [ref=e754]:
+                - generic [ref=e756]:
+                  - generic [ref=e757]:
+                    - generic [ref=e758]: Silvia Choque Huanca
+                    - generic [ref=e759]: NATURAL
+                  - generic [ref=e760]: silvia.choque@gmail.com
+              - gridcell "CI 9120485" [ref=e761]:
+                - generic [ref=e764]:
+                  - generic [ref=e765]: CI
+                  - generic [ref=e766]: "9120485"
+              - gridcell "call +591 78912345" [ref=e767]:
+                - generic [ref=e769]:
+                  - generic [ref=e770]: call
+                  - generic [ref=e771]: +591 78912345
+              - 'gridcell "Mujer Nac: 1998-03-14" [ref=e772]':
+                - generic [ref=e774]:
+                  - generic [ref=e775]: Mujer
+                  - generic [ref=e776]: "Nac: 1998-03-14"
+              - gridcell "Editar datos del cliente" [ref=e777]:
+                - generic "Editar datos del cliente" [ref=e779]:
+                  - button "Editar" [ref=e780] [cursor=pointer]:
+                    - img [ref=e782]
+                    - text: Editar
+        - generic [ref=e787]:
+          - paragraph [ref=e788]: "Filas por página:"
+          - generic [ref=e789]:
+            - combobox "Filas por página:" [ref=e790] [cursor=pointer]: "10"
+            - textbox: "10"
+            - img
+          - paragraph [ref=e791]: 1–9 de 9
+          - generic [ref=e792]:
+            - button "Ir a la página anterior" [disabled]:
+              - img
+            - button "Ir a la página siguiente" [disabled]:
+              - img

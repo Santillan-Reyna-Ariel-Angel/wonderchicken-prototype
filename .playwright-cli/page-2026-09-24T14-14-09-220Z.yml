@@ -1,0 +1,232 @@
+- generic [ref=e119]:
+  - banner [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Colapsar menú lateral" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: menu
+        - button "Wonder Chicken Sucursal Central (Caja 01) WONDER CHICKEN • Online" [ref=e125] [cursor=pointer]:
+          - img "Wonder Chicken" [ref=e127]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Sucursal Central (Caja 01)
+            - generic [ref=e130]:
+              - generic [ref=e131]: WONDER CHICKEN
+              - generic [ref=e132]: •
+              - generic [ref=e133]: Online
+      - generic [ref=e134]:
+        - button "Alternar tema claro y oscuro" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: light_mode
+          - generic [ref=e137]: Claro
+        - button "R Roxana Rodríguez Cajera expand_more" [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: R
+          - generic [ref=e141]:
+            - generic [ref=e142]: Roxana Rodríguez
+            - generic [ref=e143]: Cajera
+          - generic [ref=e144]: expand_more
+  - complementary [ref=e145]:
+    - generic [ref=e147]:
+      - generic [ref=e148]: Operaciones de Caja & POS
+      - navigation [ref=e149]:
+        - button "assignment E Resumen de Apertura /cashier/shift/summary Lectura" [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: assignment
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: E
+                - generic [ref=e156]: Resumen de Apertura
+              - generic [ref=e157]: /cashier/shift/summary
+          - generic [ref=e158]: Lectura
+        - button "point_of_sale F POS Ventas /cashier/pos" [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: point_of_sale
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: F
+                - generic [ref=e165]: POS Ventas
+              - generic [ref=e166]: /cashier/pos
+        - button "receipt_long J Historial de Pedidos /cashier/orders" [active] [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - generic [ref=e169]: receipt_long
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: J
+                - generic [ref=e173]: Historial de Pedidos
+              - generic [ref=e174]: /cashier/orders
+        - button "group P Clientes (FR-019) /cashier/customers" [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]:
+            - generic [ref=e177]: group
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: P
+                - generic [ref=e181]: Clientes (FR-019)
+              - generic [ref=e182]: /cashier/customers
+        - button "pending_actions Pago Pendiente [FR-011] 3" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: pending_actions
+            - generic [ref=e188]: Pago Pendiente [FR-011]
+          - generic [ref=e189]: "3"
+  - main [ref=e190]:
+    - generic [ref=e793]:
+      - generic [ref=e794]:
+        - generic [ref=e795]:
+          - generic [ref=e796]:
+            - generic [ref=e797]: receipt_long
+            - heading "Historial de Pedidos y Comandas" [level=1] [ref=e798]
+          - paragraph [ref=e799]: Auditoría de tickets emitidos, comprobantes de pago y reimpresión de comandas.
+        - generic [ref=e800]:
+          - generic [ref=e803]:
+            - generic: Filtrar por fecha
+            - group "Filtrar por fecha" [ref=e804]:
+              - generic [ref=e805]:
+                - generic [ref=e806]:
+                  - spinbutton "Day" [ref=e807]: DD
+                  - text: /
+                - generic [ref=e808]:
+                  - spinbutton "Month" [ref=e809]: MM
+                  - text: /
+                - spinbutton "Year" [ref=e811]: YYYY
+              - button "Choose date" [ref=e813] [cursor=pointer]:
+                - img [ref=e814]
+              - group:
+                - generic: Filtrar por fecha
+              - textbox [ref=e816]
+          - button "point_of_sale Volver a POS" [ref=e817] [cursor=pointer]:
+            - generic [ref=e818]: point_of_sale
+            - text: Volver a POS
+      - generic [ref=e821]:
+        - toolbar [ref=e822]:
+          - generic [ref=e823]:
+            - generic [ref=e826]:
+              - heading "Auditoría Central de Comandas" [level=6] [ref=e827]
+              - generic [ref=e829]: 3 tickets
+            - generic [ref=e831]:
+              - button "Buscar en la tabla" [ref=e832] [cursor=pointer]:
+                - img [ref=e833]
+              - generic "Buscar" [ref=e835]:
+                - generic [ref=e836]:
+                  - img [ref=e838]
+                  - searchbox "Buscar ticket, cliente o mesa..." [ref=e840]
+                  - group
+        - grid [ref=e841]:
+          - rowgroup [ref=e842]:
+            - row "Ticket Hora Servicio Cliente Ítems Total Pago Estado Acciones" [ref=e843]:
+              - columnheader "Ticket" [ref=e844] [cursor=pointer]:
+                - generic [ref=e846]: Ticket
+                - generic [ref=e847]:
+                  - img
+              - columnheader "Hora" [ref=e848] [cursor=pointer]:
+                - generic [ref=e850]: Hora
+                - generic [ref=e851]:
+                  - img
+              - columnheader "Servicio" [ref=e852] [cursor=pointer]:
+                - generic [ref=e854]: Servicio
+                - generic [ref=e855]:
+                  - img
+              - columnheader "Cliente" [ref=e856] [cursor=pointer]:
+                - generic [ref=e858]: Cliente
+                - generic [ref=e859]:
+                  - img
+              - columnheader "Ítems" [ref=e860] [cursor=pointer]:
+                - generic [ref=e862]: Ítems
+                - generic [ref=e863]:
+                  - img
+              - columnheader "Total" [ref=e864] [cursor=pointer]:
+                - generic [ref=e866]: Total
+                - generic [ref=e867]:
+                  - img
+              - columnheader "Pago" [ref=e868] [cursor=pointer]:
+                - generic [ref=e870]: Pago
+                - generic [ref=e871]:
+                  - img
+              - columnheader "Estado" [ref=e872] [cursor=pointer]:
+                - generic [ref=e874]: Estado
+                - generic [ref=e875]:
+                  - img
+              - columnheader "Acciones" [ref=e876] [cursor=pointer]:
+                - generic [ref=e878]: Acciones
+                - generic [ref=e879]:
+                  - img
+          - rowgroup [ref=e880]:
+            - 'row "#00142 04/05/2024 20:46 Mesa 04 Cliente S/N (Sin Nombre) CI: 0 2x Combo Wonder, 1x Porción Smiles McCain Bs. 84.00 EFECTIVO EN_PREPARACION Comanda print" [ref=e881]':
+              - gridcell "#00142" [ref=e882]:
+                - generic [ref=e884]: "#00142"
+              - gridcell "04/05/2024 20:46" [ref=e885]:
+                - generic [ref=e887]: 04/05/2024 20:46
+              - gridcell "Mesa 04" [ref=e888]:
+                - generic [ref=e891]: Mesa 04
+              - 'gridcell "Cliente S/N (Sin Nombre) CI: 0" [ref=e892]':
+                - generic [ref=e894]:
+                  - generic [ref=e895]: Cliente S/N (Sin Nombre)
+                  - generic [ref=e896]: "CI: 0"
+              - gridcell "2x Combo Wonder, 1x Porción Smiles McCain" [ref=e897]:
+                - generic [ref=e899]: 2x Combo Wonder, 1x Porción Smiles McCain
+              - gridcell "Bs. 84.00" [ref=e900]:
+                - generic [ref=e902]: Bs. 84.00
+              - gridcell "EFECTIVO" [ref=e903]:
+                - generic [ref=e906]: EFECTIVO
+              - gridcell "EN_PREPARACION" [ref=e907]:
+                - generic [ref=e910]: EN_PREPARACION
+              - gridcell "Comanda print" [ref=e911]:
+                - generic [ref=e913]:
+                  - button "Comanda" [ref=e914] [cursor=pointer]
+                  - button "print" [ref=e915] [cursor=pointer]:
+                    - generic [ref=e916]: print
+            - 'row "#00141 04/05/2024 20:35 Llevar Mauricio Esteban Villarroel Ramos CI: 8493021 1x Porción Completa, 1x Wonder Pop Bs. 87.00 QR LISTO Comanda print" [ref=e917]':
+              - gridcell "#00141" [ref=e918]:
+                - generic [ref=e920]: "#00141"
+              - gridcell "04/05/2024 20:35" [ref=e921]:
+                - generic [ref=e923]: 04/05/2024 20:35
+              - gridcell "Llevar" [ref=e924]:
+                - generic [ref=e927]: Llevar
+              - 'gridcell "Mauricio Esteban Villarroel Ramos CI: 8493021" [ref=e928]':
+                - generic [ref=e930]:
+                  - generic [ref=e931]: Mauricio Esteban Villarroel Ramos
+                  - generic [ref=e932]: "CI: 8493021"
+              - gridcell "1x Porción Completa, 1x Wonder Pop" [ref=e933]:
+                - generic [ref=e935]: 1x Porción Completa, 1x Wonder Pop
+              - gridcell "Bs. 87.00" [ref=e936]:
+                - generic [ref=e938]: Bs. 87.00
+              - gridcell "QR" [ref=e939]:
+                - generic [ref=e942]: QR
+              - gridcell "LISTO" [ref=e943]:
+                - generic [ref=e946]: LISTO
+              - gridcell "Comanda print" [ref=e947]:
+                - generic [ref=e949]:
+                  - button "Comanda" [ref=e950] [cursor=pointer]
+                  - button "print" [ref=e951] [cursor=pointer]:
+                    - generic [ref=e952]: print
+            - 'row "#00140 04/05/2024 20:10 Mesa 02 Valeria Quiroga Teran CI: 1029384019 1x Medio Pollo, 1x Porción Arroz, 1x Mocochinchi 500ml Bs. 60.00 EFECTIVO ENTREGADO Comanda print" [ref=e953]':
+              - gridcell "#00140" [ref=e954]:
+                - generic [ref=e956]: "#00140"
+              - gridcell "04/05/2024 20:10" [ref=e957]:
+                - generic [ref=e959]: 04/05/2024 20:10
+              - gridcell "Mesa 02" [ref=e960]:
+                - generic [ref=e963]: Mesa 02
+              - 'gridcell "Valeria Quiroga Teran CI: 1029384019" [ref=e964]':
+                - generic [ref=e966]:
+                  - generic [ref=e967]: Valeria Quiroga Teran
+                  - generic [ref=e968]: "CI: 1029384019"
+              - gridcell "1x Medio Pollo, 1x Porción Arroz, 1x Mocochinchi 500ml" [ref=e969]:
+                - generic [ref=e971]: 1x Medio Pollo, 1x Porción Arroz, 1x Mocochinchi 500ml
+              - gridcell "Bs. 60.00" [ref=e972]:
+                - generic [ref=e974]: Bs. 60.00
+              - gridcell "EFECTIVO" [ref=e975]:
+                - generic [ref=e978]: EFECTIVO
+              - gridcell "ENTREGADO" [ref=e979]:
+                - generic [ref=e982]: ENTREGADO
+              - gridcell "Comanda print" [ref=e983]:
+                - generic [ref=e985]:
+                  - button "Comanda" [ref=e986] [cursor=pointer]
+                  - button "print" [ref=e987] [cursor=pointer]:
+                    - generic [ref=e988]: print
+        - generic [ref=e992]:
+          - paragraph [ref=e993]: "Filas por página:"
+          - generic [ref=e994]:
+            - combobox "Filas por página:" [ref=e995] [cursor=pointer]: "10"
+            - textbox: "10"
+            - img
+          - paragraph [ref=e996]: 1–3 de 3
+          - generic [ref=e997]:
+            - button "Ir a la página anterior" [disabled]:
+              - img
+            - button "Ir a la página siguiente" [disabled]:
+              - img

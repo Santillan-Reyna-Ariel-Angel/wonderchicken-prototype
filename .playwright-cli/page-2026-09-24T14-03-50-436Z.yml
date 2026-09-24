@@ -1,0 +1,114 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img "Wonder Chicken Logo Oficial"
+      - generic [ref=e7]: Apertura Inicial de Caja & Turno Fiscal
+    - button "light_mode Modo Claro" [ref=e9] [cursor=pointer]:
+      - generic [ref=e10]: light_mode
+      - generic [ref=e11]: Modo Claro
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: CC
+          - generic [ref=e17]:
+            - generic [ref=e18]:
+              - generic [ref=e19]: Bienvenida, Roxana Rodríguez
+              - generic [ref=e20]: "Rol: CAJERA"
+            - generic [ref=e21]: "CI: 8492019 • Sucursal Central (Caja 01)"
+        - generic [ref=e23]: FR-004 / PDR §2.6
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e27]:
+              - generic [ref=e28]: schedule
+              - 'heading "Paso 1: Declaración de Período de Turno" [level=2] [ref=e29]'
+            - paragraph [ref=e30]: Seleccione el bloque de horario operativo que comenzará a facturar y custodiar la gaveta física.
+            - generic [ref=e31]:
+              - button "wb_sunny Turno Mañana 08:30 — 16:00 Apertura de salón, recepción de fritura fresca y pedidos de almuerzo." [ref=e32] [cursor=pointer]:
+                - generic [ref=e33]:
+                  - generic [ref=e34]:
+                    - generic [ref=e35]: wb_sunny
+                    - generic [ref=e36]: Turno Mañana
+                  - radio [checked] [ref=e37]
+                - generic [ref=e38]: 08:30 — 16:00
+                - generic [ref=e39]: Apertura de salón, recepción de fritura fresca y pedidos de almuerzo.
+              - button "dark_mode Turno Noche 16:00 — 23:30 Flujo nocturno, delivery alto, retiro de comensales y arqueo de cierre Z." [ref=e40] [cursor=pointer]:
+                - generic [ref=e41]:
+                  - generic [ref=e42]:
+                    - generic [ref=e43]: dark_mode
+                    - generic [ref=e44]: Turno Noche
+                  - radio [ref=e45]
+                - generic [ref=e46]: 16:00 — 23:30
+                - generic [ref=e47]: Flujo nocturno, delivery alto, retiro de comensales y arqueo de cierre Z.
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e50]: point_of_sale
+              - 'heading "Paso 2: Selección de Caja Registradora" [level=2] [ref=e51]'
+            - paragraph [ref=e52]: Indique qué terminal físico operará en Sucursal Central.
+            - generic [ref=e53]:
+              - button "Caja 01 LIBRE Mesón Principal Ventas salón y comensales directos." [ref=e54] [cursor=pointer]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Caja 01
+                  - generic [ref=e57]: LIBRE
+                - generic [ref=e58]: Mesón Principal
+                - generic [ref=e59]: Ventas salón y comensales directos.
+              - button "Caja 02 LIBRE Despacho / Delivery Ventanilla rápida y repartidores." [ref=e60] [cursor=pointer]:
+                - generic [ref=e61]:
+                  - generic [ref=e62]: Caja 02
+                  - generic [ref=e63]: LIBRE
+                - generic [ref=e64]: Despacho / Delivery
+                - generic [ref=e65]: Ventanilla rápida y repartidores.
+              - generic [ref=e66]:
+                - generic [ref=e67]:
+                  - generic [ref=e68]: Caja 03
+                  - generic [ref=e69]: EN USO
+                - generic [ref=e70]: Auto-Pollo / Express
+                - generic [ref=e71]: Operada por Diana Despacho.
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e74]: attach_money
+              - 'heading "Paso 3: Monto Inicial en Efectivo (Fondo de Sencillo)" [level=2] [ref=e75]'
+            - paragraph [ref=e76]: Declare con precisión la dotación de cambio recibida para abrir la gaveta física.
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - generic [ref=e79]: Bs.
+                - spinbutton [ref=e80]: "150"
+              - generic [ref=e81]:
+                - button "Bs. 100" [ref=e82] [cursor=pointer]
+                - button "Bs. 150 (Frecuente)" [ref=e83] [cursor=pointer]
+                - button "Bs. 200" [ref=e84] [cursor=pointer]
+                - button "+Bs. 20" [ref=e85] [cursor=pointer]
+                - button "+Bs. 50" [ref=e86] [cursor=pointer]
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e90]:
+              - generic [ref=e91]: assignment
+              - heading "Resumen de Apertura" [level=3] [ref=e92]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]: "Operador Responsable:"
+                - generic [ref=e96]: Roxana Rodríguez
+              - generic [ref=e97]:
+                - generic [ref=e98]: "Cédula Identidad:"
+                - generic [ref=e99]: "2222222"
+              - generic [ref=e100]:
+                - generic [ref=e101]: "Sucursal:"
+                - generic [ref=e102]: Sucursal Central (SCZ-001)
+              - generic [ref=e103]:
+                - generic [ref=e104]: "Turno Asignado:"
+                - generic [ref=e105]: MAÑANA
+              - generic [ref=e106]:
+                - generic [ref=e107]: "Caja Asignada:"
+                - generic [ref=e108]: Caja 01
+              - generic [ref=e109]:
+                - generic [ref=e110]: "Fondo Inicial Declarado:"
+                - generic [ref=e111]: Bs. 150.00
+            - generic [ref=e112]:
+              - generic [ref=e113]: info
+              - paragraph [ref=e114]: Al confirmar la apertura, el sistema registrará el timestamp de inicio fiscal y vinculará cada venta del turno a su usuario.
+          - button "lock_open Abrir Turno y Entrar al POS" [ref=e115] [cursor=pointer]:
+            - generic [ref=e116]: lock_open
+            - text: Abrir Turno y Entrar al POS
+  - contentinfo [ref=e117]: Wonder Chicken POS & Cajas v2.4 • Sistema Conforme Normativa SIN Bolivia
